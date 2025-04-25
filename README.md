@@ -55,3 +55,10 @@ npm run dev
 npm run build
 npm start
 ```
+
+## 🖌️ Design
+
+The UI/UX design of Eventeer was created in [Figma](https://figma.com/).  
+You can view the full design prototype here:
+
+🔗 [View Figma Design](https://www.figma.com/design/SxhhitSbL19Xvg7Bbk4MlY/PV247?node-id=0-1&t=cXTT8k2NBQxJb884-1)
