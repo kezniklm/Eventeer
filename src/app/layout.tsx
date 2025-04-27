@@ -27,3 +27,5 @@ export const RootLayout = ({
     <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
   </html>
 );
+
+export default RootLayout;
