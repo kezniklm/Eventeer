@@ -1,0 +1,129 @@
+@startuml
+
+skinparam linetype ortho
+
+
+entity "user (AuthJS)" as user {
+  id: integer <<PK>>
+  name: text
+  email: text <<UNIQUE>>
+  emailVerified: integer (timestamp_ms)
+  image: text
+}
+
+entity "account (AuthJS)" as account {
+  userId: text <<FK to user.id>>
+  type: text
+  provider: text
+  providerAccountId: text
+  refresh_token: text
+  access_token: text
+  expires_at: integer
+  token_type: text
+  scope: text
+  id_token: text
+  session_state: text
+  --
+  primary key (provider, providerAccountId)
+}
+
+entity "session (AuthJS)" as session {
+  sessionToken: text <<PK>>
+  userId: text <<FK to user.id>>
+  expires: timestamp_ms
+}
+
+
+entity "user_has_room" as user_has_room {
+    user_id: integer <<FK to user.id>>
+    room_id: integer <<FK to room.id>>
+    invitation_state: integer
+}
+
+note left of user_has_room
+invitation_state:
+    - 0: invited
+    - 1: accepted
+end note
+
+entity "room" as room {
+    id: integer <<PK>>
+    owner: integer <<FK to user.id>>
+    name: text
+    description: text
+}
+
+entity "room_activity" {
+    id: integer <<PK>>
+    fk_room: integer <<FK room.id>>
+    fk_task: integer <<FK task.id>>
+    fk_event: integer <<FK event.id>>
+    fk_settle_up: integer <<FK event.id>>
+    name: text
+    description: text
+}
+
+note left of room_activity
+    CHECK constraint 
+    only one of can be not null:
+        - fk_task, 
+        - fk_event, 
+        - fk_settle_up  
+end note
+
+entity "user_has_activity" {
+    user_id: integer <<FK to user.id>>
+    room_activity_id: integer <<FK to room_activity.id>>
+}
+
+entity "task" as task {
+    id: integer <<PK>>
+    priority: integer
+    repeatable_type: text <DAY,WEEK,MONTH,YEAR>
+    repeatable_value: integer
+}
+
+entity "subtask" as subtask {
+    id: integer <<PK>>
+    fk_task: integer <<FK to task.id>>
+    is_done: integer <boolean_mode>
+}
+
+entity "event" as event {
+    id: integer <<PK>>
+    date: integer <timestamp>
+    repeatable_type: text <DAY,WEEK,MONTH,YEAR>
+    repeatable_value: integer
+}
+
+entity "settle_up" as settle_up {
+    id: integer <<PK>>
+    money: integer
+}
+
+entity "user_settled_up" {
+    fk_user: integer <<user.id>>
+    fk_settle_up: integer <<settle_up.id>>
+}
+
+' Relationships
+user ||-left-o{ session : has
+user ||-down--o{ account : has
+
+user ||---{ user_has_room : has
+user_has_room }-up-|| room : has
+
+room_activity ||--o| task : has
+room_activity ||--o| event : has
+room_activity ||--o| settle_up : has
+room_activity }o-up-|| room : has
+
+user_has_activity }-up-|| user : has
+user_has_activity }--|| room_activity : has
+
+task ||--o{ subtask : has
+
+settle_up ||--{ user_settled_up
+user_settled_up }--|| user
+
+@enduml
