@@ -11,13 +11,19 @@ export const PublicLayout = ({
 }>) => (
   <>
     <Navigation>
-      <NavigationLink href="/login" className="btn btn-secondary flex items-center gap-2">
-        <User />
-        Sign in
+      <NavigationLink
+        href="/login"
+        className="btn btn-secondary text-xs sm:text-sm font-medium flex items-center gap-0.5 md:gap-2"
+      >
+        <User className="text-xs sm:text-sm" />
+        <span className="text-xs sm:text-sm whitespace-nowrap">Sign in</span>
       </NavigationLink>
-      <NavigationLink href="/register" className="btn btn-primary flex items-center gap-2">
-        <User />
-        Sign up
+      <NavigationLink
+        href="/register"
+        className="btn btn-primary text-xs sm:text-sm font-medium flex items-center gap-0.5 md:gap-2"
+      >
+        <User className="text-xs sm:text-sm" />
+        <span className="text-xs sm:text-sm whitespace-nowrap">Sign up</span>
       </NavigationLink>
     </Navigation>
 
