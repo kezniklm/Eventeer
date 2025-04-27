@@ -1,9 +1,4 @@
-import {
-  integer,
-  sqliteTable,
-  text,
-  primaryKey,
-} from "drizzle-orm/sqlite-core";
+import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 
 export const users = sqliteTable("user", {
@@ -13,7 +8,7 @@ export const users = sqliteTable("user", {
   name: text("name"),
   email: text("email").unique(),
   emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
-  image: text("image"),
+  image: text("image")
 });
 
 export const accounts = sqliteTable(
@@ -31,13 +26,13 @@ export const accounts = sqliteTable(
     token_type: text("token_type"),
     scope: text("scope"),
     id_token: text("id_token"),
-    session_state: text("session_state"),
+    session_state: text("session_state")
   },
   (account) => [
     primaryKey({
-      columns: [account.provider, account.providerAccountId],
-    }),
-  ],
+      columns: [account.provider, account.providerAccountId]
+    })
+  ]
 );
 
 export const sessions = sqliteTable("session", {
@@ -45,7 +40,7 @@ export const sessions = sqliteTable("session", {
   userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+  expires: integer("expires", { mode: "timestamp_ms" }).notNull()
 });
 
 export const verificationTokens = sqliteTable(
@@ -53,13 +48,13 @@ export const verificationTokens = sqliteTable(
   {
     identifier: text("identifier").notNull(),
     token: text("token").notNull(),
-    expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+    expires: integer("expires", { mode: "timestamp_ms" }).notNull()
   },
   (verificationToken) => [
     primaryKey({
-      columns: [verificationToken.identifier, verificationToken.token],
-    }),
-  ],
+      columns: [verificationToken.identifier, verificationToken.token]
+    })
+  ]
 );
 
 export const authenticators = sqliteTable(
@@ -74,13 +69,13 @@ export const authenticators = sqliteTable(
     counter: integer("counter").notNull(),
     credentialDeviceType: text("credentialDeviceType").notNull(),
     credentialBackedUp: integer("credentialBackedUp", {
-      mode: "boolean",
+      mode: "boolean"
     }).notNull(),
-    transports: text("transports"),
+    transports: text("transports")
   },
   (authenticator) => [
     primaryKey({
-      columns: [authenticator.userId, authenticator.credentialID],
-    }),
-  ],
+      columns: [authenticator.userId, authenticator.credentialID]
+    })
+  ]
 );

@@ -1,18 +1,6 @@
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
-import {
-  accounts,
-  authenticators,
-  sessions,
-  users,
-  verificationTokens,
-} from "./schema/auth";
-import {
-  room,
-  roomsRelations,
-  userHasRoom,
-  userHasRoomRelations,
-} from "./schema/room";
+
 import {
   event,
   roomActivity,
@@ -24,12 +12,14 @@ import {
   taskRelations,
   userHasActivity,
   userSettledUp,
-  userSettledUpRelations,
+  userSettledUpRelations
 } from "./schema/activity";
+import { accounts, authenticators, sessions, users, verificationTokens } from "./schema/auth";
+import { room, roomsRelations, userHasRoom, userHasRoomRelations } from "./schema/room";
 
 const client = createClient({
   url: process.env.TURSO_DATABASE_URL!,
-  authToken: process.env.TURSO_AUTH_TOKEN,
+  authToken: process.env.TURSO_AUTH_TOKEN
 });
 
 export const db = drizzle(client, {
@@ -53,6 +43,6 @@ export const db = drizzle(client, {
     settledUpRelations,
     userSettledUpRelations,
     roomActivityRelations,
-    userHasActivity,
-  },
+    userHasActivity
+  }
 });
