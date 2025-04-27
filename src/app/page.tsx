@@ -1,70 +1,78 @@
-import Image from "next/image";
+import { NavigationLink } from "@/components/navigation-link";
 
-const Home = () => (
-  <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-    <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-      <Image className="dark:invert" src="/next.svg" alt="Next.js logo" width={180} height={38} priority />
-      <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-        <li className="mb-2 tracking-[-.01em]">
-          Get started by editing{" "}
-          <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-            src/app/page.tsx
-          </code>
-          .
-        </li>
-        <li className="tracking-[-.01em]">Save and see your changes instantly.</li>
-      </ol>
-
-      <div className="flex gap-4 items-center flex-col sm:flex-row">
-        <a
-          className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image className="dark:invert" src="/vercel.svg" alt="Vercel logomark" width={20} height={20} />
-          Deploy now
-        </a>
-        <a
-          className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Read our docs
-        </a>
+const HomePage = () => (
+  <div className="flex-grow flex flex-col items-center">
+    <section className="flex flex-col items-center text-center px-8 mt-4 max-w-4xl">
+      <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6 animate-fade-in-slow">
+        Organize Life Together with <span className="text-primary">Eventeer</span>
+      </h1>
+      <p className="text-lg md:text-xl text-muted-foreground mb-8 animate-fade-in-slow delay-200">
+        Plan events, track tasks, manage expenses — all in shared rooms built for collaboration.
+      </p>
+      <div className="flex gap-4 animate-fade-in-slow delay-400">
+        <NavigationLink href="/register" className="btn btn-primary text-lg px-6 py-3 hover:opacity-90">
+          Get Started
+        </NavigationLink>
+        <NavigationLink href="#features" className="btn btn-secondary text-lg px-6 py-3 hover:opacity-90">
+          Learn More
+        </NavigationLink>
       </div>
-    </main>
-    <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-      <a
-        className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-        href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <Image aria-hidden src="/file.svg" alt="File icon" width={16} height={16} />
-        Learn
-      </a>
-      <a
-        className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-        href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <Image aria-hidden src="/window.svg" alt="Window icon" width={16} height={16} />
-        Examples
-      </a>
-      <a
-        className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-        href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <Image aria-hidden src="/globe.svg" alt="Globe icon" width={16} height={16} />
-        Go to nextjs.org →
-      </a>
-    </footer>
+    </section>
+
+    <section id="features" className="mt-16 w-full max-w-6xl px-6">
+      <h2 className="text-4xl font-bold mb-16 text-center animate-fade-in-slow">✨ Features</h2>
+      <div className="grid gap-10 md:grid-cols-2">
+        {features.map((feature) => (
+          <div
+            key={feature.title}
+            className="card transition-transform transform hover:-translate-y-2 hover:shadow-lg animate-fade-in-slow delay-[calc(500ms+index*200ms)]"
+          >
+            <h3 className="text-2xl font-semibold mb-3">{feature.title}</h3>
+            <p className="text-base text-muted-foreground">{feature.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section className="mt-16 text-center px-6">
+      <h2 className="text-3xl md:text-4xl font-semibold mb-6 animate-fade-in-slow">Ready to create your first room?</h2>
+      <p className="text-lg text-muted-foreground mb-8 animate-fade-in-slow delay-200">
+        Join Eventeer today and make group organization effortless.
+      </p>
+      <NavigationLink href="/register" className="btn btn-primary text-lg px-6 !py-3 hover:opacity-90">
+        Create Your Room
+      </NavigationLink>
+    </section>
   </div>
 );
 
-export default Home;
+const features = [
+  {
+    title: "🏠 Shared Rooms",
+    description:
+      "Create and join rooms to collaborate on event planning, task management, and expense tracking — all in one place."
+  },
+  {
+    title: "📅 Event Planning",
+    description: "Organize one-time or recurring events, invite participants, and set reminders effortlessly."
+  },
+  {
+    title: "✅ Task Management",
+    description:
+      "Assign mandatory or optional tasks to events, prioritize responsibilities, and monitor progress easily."
+  },
+  {
+    title: "💰 Expense Tracking",
+    description: "Track and split shared expenses transparently among your group to avoid confusion."
+  },
+  {
+    title: "🚦 Priorities & Statuses",
+    description: "Highlight important tasks with priority levels and custom status labels to stay on top of everything."
+  },
+  {
+    title: "📈 Built for Groups",
+    description: "Ideal for roommates, project teams, and friend groups managing life or work together."
+  }
+];
+
+export default HomePage;
