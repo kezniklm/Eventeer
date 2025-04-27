@@ -71,7 +71,7 @@ note left of room_activity
         - fk_settle_up  
 end note
 
-entity "user_has_activity" {
+entity "activity_has_user" {
     user_id: integer <<FK to user.id>>
     room_activity_id: integer <<FK to room_activity.id>>
 }
@@ -118,8 +118,8 @@ room_activity ||--o| event : has
 room_activity ||--o| settle_up : has
 room_activity }o-up-|| room : has
 
-user_has_activity }-up-|| user : has
-user_has_activity }--|| room_activity : has
+activity_has_user }-up-|| user : has
+activity_has_user }--|| room_activity : has
 
 task ||--o{ subtask : has
 
