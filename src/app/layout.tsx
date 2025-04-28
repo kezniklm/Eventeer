@@ -1,7 +1,33 @@
 import "./globals.css";
 
+import { type Metadata } from "next";
+
 import { PrivateLayout } from "@/components/layout/private-layout";
 import { PublicLayout } from "@/components/layout/public-layout";
+
+export const metadata: Metadata = {
+  metadataBase: new URL("https://eventeer-woad.vercel.app/"),
+  title: {
+    default: "Eventeer",
+    template: "%s | Eventeer"
+  },
+  description: "Plan events, manage tasks, and track expenses with Eventeer — collaboration made easy.",
+  openGraph: {
+    title: "Eventeer",
+    description: "Plan events, manage tasks, and track expenses with Eventeer — collaboration made easy.",
+    url: "/",
+    siteName: "Eventeer",
+    images: [
+      {
+        url: "/preview.png",
+        width: 768,
+        height: 768,
+        alt: "Eventeer - Shared Rooms and Expenses"
+      }
+    ],
+    type: "website"
+  }
+};
 
 const RootLayout = ({
   children
