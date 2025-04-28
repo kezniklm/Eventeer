@@ -2,7 +2,7 @@ import Link from "next/link";
 
 type NavigationLinkProps = {
   href: string;
-  className: string;
+  className?: string;
 };
 
 export const NavigationLink = ({ href, children, className }: React.PropsWithChildren<NavigationLinkProps>) => (

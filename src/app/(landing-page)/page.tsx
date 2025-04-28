@@ -1,6 +1,7 @@
 import { type Metadata } from "next";
 
 import { NavigationLink } from "@/components/navigation-link";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Organize Life Together",
@@ -17,12 +18,12 @@ const HomePage = () => (
         Plan events, track tasks, manage expenses — all in shared rooms built for collaboration.
       </p>
       <div className="flex gap-4 animate-fade-in-slow delay-400">
-        <NavigationLink href="/register" className="btn btn-primary text-lg px-6 py-3 hover:opacity-90">
-          Get Started
-        </NavigationLink>
-        <NavigationLink href="#features" className="btn btn-secondary text-lg px-6 py-3 hover:opacity-90">
-          Learn More
-        </NavigationLink>
+        <Button asChild>
+          <NavigationLink href="/register">Get Started</NavigationLink>
+        </Button>
+        <Button asChild variant="secondary">
+          <NavigationLink href="#features">Learn More</NavigationLink>
+        </Button>
       </div>
     </section>
 
@@ -46,9 +47,9 @@ const HomePage = () => (
       <p className="text-lg text-muted-foreground mb-8 animate-fade-in-slow delay-200">
         Join Eventeer today and make group organization effortless.
       </p>
-      <NavigationLink href="/register" className="btn btn-primary text-lg px-6 !py-3 hover:opacity-90">
-        Create Your Room
-      </NavigationLink>
+      <Button asChild>
+        <NavigationLink href="/register">Create Your Room</NavigationLink>
+      </Button>
     </section>
   </div>
 );

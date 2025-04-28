@@ -1,5 +1,7 @@
 import { type Metadata } from "next";
 
+import { Button } from "@/components/ui/button";
+
 export const metadata: Metadata = {
   title: "Login",
   description: "Sign in to Eventeer and start organizing your events, tasks, and expenses with ease."
@@ -7,7 +9,7 @@ export const metadata: Metadata = {
 
 const LoginPage = () => (
   <div>
-    <button className="btn btn-primary">Button</button>
+    <Button>Button</Button>
   </div>
 );
 
