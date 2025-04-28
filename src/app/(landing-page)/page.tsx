@@ -1,4 +1,11 @@
+import { type Metadata } from "next";
+
 import { NavigationLink } from "@/components/navigation-link";
+
+export const metadata: Metadata = {
+  title: "Organize Life Together",
+  description: "Plan events, manage tasks, and track expenses with Eventeer — collaboration made easy."
+};
 
 const HomePage = () => (
   <div className="flex-grow flex flex-col items-center">
