@@ -1,6 +1,6 @@
 import { type Metadata } from "next";
 
-import { Button } from "@/components/ui/button";
+import { LoginForm } from "@/components/forms/LoginForm";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const LoginPage = () => (
   <div>
-    <Button>Button</Button>
+    <LoginForm />
   </div>
 );
 

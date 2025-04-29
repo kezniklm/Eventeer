@@ -6,11 +6,15 @@
 
 @custom-variant dark (&:is(.dark *));
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --primary: oklch(0.47 0.0651 200.88);
-  --danger: #a41b12;
-  --secondary: oklch(.97 0 0);
-  --tertiary: #d1e2e2;
+  --secondary: oklch(0.93 0.0097 204.91);
+  --tertiary: #BDD1D2;
+  --dark-green: #084448;
 
   --font-sans: "Inter", Arial, Helvetica, sans-serif;
 
@@ -40,7 +44,7 @@
 
   --accent-foreground: oklch(0.205 0 0);
 
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: oklch(0.46 0.1728 29.38);
 
   --border: oklch(0.922 0 0);
 
