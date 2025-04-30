@@ -1,6 +1,6 @@
 import { type Metadata } from "next";
 
-import { NavigationLink } from "@/components/navigation-link";
+import { NavigationLink } from "@/components/navigation/navigation-link";
 
 export const metadata: Metadata = {
   title: "Organize Life Together",

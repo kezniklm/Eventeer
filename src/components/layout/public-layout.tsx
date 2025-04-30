@@ -1,8 +1,8 @@
 import { User } from "lucide-react";
 
 import { Footer } from "@/components/layout/footer";
-import { Navigation } from "@/components/navigation";
-import { NavigationLink } from "@/components/navigation-link";
+import { Navigation } from "@/components/navigation/navigation";
+import { NavigationLink } from "@/components/navigation/navigation-link";
 
 export const PublicLayout = ({
   children
