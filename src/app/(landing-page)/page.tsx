@@ -53,7 +53,12 @@ const HomePage = () => (
   </div>
 );
 
-const features = [
+type FeatureType = {
+  title: string;
+  description: string;
+};
+
+const features: FeatureType[] = [
   {
     title: "🏠 Shared Rooms",
     description:
