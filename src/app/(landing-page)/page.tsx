@@ -29,14 +29,8 @@ const HomePage = () => (
     <section id="features" className="mt-16 w-full max-w-6xl px-6">
       <h2 className="text-4xl font-bold mb-16 text-center animate-fade-in-slow">✨ Features</h2>
       <div className="grid gap-10 md:grid-cols-2">
-        {features.map((feature) => (
-          <div
-            key={feature.title}
-            className="card transition-transform transform hover:-translate-y-2 hover:shadow-lg animate-fade-in-slow delay-[calc(500ms+index*200ms)]"
-          >
-            <h3 className="text-2xl font-semibold mb-3">{feature.title}</h3>
-            <p className="text-base text-muted-foreground">{feature.description}</p>
-          </div>
+        {features.map((feature, index) => (
+          <FeatureComponent key={feature.title} feature={feature} index={index} />
         ))}
       </div>
     </section>
@@ -53,12 +47,28 @@ const HomePage = () => (
   </div>
 );
 
-type FeatureType = {
+type FeatureComponentProps = {
+  feature: Feature;
+  index: number;
+};
+
+const FeatureComponent = ({ feature, index }: FeatureComponentProps) => (
+  <div
+    key={feature.title}
+    className="card transition-transform transform hover:-translate-y-2 hover:shadow-lg animate-fade-in-slow"
+    style={{ animationDelay: `calc(500ms + ${index * 200}ms)` }}
+  >
+    <h3 className="text-2xl font-semibold mb-3">{feature.title}</h3>
+    <p className="text-base text-muted-foreground">{feature.description}</p>
+  </div>
+);
+
+type Feature = {
   title: string;
   description: string;
 };
 
-const features: FeatureType[] = [
+const features: Feature[] = [
   {
     title: "🏠 Shared Rooms",
     description:
