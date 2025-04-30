@@ -53,14 +53,16 @@ type FeatureComponentProps = {
 };
 
 const FeatureComponent = ({ feature, index }: FeatureComponentProps) => (
-  <div
+  <article
     key={feature.title}
     className="card transition-transform transform hover:-translate-y-2 hover:shadow-lg animate-fade-in-slow"
     style={{ animationDelay: `calc(500ms + ${index * 200}ms)` }}
+    aria-labelledby={`feature-title-${index}`}
+    aria-describedby={`feature-desc-${index}`}
   >
     <h3 className="text-2xl font-semibold mb-3">{feature.title}</h3>
     <p className="text-base text-muted-foreground">{feature.description}</p>
-  </div>
+  </article>
 );
 
 type Feature = {
