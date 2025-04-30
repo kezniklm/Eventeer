@@ -15,7 +15,7 @@ html {
 :root {
   --primary: oklch(0.47 0.0651 200.88);
   --secondary: oklch(0.93 0.0097 204.91);
-  --tertiary: #BDD1D2;
+  --tertiary: #bdd1d2;
   --dark-green: #084448;
 
   --font-sans: "Inter", Arial, Helvetica, sans-serif;
