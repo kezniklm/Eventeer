@@ -1,8 +1,9 @@
 import { User } from "lucide-react";
 
 import { Footer } from "@/components/layout/footer";
-import { Navigation } from "@/components/navigation/navigation";
-import { NavigationLink } from "@/components/navigation/navigation-link";
+import { Navigation } from "@/components/navigation";
+import { NavigationLink } from "@/components/navigation-link";
+import { Button } from "@/components/ui/button";
 
 export const PrivateLayout = ({
   children
@@ -11,25 +12,22 @@ export const PrivateLayout = ({
 }>) => (
   <>
     <Navigation>
-      <NavigationLink
-        href="/profile"
-        className="btn btn-secondary text-xs sm:text-sm font-medium flex items-center gap-0.5 md:gap-2"
-      >
-        <User className="text-xs sm:text-sm" />
-        <span className="text-xs sm:text-sm whitespace-nowrap">User</span>
-      </NavigationLink>
-      <NavigationLink
-        href="/rooms"
-        className="btn btn-primary text-xs sm:text-sm font-medium flex items-center gap-0.5 md:gap-2"
-      >
-        <span className="text-xs sm:text-sm whitespace-nowrap">Rooms</span>
-      </NavigationLink>
-      <NavigationLink
-        href="/logout"
-        className="btn btn-primary text-xs sm:text-sm font-medium flex items-center gap-0.5 md:gap-2"
-      >
-        <span className="text-xs sm:text-sm whitespace-nowrap">Log out</span>
-      </NavigationLink>
+      <Button asChild variant="secondary">
+        <NavigationLink href="/profile">
+          <User />
+          <span>User</span>
+        </NavigationLink>
+      </Button>
+      <Button asChild>
+        <NavigationLink href="/rooms">
+          <span>Rooms</span>
+        </NavigationLink>
+      </Button>
+      <Button asChild>
+        <NavigationLink href="/logout">
+          <span>Log out</span>
+        </NavigationLink>
+      </Button>
     </Navigation>
 
     <main className="container max-w-4/5 mx-auto px-2 py-8">{children}</main>
