@@ -1,7 +1,7 @@
 import { type Metadata } from "next";
 
-import { RoomInvitations } from "@/components/rooms/RoomInvitations";
-import { Rooms } from "@/components/rooms/Rooms";
+import { Rooms } from "@/components/rooms/rooms";
+import { RoomInvitations } from "@/components/rooms/rooms-invitations";
 
 export const metadata: Metadata = {
   title: "Rooms",
