@@ -16,9 +16,9 @@ type ProviderButtonProps = {
 export const ProviderButton = ({ name }: ProviderButtonProps) => (
   <button
     type="submit"
-    className="mt-2 min-w-80 transition duration-500 hover:shadow-lg hover:-translate-y-1 animate-fade-in-slow bg-white border-providers border-solid border rounded-2xl width-auto flex flex-row justify-center gap-3 cursor-pointer font-[Roboto] p-2 align-middle"
+    className="animate-fade-in-slow border-providers width-auto mt-2 flex min-w-80 cursor-pointer flex-row justify-center gap-3 rounded-2xl border border-solid bg-white p-2 align-middle font-[Roboto] transition duration-500 hover:-translate-y-1 hover:shadow-lg"
   >
-    <div className="w-[20px] h-[20px] mt-1 mr-1 ml-1">{providerIconMapping[name]}</div>
+    <div className="mt-1 mr-1 ml-1 h-[20px] w-[20px]">{providerIconMapping[name]}</div>
     Sign in with {name}
   </button>
 );

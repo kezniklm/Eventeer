@@ -20,23 +20,23 @@ const LoginPage = async (props: { searchParams: Promise<{ callbackUrl?: string; 
     return redirect("/profile");
   }
   return (
-    <div className="m-auto container flex flex-col text-center items-center w-full h-[80vh]">
+    <div className="container m-auto flex h-[80vh] w-full flex-col items-center text-center">
       <PageHeading>Sign In to Your Account</PageHeading>
 
-      <div className="flex flex-col md:flex-row-reverse text-center items-center justify-center md:w-[80vw] md:h-[40vw] w-[50vw] h-[100vw] lg:w-[50vw] lg:h-[25vw]">
-        <div className="relative w-full md:w-1/2 h-full">
+      <div className="flex h-[100vw] w-[50vw] flex-col items-center justify-center text-center md:h-[40vw] md:w-[80vw] md:flex-row-reverse lg:h-[25vw] lg:w-[50vw]">
+        <div className="relative h-full w-full md:w-1/2">
           <Image
             src={PreviewImage}
             alt="Eventeer logo"
             fill
-            className="rounded-t-2xl md:rounded-tl-none md:rounded-br-2xl object-fit"
+            className="object-fit rounded-t-2xl md:rounded-tl-none md:rounded-br-2xl"
           />
         </div>
         <LoginForm
           callbackUrl={callbackUrl}
           providerMap={providerMap}
           errorType={error}
-          className="md:w-1/2 w-full h-full bg-tertiary rounded-b-2xl md:rounded-tl-2xl md:rounded-br-none"
+          className="bg-tertiary h-full w-full rounded-b-2xl md:w-1/2 md:rounded-tl-2xl md:rounded-br-none"
         />
       </div>
     </div>
