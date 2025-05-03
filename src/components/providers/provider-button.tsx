@@ -13,7 +13,7 @@ type ProviderButtonProps = {
 export const ProviderButton = ({ name }: ProviderButtonProps) => (
   <button
     type="submit"
-    className="border-[#747775] text-[#1F1F1F] border-solid border rounded-2xl width-auto flex flex-row text-center gap-3 cursor-pointer font-[Roboto] p-2 align-middle"
+    className="bg-white border-providers border-solid border rounded-2xl width-auto flex flex-row text-center gap-3 cursor-pointer font-[Roboto] p-2 align-middle"
   >
     <div className="w-[20px] h-[20px] mr-1 ml-1 mt-1">{providerIconMapping[name]}</div>
     Sign in with {name}

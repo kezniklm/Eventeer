@@ -81,6 +81,9 @@ html {
   --sidebar-border: oklch(0.922 0 0);
 
   --sidebar-ring: oklch(0.708 0 0);
+
+  --providers-border-color: oklch(0.57 0.0047 157.09);
+  --providers-color: oklch(0.24 0 0);
 }
 
 /* Base styles */
@@ -107,6 +110,12 @@ h3 {
   color: var(--foreground);
 }
 
+h4 {
+  font-size: 1.3rem; /* ~24px */
+  font-weight: medium;
+  color: var(--foreground);
+}
+
 /* Reusable utilities */
 .navbar {
   background: var(--tertiary);
@@ -126,6 +135,15 @@ h3 {
   background: var(--background);
   color: var(--foreground);
   @apply rounded-md p-6 shadow;
+}
+
+.border-providers {
+  border-color: var(--providers-border-color);
+  color: var(--providers-color);
+}
+
+.bg-tertiary {
+  background-color: var(--tertiary);
 }
 
 @layer utilities {
