@@ -30,7 +30,7 @@ export const LoginForm = ({ callbackUrl, providerMap, errorType, className, ...p
 
   return (
     <div className={cn("p-5", className)} {...props}>
-      <div className="items-center flex flex-col align-middle justify-center min-h-full">
+      <div className="flex min-h-full flex-col items-center justify-center align-middle">
         {Object.values(providerMap).map((provider) => (
           <form
             key={provider.id}
