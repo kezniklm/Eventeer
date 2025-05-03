@@ -14,7 +14,7 @@ const LoginPage = async (props: Promise<{ searchParams: { callbackUrl: string | 
 
   return (
     <div className="m-auto container flex flex-col text-center items-center w-full h-[80vh]">
-      <PageHeading>Sign in</PageHeading>
+      <PageHeading>Sign In to Your Account</PageHeading>
 
       <div className="flex flex-col md:flex-row-reverse text-center items-center justify-center md:w-[80vw] md:h-[40vw] w-[50vw] h-[100vw] lg:w-[50vw] lg:h-[25vw]">
         <div className="relative w-full md:w-1/2 h-full">
