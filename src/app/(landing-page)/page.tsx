@@ -9,15 +9,15 @@ export const metadata: Metadata = {
 };
 
 const HomePage = () => (
-  <div className="flex-grow flex flex-col items-center">
-    <section className="flex flex-col items-center text-center px-8 mt-4 max-w-4xl">
-      <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6 animate-fade-in-slow">
+  <div className="flex flex-grow flex-col items-center">
+    <section className="mt-4 flex max-w-4xl flex-col items-center px-8 text-center">
+      <h1 className="animate-fade-in-slow mb-6 text-5xl leading-tight font-bold md:text-6xl">
         Organize Life Together with <span className="text-primary">Eventeer</span>
       </h1>
-      <p className="text-lg md:text-xl text-muted-foreground mb-8 animate-fade-in-slow delay-200">
+      <p className="text-muted-foreground animate-fade-in-slow mb-8 text-lg delay-200 md:text-xl">
         Plan events, track tasks, manage expenses — all in shared rooms built for collaboration.
       </p>
-      <div className="flex gap-4 animate-fade-in-slow delay-400">
+      <div className="animate-fade-in-slow flex gap-4 delay-400">
         <Button asChild>
           <NavigationLink href="/register">Get Started</NavigationLink>
         </Button>
@@ -28,7 +28,7 @@ const HomePage = () => (
     </section>
 
     <section id="features" className="mt-16 w-full max-w-6xl px-6">
-      <h2 className="text-4xl font-bold mb-16 text-center animate-fade-in-slow">✨ Features</h2>
+      <h2 className="animate-fade-in-slow mb-16 text-center text-4xl font-bold">✨ Features</h2>
       <div className="grid gap-10 md:grid-cols-2">
         {features.map((feature, index) => (
           <FeatureComponent key={feature.title} feature={feature} index={index} />
@@ -36,9 +36,9 @@ const HomePage = () => (
       </div>
     </section>
 
-    <section className="mt-16 text-center px-6">
-      <h2 className="text-3xl md:text-4xl font-semibold mb-6 animate-fade-in-slow">Ready to create your first room?</h2>
-      <p className="text-lg text-muted-foreground mb-8 animate-fade-in-slow delay-200">
+    <section className="mt-16 px-6 text-center">
+      <h2 className="animate-fade-in-slow mb-6 text-3xl font-semibold md:text-4xl">Ready to create your first room?</h2>
+      <p className="text-muted-foreground animate-fade-in-slow mb-8 text-lg delay-200">
         Join Eventeer today and make group organization effortless.
       </p>
       <Button asChild>
@@ -56,13 +56,13 @@ type FeatureComponentProps = {
 const FeatureComponent = ({ feature, index }: FeatureComponentProps) => (
   <article
     key={feature.title}
-    className="card transition-transform transform hover:-translate-y-2 hover:shadow-lg animate-fade-in-slow"
+    className="card animate-fade-in-slow transform transition-transform hover:-translate-y-2 hover:shadow-lg"
     style={{ animationDelay: `calc(500ms + ${index * 200}ms)` }}
     aria-labelledby={`feature-title-${index}`}
     aria-describedby={`feature-desc-${index}`}
   >
-    <h3 className="text-2xl font-semibold mb-3">{feature.title}</h3>
-    <p className="text-base text-muted-foreground">{feature.description}</p>
+    <h3 className="mb-3 text-2xl font-semibold">{feature.title}</h3>
+    <p className="text-muted-foreground text-base">{feature.description}</p>
   </article>
 );
 

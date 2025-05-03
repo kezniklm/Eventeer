@@ -26,9 +26,9 @@ type RoomCardProps = {
 };
 
 export const RoomCard = ({ title, badges, handleLeave, handleAddUser, handleAccept, handleDecline }: RoomCardProps) => (
-  <Card className="bg-secondary transition duration-500 hover:shadow-lg hover:-translate-y-2 animate-fade-in-slow">
+  <Card className="bg-secondary animate-fade-in-slow transition duration-500 hover:-translate-y-2 hover:shadow-lg">
     <CardHeader>
-      <CardTitle className="text-3xl flex">
+      <CardTitle className="flex text-3xl">
         <span>{title}</span>
         <div className="ml-auto flex gap-2">
           {handleLeave && (
@@ -67,9 +67,9 @@ export const RoomCard = ({ title, badges, handleLeave, handleAddUser, handleAcce
         </div>
       </CardTitle>
     </CardHeader>
-    <CardContent className="flex-wrap flex gap-2">
+    <CardContent className="flex flex-wrap gap-2">
       {badges.map((badge, index) => (
-        <Badge key={index} className="text-sm bg-[#BDD1D2] px-3 py-2">
+        <Badge key={index} className="bg-[#BDD1D2] px-3 py-2 text-sm">
           {badge}
         </Badge>
       ))}
