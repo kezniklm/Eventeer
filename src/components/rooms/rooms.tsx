@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { getMemberRoomsForUser, getRoomUsersNames } from "@/repository/rooms";
 import { declineRoomInvitationAction, leaveRoomAction } from "@/server-actions/rooms";
 
-import { RoomCard } from "./RoomCard";
+import { RoomCard } from "./room-card";
 
 export const Rooms = async () => {
   const session = await auth();
