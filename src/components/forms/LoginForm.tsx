@@ -1,5 +1,5 @@
 import { providerMap, signIn } from "@/auth";
-import { GoogleIcon } from "@/components/providers/GoogleIcon";
+import { ProviderButton } from "@/components/providers/provider-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,18 +22,19 @@ export const LoginForm = () => (
         <Input type="password" id="password" placeholder="Password" />
       </div>
       <Button>Button</Button>
+      <h3>Or use provider</h3>
       {Object.values(providerMap).map((provider) => (
         <form
           key={provider.id}
+          className="text-center items-center container flex flex-col"
           action={async () => {
             "use server";
             await signIn(provider.id);
           }}
         >
-          <button type="submit">Sign in with {provider.name}</button>
+          <ProviderButton name={provider.name} />
         </form>
       ))}
-      <GoogleIcon />
     </div>
   </div>
 );
