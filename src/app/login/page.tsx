@@ -1,9 +1,9 @@
 import { type Metadata } from "next";
 import Image from "next/image";
-import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 import PreviewImage from "@/../public/preview.png";
-import { providerMap } from "@/auth";
+import { auth, providerMap } from "@/auth";
 import { LoginForm } from "@/components/forms/login-form";
 import { PageHeading } from "@/components/ui/page-heading";
 
@@ -13,8 +13,12 @@ export const metadata: Metadata = {
 };
 
 const LoginPage = async (props: { searchParams: Promise<{ callbackUrl?: string; error?: string }> }) => {
+  const session = await auth();
   const { callbackUrl, error } = await props.searchParams;
 
+  if (session?.user) {
+    return redirect("/profile");
+  }
   return (
     <div className="m-auto container flex flex-col text-center items-center w-full h-[80vh]">
       <PageHeading>Sign In to Your Account</PageHeading>
