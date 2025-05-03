@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 
-import { GoogleIcon } from "./GoogleIcon";
+import { GoogleIcon } from "./icons/GoogleIcon";
 
 const providerIconMapping: Record<string, ReactNode> = {
   Google: <GoogleIcon />
