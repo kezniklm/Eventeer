@@ -83,7 +83,10 @@ html {
   --sidebar-ring: oklch(0.708 0 0);
 
   --providers-border-color: oklch(0.57 0.0047 157.09);
+
   --providers-color: oklch(0.24 0 0);
+
+  --separator: oklch(0.51 0.0076 17.41);
 }
 
 /* Base styles */
@@ -144,6 +147,10 @@ h4 {
 
 .bg-tertiary {
   background-color: var(--tertiary);
+}
+
+.bg-separator {
+  background-color: var(--separator);
 }
 
 @layer utilities {
