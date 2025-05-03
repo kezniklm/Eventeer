@@ -9,7 +9,7 @@ type ProviderLinkButtonsProps = {
   providerMap: ProviderMap[];
 };
 
-export const ProviderLinkButtons = async ({ providersOfUser, providerMap }: ProviderLinkButtonsProps) => {
+export const ProviderLinkButtons = ({ providersOfUser, providerMap }: ProviderLinkButtonsProps) => {
   const isLinked = (provider: ProviderMap) => providersOfUser.includes(provider.id);
 
   return providerMap.map((provider) => (
