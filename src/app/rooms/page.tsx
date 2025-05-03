@@ -13,7 +13,7 @@ const RoomsPage = () => (
   <div className="space-y-6">
     <h1 className="text-center text-6xl">Rooms</h1>
     <Rooms />
-    <h1 className="text-center mb-6">Invitations</h1>
+    <h1 className="mb-6 text-center">Invitations</h1>
     <RoomInvitations />
   </div>
 );

@@ -38,7 +38,7 @@ const RootLayout = ({
 
   return (
     <html lang="en" className="h-full bg-gray-100">
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col">
         {isLoggedIn ? <PrivateLayout>{children}</PrivateLayout> : <PublicLayout>{children}</PublicLayout>}
       </body>
     </html>

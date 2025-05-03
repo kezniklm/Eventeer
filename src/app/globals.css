@@ -112,7 +112,7 @@ h3 {
 
 /* Inputs */
 .input {
-  @apply border rounded-md p-2 focus:outline-none focus:ring-2;
+  @apply rounded-md border p-2 focus:ring-2 focus:outline-none;
   background: var(--background);
   color: var(--foreground);
   border-color: var(--muted);
@@ -123,7 +123,7 @@ h3 {
 .modal {
   background: var(--background);
   color: var(--foreground);
-  @apply p-6 rounded-md shadow;
+  @apply rounded-md p-6 shadow;
 }
 
 @layer utilities {

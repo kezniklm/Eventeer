@@ -1,5 +1,5 @@
 export const Footer = () => (
-  <footer className="w-full mt-auto py-8 text-center text-sm text-muted-foreground">
+  <footer className="text-muted-foreground mt-auto w-full py-8 text-center text-sm">
     © {new Date().getFullYear()} Eventeer. All rights reserved.
   </footer>
 );
