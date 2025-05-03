@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
+import { getMemberRoomsForUser, getRoomUsersNames } from "@/repository/rooms";
 import { declineRoomInvitationAction, leaveRoomAction } from "@/server-actions/rooms";
-import { getMemberRoomsForUser, getRoomUsersNames } from "@/repository/room";
 
 import { RoomCard } from "./RoomCard";
 
