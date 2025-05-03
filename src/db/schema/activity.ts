@@ -45,6 +45,13 @@ export const taskRelations = relations(task, ({ many }) => ({
   subtasks: many(subtask)
 }));
 
+export const subtaskRelations = relations(subtask, ({ one }) => ({
+  task: one(task, {
+    fields: [subtask.id],
+    references: [task.id]
+  })
+}));
+
 export const event = sqliteTable("event", {
   id: integer().primaryKey(),
   date: integer({ mode: "timestamp" }),
@@ -67,8 +74,14 @@ export const settledUpRelations = relations(settleUp, ({ many }) => ({
 }));
 
 export const userSettledUpRelations = relations(userSettledUp, ({ one }) => ({
-  settle_up: one(settleUp),
-  user: one(users)
+  settle_up: one(settleUp, {
+    fields: [userSettledUp.fk_settle_up],
+    references: [settleUp.id]
+  }),
+  user: one(users, {
+    fields: [userSettledUp.fk_user],
+    references: [users.id]
+  })
 }));
 
 export const userHasActivity = sqliteTable("activity_has_user", {
@@ -77,13 +90,28 @@ export const userHasActivity = sqliteTable("activity_has_user", {
 });
 
 export const roomActivityRelations = relations(roomActivity, ({ one, many }) => ({
-  task: one(task),
-  settle_up: one(settleUp),
-  event: one(settleUp),
+  task: one(task, {
+    fields: [roomActivity.id],
+    references: [task.id]
+  }),
+  settle_up: one(settleUp, {
+    fields: [roomActivity.id],
+    references: [settleUp.id]
+  }),
+  event: one(event, {
+    fields: [roomActivity.id],
+    references: [event.id]
+  }),
   usersHasActivity: many(userHasActivity)
 }));
 
 export const userHasActivityRelations = relations(userHasActivity, ({ one }) => ({
-  room_activity: one(roomActivity),
-  user: one(users)
+  room_activity: one(roomActivity, {
+    fields: [userHasActivity.fk_activity_id],
+    references: [roomActivity.id]
+  }),
+  user: one(users, {
+    fields: [userHasActivity.fk_user_id],
+    references: [users.id]
+  })
 }));
