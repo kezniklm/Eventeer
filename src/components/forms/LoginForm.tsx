@@ -5,7 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PageHeading } from "@/components/ui/page-heading";
 
-export const LoginForm = () => (
+type LoginFormProps = {
+  callbackUrl?: string;
+};
+
+export const LoginForm = ({ callbackUrl }: LoginFormProps) => (
   <div className="m-auto container flex flex-grow items-center flex-col text-center">
     <PageHeading>Sign In</PageHeading>
     <div className="space-y-4 container m-auto w-100 p-5">
@@ -29,7 +33,9 @@ export const LoginForm = () => (
           className="text-center items-center container flex flex-col"
           action={async () => {
             "use server";
-            await signIn(provider.id);
+            await signIn(provider.id, {
+              redirectTo: callbackUrl ?? "/"
+            });
           }}
         >
           <ProviderButton name={provider.name} />
