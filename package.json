@@ -13,7 +13,6 @@
     "format:check": "prettier . --check"
   },
   "dependencies": {
-    "lucide-react": "^0.503.0",
     "@auth/core": "^0.39.0",
     "@auth/drizzle-adapter": "^1.9.0",
     "@libsql/client": "^0.15.4",
@@ -49,8 +48,9 @@
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-prettier": "^5.2.1",
     "globals": "^16.0.0",
-    "prettier": "^3.4.2",
+    "prettier": "^3.5.3",
     "prettier-plugin-sort-json": "^4.1.1",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4",
     "tsx": "^4.19.3",
     "tw-animate-css": "^1.2.8",
