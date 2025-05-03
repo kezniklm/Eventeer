@@ -13,7 +13,7 @@ export const room = sqliteTable("room", {
 });
 
 export const userHasRoom = sqliteTable("user_has_room", {
-  user_id: integer()
+  user_id: text("userId")
     .notNull()
     .references(() => users.id),
   room_id: integer()
