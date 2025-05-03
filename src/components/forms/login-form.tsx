@@ -4,7 +4,7 @@ import { useEffect, type HTMLAttributes } from "react";
 import { toast } from "sonner";
 
 import { type ProviderMap } from "@/auth";
-import { ProviderButton } from "@/components/auth/provider-button";
+import { ProviderLoginButton } from "@/components/auth/provider-login-button";
 import { cn } from "@/lib/utils";
 import { signInAction } from "@/server-actions";
 
@@ -39,7 +39,7 @@ export const LoginForm = ({ callbackUrl, providerMap, errorType, className, ...p
               await signInAction({ provider: provider.id, callbackUrl });
             }}
           >
-            <ProviderButton name={provider.name} />
+            <ProviderLoginButton name={provider.name} />
           </form>
         ))}
       </div>
