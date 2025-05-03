@@ -21,6 +21,9 @@ export const providerMap = providers
 
 export const { signIn, signOut, handlers, auth } = NextAuth({
   providers,
+  pages: {
+    signIn: "/login"
+  },
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
