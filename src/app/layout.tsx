@@ -1,6 +1,7 @@
 import "./globals.css";
 
 import { type Metadata } from "next";
+import { Toaster } from "sonner";
 
 import { auth } from "@/auth";
 import { PrivateLayout } from "@/components/layout/private-layout";
@@ -42,6 +43,7 @@ const RootLayout = async ({
     <html lang="en" className="h-full bg-gray-100">
       <body className="flex min-h-full flex-col">
         {isLoggedIn ? <PrivateLayout>{children}</PrivateLayout> : <PublicLayout>{children}</PublicLayout>}
+        <Toaster richColors />
       </body>
     </html>
   );
