@@ -2,6 +2,7 @@ import { type Metadata } from "next";
 
 import { NavigationLink } from "@/components/navigation-link";
 import { Button } from "@/components/ui/button";
+import { PageHeading } from "@/components/ui/page-heading";
 
 export const metadata: Metadata = {
   title: "Organize Life Together",
@@ -11,9 +12,10 @@ export const metadata: Metadata = {
 const HomePage = () => (
   <div className="flex flex-grow flex-col items-center">
     <section className="mt-4 flex max-w-4xl flex-col items-center px-8 text-center">
-      <h1 className="animate-fade-in-slow mb-6 text-5xl leading-tight font-bold md:text-6xl">
+      <PageHeading>
         Organize Life Together with <span className="text-primary">Eventeer</span>
-      </h1>
+      </PageHeading>
+
       <p className="text-muted-foreground animate-fade-in-slow mb-8 text-lg delay-200 md:text-xl">
         Plan events, track tasks, manage expenses — all in shared rooms built for collaboration.
       </p>
