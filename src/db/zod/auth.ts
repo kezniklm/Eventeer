@@ -1,5 +1,5 @@
 import { createSelectSchema } from "drizzle-zod";
-import type z from "zod";
+import { type z } from "zod";
 
 import { accounts, users } from "../schema/auth";
 
