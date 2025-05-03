@@ -1,12 +1,13 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import NextAuth from "next-auth";
 import { type Provider } from "next-auth/providers";
+import Discord from "next-auth/providers/discord";
 import Google from "next-auth/providers/google";
 
 import { db } from "./db";
 import { accounts, authenticators, sessions, users, verificationTokens } from "./db/schema/auth";
 
-const providers: Provider[] = [Google];
+const providers: Provider[] = [Google, Discord];
 
 const isUnprotectedPath = (path: string) => {
   const paths = ["/", "/login"];
@@ -14,7 +15,12 @@ const isUnprotectedPath = (path: string) => {
   return paths.includes(path);
 };
 
-export const providerMap = providers
+export type ProviderMap = {
+  id: string;
+  name: string;
+};
+
+export const providerMap: ProviderMap[] = providers
   .map((provider) => {
     if (typeof provider === "function") {
       const providerData = provider();

@@ -1,42 +1,48 @@
-import { type HTMLAttributes } from "react";
+"use client";
 
-import { providerMap, signIn } from "@/auth";
+import { useEffect, type HTMLAttributes } from "react";
+import { toast } from "sonner";
+
+import { type ProviderMap } from "@/auth";
 import { ProviderButton } from "@/components/auth/provider-button";
 import { cn } from "@/lib/utils";
+import { signInAction } from "@/server-actions";
+
+const errors: Record<string, string> = {
+  OAuthAccountNotLinked: "You email is already linked to another account!"
+};
 
 type LoginFormProps = {
   callbackUrl?: string;
+  providerMap: ProviderMap[];
+  errorType?: string;
 } & HTMLAttributes<HTMLDivElement>;
 
-export const LoginForm = ({ callbackUrl, className, ...props }: LoginFormProps) => (
-  <div className={cn("p-5", className)} {...props}>
-    {/* <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label htmlFor="email">Email</Label>
-      <Input type="email" id="email" placeholder="Email" />
+export const LoginForm = ({ callbackUrl, providerMap, errorType, className, ...props }: LoginFormProps) => {
+  useEffect(() => {
+    if (!errorType) {
+      return;
+    }
+
+    const error = errors[errorType] ?? "Unexpected error during log in";
+    setTimeout(() => toast.error(error));
+  }, [errorType]);
+
+  return (
+    <div className={cn("p-5", className)} {...props}>
+      <div className="items-center flex flex-col align-middle justify-center min-h-full">
+        {Object.values(providerMap).map((provider) => (
+          <form
+            key={provider.id}
+            onSubmit={async (e) => {
+              e.preventDefault();
+              await signInAction({ provider: provider.id, callbackUrl });
+            }}
+          >
+            <ProviderButton name={provider.name} />
+          </form>
+        ))}
+      </div>
     </div>
-    <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label htmlFor="nickname">Nickname</Label>
-      <Input type="nickname" id="nickname" placeholder="Nickname" />
-    </div>
-    <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label htmlFor="password">Password</Label>
-      <Input type="password" id="password" placeholder="Password" />
-    </div> */}
-    {/* <Button>Sign in</Button> */}
-    <div className="items-center flex flex-col align-middle justify-center min-h-full">
-      {Object.values(providerMap).map((provider) => (
-        <form
-          key={provider.id}
-          action={async () => {
-            "use server";
-            await signIn(provider.id, {
-              redirectTo: callbackUrl ?? "/"
-            });
-          }}
-        >
-          <ProviderButton name={provider.name} />
-        </form>
-      ))}
-    </div>
-  </div>
-);
+  );
+};
