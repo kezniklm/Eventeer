@@ -1,37 +1,40 @@
-"use client";
+import { auth } from "@/auth";
+import { declineRoomInvitationAction, leaveRoomAction } from "@/server-actions/rooms";
+import { getMemberRoomsForUser, getRoomUsersNames } from "@/repository/room";
 
 import { RoomCard } from "./RoomCard";
 
-export const Rooms = () => {
-  const handleLeave = (id: number) => {
-    console.log("leave", id);
+export const Rooms = async () => {
+  const session = await auth();
+
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    return;
+  }
+
+  const userMemberRooms = await getMemberRoomsForUser("1");
+
+  const handleLeave = async (roomId: number, userId: string) => {
+    await leaveRoomAction(roomId, userId);
   };
-  const handleAddUser = (id: number) => {
-    console.log("Add user", id);
+
+  const handleAddUser = async (roomId: number, userId: string) => {
+    await declineRoomInvitationAction(roomId, userId);
   };
+
   return (
     <div className="grid grid-cols-1 gap-6">
-      <RoomCard
-        id={3}
-        title="Rooms name"
-        badges={["Milan", "Lucia", "Anna", "David"]}
-        handleLeave={() => handleLeave(3)}
-        handleAddUser={() => handleAddUser(3)}
-      />
-      <RoomCard
-        id={4}
-        title="Rooms name"
-        badges={["Milan"]}
-        handleLeave={() => handleLeave(4)}
-        handleAddUser={() => handleAddUser(4)}
-      />
-      <RoomCard
-        id={5}
-        title="Rooms name"
-        badges={["Milan"]}
-        handleLeave={() => handleLeave(5)}
-        handleAddUser={() => handleAddUser(5)}
-      />
+      {userMemberRooms.map(async (room) => (
+        <RoomCard
+          id={room.id}
+          key={room.id}
+          title={room.name}
+          badges={await getRoomUsersNames(room.id)}
+          handleLeave={() => handleLeave(room.id, userId)}
+          handleAddUser={() => handleAddUser(room.id, userId)}
+        />
+      ))}
     </div>
   );
 };
