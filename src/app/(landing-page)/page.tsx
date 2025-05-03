@@ -44,7 +44,7 @@ const HomePage = () => (
         Join Eventeer today and make group organization effortless.
       </p>
       <Button asChild>
-        <NavigationLink href="/register">Create Your Room</NavigationLink>
+        <NavigationLink href="/login">Create Your Room</NavigationLink>
       </Button>
     </section>
   </div>

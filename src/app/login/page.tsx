@@ -1,6 +1,7 @@
 import { type Metadata } from "next";
 import Image from "next/image";
 
+import PreviewImage from "@/../public/preview.png";
 import { LoginForm } from "@/components/forms/login-form";
 import { PageHeading } from "@/components/ui/page-heading";
 
@@ -9,8 +10,8 @@ export const metadata: Metadata = {
   description: "Sign in to Eventeer and start organizing your events, tasks, and expenses with ease."
 };
 
-const LoginPage = async (props: Promise<{ searchParams: { callbackUrl: string | undefined } }>) => {
-  const callbackUrl = (await props).searchParams.callbackUrl;
+const LoginPage = async (props: { searchParams: Promise<{ callbackUrl: string | undefined }> }) => {
+  const callbackUrl = (await props.searchParams).callbackUrl;
 
   return (
     <div className="m-auto container flex flex-col text-center items-center w-full h-[80vh]">
@@ -19,7 +20,7 @@ const LoginPage = async (props: Promise<{ searchParams: { callbackUrl: string | 
       <div className="flex flex-col md:flex-row-reverse text-center items-center justify-center md:w-[80vw] md:h-[40vw] w-[50vw] h-[100vw] lg:w-[50vw] lg:h-[25vw]">
         <div className="relative w-full md:w-1/2 h-full">
           <Image
-            src="/preview.png"
+            src={PreviewImage}
             alt="Eventeer logo"
             fill
             className="rounded-t-2xl md:rounded-tl-none md:rounded-br-2xl object-fit"

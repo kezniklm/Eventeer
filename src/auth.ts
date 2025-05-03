@@ -8,6 +8,12 @@ import { accounts, authenticators, sessions, users, verificationTokens } from ".
 
 const providers: Provider[] = [Google];
 
+const isUnprotectedPath = (path: string) => {
+  const paths = ["/", "/login"];
+
+  return paths.includes(path);
+};
+
 export const providerMap = providers
   .map((provider) => {
     if (typeof provider === "function") {
@@ -30,5 +36,25 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
     sessionsTable: sessions,
     verificationTokensTable: verificationTokens,
     authenticatorsTable: authenticators
-  })
+  }),
+  callbacks: {
+    authorized: ({ auth, request: { nextUrl } }) => {
+      const isLoggedIn = !!auth?.user;
+
+      const isNotProtected = isUnprotectedPath(nextUrl.pathname);
+
+      if (isNotProtected) {
+        return true;
+      }
+
+      if (!isLoggedIn) {
+        const redirect = new URL("/login", nextUrl.origin);
+        redirect.searchParams.append("callbackUrl", nextUrl.href);
+
+        return Response.redirect(redirect);
+      }
+
+      return true;
+    }
+  }
 });
