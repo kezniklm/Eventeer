@@ -1,11 +1,8 @@
 import { type Metadata } from "next";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 
-import DefaultIcon from "@/../public/profile-icon.jpg";
 import { auth } from "@/auth";
 import { ProfileCard } from "@/components/profile/profile-card";
-import { Button } from "@/components/ui/button";
 import { findUserById } from "@/repository/user";
 
 export const metadata: Metadata = {
@@ -21,12 +18,11 @@ const ProfilePage = async () => {
   }
 
   const user = await findUserById(session.user.id ?? "");
-  const userImageSource = user.image ?? DefaultIcon;
 
   return (
     <div className="m-auto flex w-[80%] flex-row justify-center gap-10 text-center">
       <ProfileCard user={user} />
-      <div className="bg-secondary w-3/5"></div>
+      <div className="bg-secondary w-3/5" />
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { useEffect, type HTMLAttributes } from "react";
 import { toast } from "sonner";
 
 import { type ProviderMap } from "@/auth";
-import { ProviderLoginButton } from "@/components/auth/provider-login-button";
+import { ProviderLoginButton } from "@/components/auth/provider-button";
 import { cn } from "@/lib/utils";
 import { signInAction } from "@/server-actions";
 

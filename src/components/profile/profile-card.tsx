@@ -1,16 +1,20 @@
 import Image from "next/image";
 
 import DefaultIcon from "@/../public/profile-icon.jpg";
+import { providerMap } from "@/auth";
+import { ProviderLinkButtons } from "@/components/auth/provider-link-buttons";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { type UserSchema } from "@/db/zod/auth";
+import { findProviders } from "@/repository/user";
 
 type ProfileCardProps = {
   user: UserSchema;
 };
 
-export const ProfileCard = ({ user }: ProfileCardProps) => {
+export const ProfileCard = async ({ user }: ProfileCardProps) => {
   const userImageSource = user.image ?? DefaultIcon;
+  const providersOfUser = (await findProviders(user.id)).map((provider) => provider.provider);
 
   return (
     <Card className="bg-secondary min-w-2/5">
@@ -23,6 +27,7 @@ export const ProfileCard = ({ user }: ProfileCardProps) => {
         </CardTitle>
       </CardHeader>
       <Separator className="bg-separator m-auto w-[80%]" />
+      <ProviderLinkButtons providerMap={providerMap} providersOfUser={providersOfUser} />
     </Card>
   );
 };
