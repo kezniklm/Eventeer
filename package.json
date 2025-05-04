@@ -12,7 +12,7 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "drizzle:push": "drizzle-kit push",
-    "postinstall": "drizzle:push"
+    "postinstall": "npm run drizzle:push"
   },
   "dependencies": {
     "@auth/core": "^0.39.0",
