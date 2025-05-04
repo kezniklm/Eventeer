@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
 import { ProfileCard } from "@/components/profile/profile-card";
+import { ProfileDetails } from "@/components/profile/profile-details-card";
 import { findUserById } from "@/repository/user";
 
 export const metadata: Metadata = {
@@ -20,9 +21,9 @@ const ProfilePage = async () => {
   const user = await findUserById(session.user.id ?? "");
 
   return (
-    <div className="m-auto flex w-[80%] flex-row justify-center gap-10 text-center">
+    <div className="m-auto flex w-[60%] flex-row justify-center gap-10 text-center">
       <ProfileCard user={user} />
-      <div className="bg-secondary w-3/5" />
+      <ProfileDetails user={user} />
     </div>
   );
 };

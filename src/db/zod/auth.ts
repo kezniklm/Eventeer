@@ -8,3 +8,11 @@ export type UserSchema = z.infer<typeof userSelectSchema>;
 
 export const accountsSelectSchema = createSelectSchema(accounts);
 export type AccountSchema = z.infer<typeof accountsSelectSchema>;
+
+export const userProfileSchema = userSelectSchema.pick({
+  email: true,
+  name: true,
+  nickname: true,
+  description: true
+});
+export type UserProfileSchema = z.infer<typeof userProfileSchema>;

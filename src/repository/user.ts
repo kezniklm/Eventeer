@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { accounts, users } from "@/db/schema/auth";
-import { accountsSelectSchema, userSelectSchema } from "@/db/zod/auth";
+import { accountsSelectSchema, userProfileSchema, userSelectSchema, type UserProfileSchema } from "@/db/zod/auth";
 
 export const findUserById = async (id: string) => {
   const rows = await db.select().from(users).where(eq(users.id, id));
@@ -29,4 +29,14 @@ export const findProviders = async (userId: string) => {
   const arraySchema = accountsSelectSchema.pick({ provider: true }).array();
 
   return arraySchema.parse(rows);
+};
+
+export const updateProfile = async (data: Omit<UserProfileSchema, "email">, userID: string) => {
+  const rows = await db.update(users).set(data).where(eq(users.id, userID)).returning();
+
+  if (rows.length !== 1) {
+    throw new Error(`Failed to update profile for user ${userID}. No user found.`);
+  }
+
+  return userProfileSchema.parse(rows[0]);
 };
