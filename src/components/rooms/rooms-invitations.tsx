@@ -30,6 +30,7 @@ export const RoomInvitations = async () => {
           id={room.id}
           key={room.id}
           title={room.name}
+          linkName={room.name} //TODO
           badges={await getRoomUsersNames(room.id)}
           handleAccept={() => handleAcceptInvitation(room.id, userId)}
           handleDecline={() => handleDeclineInvitation(room.id, userId)}

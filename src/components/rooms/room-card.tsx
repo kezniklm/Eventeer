@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +20,7 @@ import { InviteUserForm } from "./user-invite";
 type RoomCardProps = {
   id: number;
   title: string;
+  linkName: string;
   badges: string[];
   handleLeave?: () => void;
   handleAddUser?: () => Promise<boolean>;
@@ -25,7 +28,15 @@ type RoomCardProps = {
   handleDecline?: () => void;
 };
 
-export const RoomCard = ({ title, badges, handleLeave, handleAddUser, handleAccept, handleDecline }: RoomCardProps) => (
+export const RoomCard = ({
+  title,
+  linkName,
+  badges,
+  handleLeave,
+  handleAddUser,
+  handleAccept,
+  handleDecline
+}: RoomCardProps) => (
   <Card className="bg-secondary animate-fade-in-slow transition duration-500 hover:-translate-y-2 hover:shadow-lg">
     <CardHeader>
       <CardTitle className="flex text-3xl">
@@ -62,6 +73,11 @@ export const RoomCard = ({ title, badges, handleLeave, handleAddUser, handleAcce
           {handleDecline && (
             <Button variant="destructive" size="sm" onClick={handleDecline}>
               Decline
+            </Button>
+          )}
+          {!handleAccept && !handleDecline && (
+            <Button asChild variant="secondary">
+              <Link href={`/rooms/${linkName}`}>Go to Room</Link>
             </Button>
           )}
         </div>

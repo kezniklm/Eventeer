@@ -42,6 +42,7 @@ export const Rooms = async () => {
           id={room.id}
           key={room.id}
           title={room.name}
+          linkName={room.name} //TODO
           badges={await getRoomUsersNames(room.id)}
           handleLeave={() => handleLeave(room.id, userId)}
           handleAddUser={() => handleAddUser(room.id, userId)}
