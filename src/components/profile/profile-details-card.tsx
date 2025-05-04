@@ -7,7 +7,7 @@ type ProfileCardProps = {
 };
 
 export const ProfileDetails = async ({ user }: ProfileCardProps) => (
-  <Card className="bg-secondary min-w-3/5 items-center text-center">
+  <Card className="bg-secondary w-full items-center text-center md:w-1/2 md:min-w-1/2">
     <CardHeader>
       <CardTitle className="flex grow flex-col items-center justify-center text-center align-middle" />
     </CardHeader>

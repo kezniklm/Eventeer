@@ -21,7 +21,7 @@ const ProfilePage = async () => {
   const user = await findUserById(session.user.id ?? "");
 
   return (
-    <div className="m-auto flex w-[60%] flex-row justify-center gap-10 text-center">
+    <div className="m-auto flex w-[100%] flex-col justify-center gap-10 text-center md:flex-row xl:w-[80%]">
       <ProfileCard user={user} />
       <ProfileDetails user={user} />
     </div>
