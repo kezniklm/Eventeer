@@ -4,6 +4,7 @@ import { type Metadata } from "next";
 
 import { PrivateLayout } from "@/components/layout/private-layout";
 import { PublicLayout } from "@/components/layout/public-layout";
+import { Providers } from "@/components/providers";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://eventeer-woad.vercel.app/"),
@@ -39,7 +40,9 @@ const RootLayout = ({
   return (
     <html lang="en" className="h-full bg-gray-100">
       <body className="flex min-h-full flex-col">
-        {isLoggedIn ? <PrivateLayout>{children}</PrivateLayout> : <PublicLayout>{children}</PublicLayout>}
+        <Providers>
+          {isLoggedIn ? <PrivateLayout>{children}</PrivateLayout> : <PublicLayout>{children}</PublicLayout>}
+        </Providers>
       </body>
     </html>
   );
