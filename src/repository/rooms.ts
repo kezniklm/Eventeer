@@ -36,6 +36,13 @@ export const getRoomUsersNames = async (roomId: number) => {
   return result.map((r) => r.name).filter((name): name is string => name !== null);
 };
 
+export const createUserHasRoom = async (roomId: number, userId: string) => {
+  await db.insert(userHasRoom).values({
+    user_id: userId,
+    room_id: roomId
+  });
+};
+
 export const deleteUserHasRoom = async (roomId: number, userId: string) => {
   await db.delete(userHasRoom).where(and(eq(userHasRoom.room_id, roomId), eq(userHasRoom.user_id, userId)));
 };
