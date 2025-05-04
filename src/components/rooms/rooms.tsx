@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { getMemberRoomsForUser, getRoomUsersNames } from "@/repository/rooms";
-import { declineRoomInvitationAction, leaveRoomAction } from "@/server-actions/rooms";
+import { inviteUserToRoomAction, leaveRoomAction } from "@/server-actions/rooms";
 
 import { RoomCard } from "./room-card";
 
@@ -27,10 +27,10 @@ export const Rooms = async () => {
 
   const handleAddUser = async (roomId: number, userId: string) => {
     try {
-      await declineRoomInvitationAction(roomId, userId);
+      await inviteUserToRoomAction(roomId, userId);
       return true;
     } catch (err) {
-      console.error("Failed to decline invitation", err);
+      console.error("Failed to add user to room", err);
       return false;
     }
   };
