@@ -17,7 +17,6 @@ jobs:
       AUTH_GOOGLE_ID: ${{ secrets.AUTH_GOOGLE_ID }}
       AUTH_GOOGLE_SECRET: ${{ secrets.AUTH_GOOGLE_SECRET }}
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-      # TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
       TURSO_DATABASE_URL: file:localdev.db
 
     strategy:
