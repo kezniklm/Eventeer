@@ -1,6 +1,6 @@
 import { ProfileForm } from "@/components/profile/profile-form";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { type UserSchema } from "@/db/zod/auth";
+import { type UserSchema } from "@/db/zod/user";
 
 type ProfileCardProps = {
   user: UserSchema;

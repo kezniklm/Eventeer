@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FormInput } from "@/components/ui/form-input";
 import { LoadingWheel } from "@/components/ui/loader";
-import { userProfileSchema, type UserProfileSchema, type UserSchema } from "@/db/zod/auth";
+import { userProfileSchema, type UserProfileSchema, type UserSchema } from "@/db/zod/user";
 import { useUpdateProfileMutation } from "@/hooks/mutations/user";
 
 type ProfileFormProps = {

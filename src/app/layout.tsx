@@ -1,7 +1,6 @@
 import "./globals.css";
 
 import { type Metadata } from "next";
-import { Toaster } from "sonner";
 
 import { auth } from "@/auth";
 import { PrivateLayout } from "@/components/layout/private-layout";

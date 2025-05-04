@@ -3,7 +3,7 @@ import { ProviderLinkButtons } from "@/components/auth/provider-link-buttons";
 import { ProfilePicture } from "@/components/profile/profile-picture";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { type UserSchema } from "@/db/zod/auth";
+import { type UserSchema } from "@/db/zod/user";
 import { findProviders } from "@/repository/user";
 
 type ProfileCardProps = {

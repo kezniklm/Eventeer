@@ -154,7 +154,7 @@ h4 {
 }
 
 .edit-icon {
-  color: var(--color-gray-500);
+  color: var(--color-white);
 }
 
 @layer utilities {

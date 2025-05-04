@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { accounts, users } from "@/db/schema/auth";
-import { accountsSelectSchema, userProfileSchema, userSelectSchema, type UserProfileSchema } from "@/db/zod/auth";
+import { accountsSelectSchema, userProfileSchema, userSelectSchema, type UserProfileSchema } from "@/db/zod/user";
 
 export const findUserById = async (id: string) => {
   const rows = await db.select().from(users).where(eq(users.id, id));

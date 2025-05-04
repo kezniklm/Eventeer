@@ -16,3 +16,6 @@ export const userProfileSchema = userSelectSchema.pick({
   description: true
 });
 export type UserProfileSchema = z.infer<typeof userProfileSchema>;
+
+export const PROFILE_PICTURE_MAX_SIZE = 5 * 1024 * 1024;
+export const profilePictureFileTypes = ["image/png", "image/jpg", "image/jpeg"];
