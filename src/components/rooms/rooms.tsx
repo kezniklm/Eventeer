@@ -13,7 +13,7 @@ export const Rooms = async () => {
     return;
   }
 
-  const userMemberRooms = await getMemberRoomsForUser("1");
+  const userMemberRooms = await getMemberRoomsForUser(userId);
 
   const handleLeave = async (roomId: number, userId: string) => {
     try {
