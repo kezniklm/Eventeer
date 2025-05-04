@@ -16,11 +16,23 @@ export const Rooms = async () => {
   const userMemberRooms = await getMemberRoomsForUser("1");
 
   const handleLeave = async (roomId: number, userId: string) => {
-    await leaveRoomAction(roomId, userId);
+    try {
+      await leaveRoomAction(roomId, userId);
+      return true;
+    } catch (err) {
+      console.error("Failed to leave room", err);
+      return false;
+    }
   };
 
   const handleAddUser = async (roomId: number, userId: string) => {
-    await declineRoomInvitationAction(roomId, userId);
+    try {
+      await declineRoomInvitationAction(roomId, userId);
+      return true;
+    } catch (err) {
+      console.error("Failed to decline invitation", err);
+      return false;
+    }
   };
 
   return (

@@ -1,5 +1,3 @@
-import { Plus } from "lucide-react";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,12 +13,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+import { InviteUserForm } from "./user-invite";
+
 type RoomCardProps = {
   id: number;
   title: string;
   badges: string[];
   handleLeave?: () => void;
-  handleAddUser?: () => void;
+  handleAddUser?: () => Promise<boolean>;
   handleAccept?: () => void;
   handleDecline?: () => void;
 };
@@ -67,17 +67,13 @@ export const RoomCard = ({ title, badges, handleLeave, handleAddUser, handleAcce
         </div>
       </CardTitle>
     </CardHeader>
-    <CardContent className="flex flex-wrap gap-2">
+    <CardContent className="flex flex-wrap items-center gap-2">
       {badges.map((badge, index) => (
         <Badge key={index} className="bg-[#BDD1D2] px-3 py-2 text-sm">
           {badge}
         </Badge>
       ))}
-      {handleAddUser && (
-        <Button className="bg-[#BDD1D2]">
-          <Plus /> Add user
-        </Button>
-      )}
+      {handleAddUser && <InviteUserForm onInvite={handleAddUser} />}
     </CardContent>
   </Card>
 );
