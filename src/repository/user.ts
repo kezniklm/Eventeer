@@ -40,3 +40,21 @@ export const updateProfile = async (data: Omit<UserProfileSchema, "email">, user
 
   return userProfileSchema.parse(rows[0]);
 };
+
+export const updateProfilePicture = async (url: string, userID: string) =>
+  db.transaction(async (tx) => {
+    const oldImageRows = await tx.select({ image: users.image }).from(users).where(eq(users.id, userID));
+    const rows = await tx.update(users).set({ image: url }).where(eq(users.id, userID));
+
+    if (rows.rowsAffected) {
+      tx.rollback();
+      throw new Error("Failed to update users's image");
+    }
+
+    if (oldImageRows.length !== 1) {
+      tx.rollback();
+      throw new Error("Failed to update user's image");
+    }
+
+    return oldImageRows[0].image;
+  });

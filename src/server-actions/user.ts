@@ -1,6 +1,9 @@
 "use server";
 
+// eslint-disable-next-line import/order
+import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
+import { del, put } from "@vercel/blob";
 
 import {
   PROFILE_PICTURE_MAX_SIZE,
@@ -8,12 +11,12 @@ import {
   userProfileSchema,
   type UserProfileSchema
 } from "@/db/zod/user";
-import { updateProfile } from "@/repository/user";
-import { userIdMatches } from "@/server-actions/utils";
+import { updateProfile, updateProfilePicture } from "@/repository/user";
+import { composeAvatarPath, getUserId } from "@/server-actions/utils";
 
-export const updateProfileAction = async (userForm: UserProfileSchema, userID: string) => {
+export const updateProfileAction = async (userForm: UserProfileSchema) => {
   const data = userProfileSchema.omit({ email: true }).parse(userForm);
-  await userIdMatches(userID);
+  const userID = await getUserId();
 
   revalidatePath("/profile");
   return updateProfile(data, userID);
@@ -34,6 +37,23 @@ export const updateProfilePictureAction = async (file?: File) => {
     throw new Error(`MIME type ${file.type} is not allowed!`);
   }
 
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  const randomID = randomUUID();
+  const blobPath = composeAvatarPath(randomID, file);
+  const { url } = await put(blobPath, file, { access: "public" });
+  const userID = await getUserId();
+
+  const oldPicturePath = await updateProfilePicture(url, userID);
+
+  if (oldPicturePath) removeOldPicture(oldPicturePath);
+
   revalidatePath("/profile");
+};
+
+const removeOldPicture = async (url: string) => {
+  // TODO
+  if (!url.startsWith("vercel")) {
+    return;
+  }
+
+  await del(url);
 };
