@@ -10,7 +10,9 @@
     "prettier": "prettier --check .",
     "lint:fix": "eslint \"src/**/*.+(ts|tsx)\" --fix",
     "format": "prettier . --write",
-    "format:check": "prettier . --check"
+    "format:check": "prettier . --check",
+    "drizzle:push": "drizzle-kit push",
+    "postinstall": "npm run drizzle:push"
   },
   "dependencies": {
     "@auth/core": "^0.39.0",
