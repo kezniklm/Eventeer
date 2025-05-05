@@ -19,7 +19,16 @@ export const ProfileCard = async ({ user }: ProfileCardProps) => {
         <CardTitle className="flex grow flex-col flex-wrap items-center justify-center text-center align-middle">
           <ProfilePicture user={user} />
           <h2 className="text-md m-5 mt-5 mb-0 break-all">{user.name}</h2>
-          <span className="text-md mt-3 text-gray-500 italic before:pr-1.5 before:content-['#']">{user.nickname}</span>
+          {user.nickname && (
+            <span className="text-md mt-3 text-gray-500 italic before:pr-1.5 before:content-['#']">
+              {user.nickname}
+            </span>
+          )}
+          {user.description && (
+            <span className="text-md mt-3 text-gray-500 italic before:pr-1 before:content-['„'] after:pl-1 after:content-['″']">
+              {user.description}
+            </span>
+          )}
         </CardTitle>
       </CardHeader>
       <Separator className="bg-separator m-auto w-[80%]" />
