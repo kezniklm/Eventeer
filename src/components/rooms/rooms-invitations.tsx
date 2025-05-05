@@ -5,7 +5,11 @@ import { RoomInvitationCardWrapper } from "./rooms-invitation-card-wrapper";
 
 export const UserRoomInvitations = async () => {
   const session = await auth();
-  const userId = session?.user?.id ?? "";
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    return null;
+  }
 
   const userInvitationRooms = await getInvitedRoomsForUser(userId);
 
