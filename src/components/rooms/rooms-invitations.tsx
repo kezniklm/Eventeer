@@ -1,41 +1,33 @@
 import { auth } from "@/auth";
 import { getInvitedRoomsForUser, getRoomUsersNames } from "@/repository/rooms";
-import { acceptRoomInvitationAction, declineRoomInvitationAction } from "@/server-actions/rooms";
 
-import { RoomCard } from "./room-card";
+import { RoomInvitationCardWrapper } from "./rooms-invitation-card-wrapper";
 
-export const RoomInvitations = async () => {
+export const UserRoomInvitations = async () => {
   const session = await auth();
-
-  const userId = session?.user?.id;
-
-  if (!userId) {
-    return;
-  }
+  const userId = session?.user?.id ?? "";
 
   const userInvitationRooms = await getInvitedRoomsForUser(userId);
 
-  const handleAcceptInvitation = async (roomId: number, userId: string) => {
-    await acceptRoomInvitationAction(roomId, userId);
-  };
+  if (userInvitationRooms.length === 0) {
+    return null;
+  }
 
-  const handleDeclineInvitation = async (roomId: number, userId: string) => {
-    await declineRoomInvitationAction(roomId, userId);
-  };
+  const roomsWithBadges = await Promise.all(
+    userInvitationRooms.map(async (room) => ({
+      room,
+      badges: (await getRoomUsersNames(room.id)).map((r) => r.name).filter((name): name is string => name !== null)
+    }))
+  );
 
   return (
-    <div className="grid grid-cols-1 gap-6">
-      {userInvitationRooms.map(async (room) => (
-        <RoomCard
-          id={room.id}
-          key={room.id}
-          title={room.name}
-          linkName={room.name} //TODO
-          badges={await getRoomUsersNames(room.id)}
-          handleAccept={() => handleAcceptInvitation(room.id, userId)}
-          handleDecline={() => handleDeclineInvitation(room.id, userId)}
-        />
-      ))}
+    <div className="space-y-6">
+      <h1 className="mb-6 text-center">Invitations</h1>
+      <div className="grid grid-cols-1 gap-6">
+        {roomsWithBadges.map(({ room, badges }) => (
+          <RoomInvitationCardWrapper key={room.id} room={room} userId={userId} badges={badges} />
+        ))}
+      </div>
     </div>
   );
 };

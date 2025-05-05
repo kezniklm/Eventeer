@@ -24,19 +24,36 @@ export const getInvitedRoomsForUser = async (userId: string) => {
   return result.map((r) => r.room);
 };
 
-export const getRoomUsersNames = async (roomId: number) => {
-  const result = await db
+export const getRoomUsersNames = async (roomId: number) =>
+  await db
     .select({
+      id: users.id,
       name: users.name
     })
     .from(users)
     .innerJoin(userHasRoom, eq(userHasRoom.user_id, users.id))
-    .where(eq(userHasRoom.room_id, roomId));
+    .where(and(eq(userHasRoom.room_id, roomId), eq(userHasRoom.invitation_state, true)));
 
-  return result.map((r) => r.name).filter((name): name is string => name !== null);
-};
+export const createUserHasRoom = async (roomId: number, userEmail: string) => {
+  const userResult = await db.select({ id: users.id }).from(users).where(eq(users.email, userEmail));
 
-export const createUserHasRoom = async (roomId: number, userId: string) => {
+  if (userResult.length === 0) {
+    throw new Error("User with the provided email does not exist.");
+  }
+
+  const userId = userResult[0].id;
+
+  const existingInvitation = await db
+    .select()
+    .from(userHasRoom)
+    .where(
+      and(eq(userHasRoom.room_id, roomId), eq(userHasRoom.user_id, userId), eq(userHasRoom.invitation_state, false))
+    );
+
+  if (existingInvitation.length > 0) {
+    throw new Error("User has already been invited to this room.");
+  }
+
   await db.insert(userHasRoom).values({
     user_id: userId,
     room_id: roomId

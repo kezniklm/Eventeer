@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 import {
@@ -14,6 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { type Result } from "@/result";
 
 import { InviteUserForm } from "./user-invite";
 
@@ -23,7 +26,7 @@ type RoomCardProps = {
   linkName: string;
   badges: string[];
   handleLeave?: () => void;
-  handleAddUser?: () => Promise<boolean>;
+  handleAddUser?: (email: string) => Promise<Result>;
   handleAccept?: () => void;
   handleDecline?: () => void;
 };

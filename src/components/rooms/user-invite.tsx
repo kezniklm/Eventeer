@@ -7,9 +7,10 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { type Result } from "@/result";
 
 type InviteUserFormProps = {
-  onInvite: (invite: string) => Promise<boolean>;
+  onInvite: (invite: string) => Promise<Result>;
 };
 
 type UserInviteFormData = {
@@ -23,15 +24,16 @@ export const InviteUserForm = ({ onInvite }: InviteUserFormProps) => {
     shouldFocusError: false
   });
 
-  const mutation = useMutation<boolean, Error, string>({
+  const mutation = useMutation<Result, Error, string>({
     mutationFn: onInvite,
     onSuccess: (result) => {
-      if (!result) {
-        toast.error("User does not exist");
-      } else {
-        reset();
-        toast.success("User invited successfully");
+      if (!result.success) {
+        toast.error(result.message);
+        return;
       }
+
+      reset();
+      toast.success(result.message);
     },
     onError: () => {
       toast.error("An unexpected error occurred");

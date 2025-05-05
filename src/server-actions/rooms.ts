@@ -19,7 +19,7 @@ export const declineRoomInvitationAction = async (roomId: number, userId: string
   revalidatePath("/rooms");
 };
 
-export const inviteUserToRoomAction = async (roomId: number, userId: string) => {
-  await createUserHasRoom(roomId, userId);
+export const inviteUserToRoomAction = async (roomId: number, email: string) => {
+  await createUserHasRoom(roomId, email);
   revalidatePath("/rooms");
 };
