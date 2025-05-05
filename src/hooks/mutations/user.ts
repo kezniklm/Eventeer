@@ -5,8 +5,8 @@ import { updateProfileAction, updateProfilePictureAction } from "@/server-action
 
 export const useUpdateProfileMutation = () =>
   useMutation({
-    mutationFn: async ({ data, userID }: { data: UserProfileSchema; userID: string }) => {
-      const updatedProfile = await updateProfileAction(data, userID);
+    mutationFn: async ({ data }: { data: UserProfileSchema }) => {
+      const updatedProfile = await updateProfileAction(data);
 
       return userProfileSchema.parse(updatedProfile);
     }

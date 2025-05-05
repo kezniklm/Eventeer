@@ -23,7 +23,7 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
 
   const onSubmit = async (data: UserProfileSchema) => {
     mutateAsync(
-      { data, userID: user.id },
+      { data },
       {
         onSuccess: () => {
           toast.success("Data successfully updated!");
