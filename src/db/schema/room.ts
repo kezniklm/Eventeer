@@ -5,7 +5,7 @@ import { users } from "./auth";
 
 export const room = sqliteTable("room", {
   id: integer().primaryKey(),
-  owner: integer()
+  owner: text()
     .notNull()
     .references(() => users.id),
   name: text().notNull(),
@@ -13,7 +13,7 @@ export const room = sqliteTable("room", {
 });
 
 export const userHasRoom = sqliteTable("user_has_room", {
-  user_id: text("userId")
+  user_id: text()
     .notNull()
     .references(() => users.id),
   room_id: integer()
