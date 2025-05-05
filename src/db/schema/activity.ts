@@ -65,7 +65,9 @@ export const settleUp = sqliteTable("settle_up", {
 });
 
 export const userSettledUp = sqliteTable("user_settled_up", {
-  fk_user: integer().references(() => users.id),
+  fk_user: text()
+    .notNull()
+    .references(() => users.id),
   fk_settle_up: integer().references(() => settleUp.id)
 });
 
@@ -85,7 +87,9 @@ export const userSettledUpRelations = relations(userSettledUp, ({ one }) => ({
 }));
 
 export const userHasActivity = sqliteTable("activity_has_user", {
-  fk_user_id: integer().references(() => users.id),
+  fk_user_id: text()
+    .notNull()
+    .references(() => users.id),
   fk_activity_id: integer().references(() => roomActivity.id)
 });
 
