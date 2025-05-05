@@ -42,7 +42,7 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
         className="flex w-full flex-col items-center justify-center gap-5 text-center"
       >
         <FormInput label="Email" type="text" name="email" disabled />
-        <FormInput label="Name" type="text" name="name" />
+        <FormInput label="Name" type="text" name="name" required />
         <FormInput label="Nickname" type="text" name="nickname" />
         <FormInput label="Description" type="text" name="description" />
         <Button type="submit" disabled={isPending || !form.formState.isValid}>
