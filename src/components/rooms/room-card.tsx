@@ -76,7 +76,7 @@ export const RoomCard = ({
             </Button>
           )}
           {!handleAccept && !handleDecline && (
-            <Button asChild variant="secondary">
+            <Button asChild variant="default" size="sm">
               <Link href={`/rooms/${linkName}`}>Go to Room</Link>
             </Button>
           )}
