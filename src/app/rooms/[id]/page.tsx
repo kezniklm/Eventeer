@@ -14,10 +14,13 @@ export const metadata: Metadata = {
   description: "View detailed information about your room."
 };
 
-type RoomDetailPageProps = { params: { id: string } };
+type RoomDetailPageProps = {
+  params: Promise<{ id: string }>;
+};
 
 const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
-  const { id } = params;
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
   const roomId = Number(id);
 
   const roomData = await db
