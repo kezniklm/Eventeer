@@ -2,8 +2,10 @@ import "./globals.css";
 
 import { type Metadata } from "next";
 
+import { auth } from "@/auth";
 import { PrivateLayout } from "@/components/layout/private-layout";
 import { PublicLayout } from "@/components/layout/public-layout";
+import { Providers } from "@/components/providers";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://eventeer-woad.vercel.app/"),
@@ -29,17 +31,20 @@ export const metadata: Metadata = {
   }
 };
 
-const RootLayout = ({
+const RootLayout = async ({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const isLoggedIn = false; //Session verification,...
+  const session = await auth();
+  const isLoggedIn = session?.user ? true : false; //Session verification,...
 
   return (
     <html lang="en" className="h-full bg-gray-100">
       <body className="flex min-h-full flex-col">
-        {isLoggedIn ? <PrivateLayout>{children}</PrivateLayout> : <PublicLayout>{children}</PublicLayout>}
+        <Providers>
+          {isLoggedIn ? <PrivateLayout>{children}</PrivateLayout> : <PublicLayout>{children}</PublicLayout>}
+        </Providers>
       </body>
     </html>
   );

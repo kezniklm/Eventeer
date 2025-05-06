@@ -5,10 +5,12 @@ export const users = sqliteTable("user", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  name: text("name"),
+  name: text("name", { length: 255 }),
   email: text("email").unique(),
   emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
-  image: text("image")
+  image: text("image"),
+  description: text("description", { length: 255 }).default(""),
+  nickname: text("nickname", { length: 50 }).default("")
 });
 
 export const accounts = sqliteTable(
