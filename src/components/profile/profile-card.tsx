@@ -24,11 +24,7 @@ export const ProfileCard = async ({ user }: ProfileCardProps) => {
               {user.nickname}
             </span>
           )}
-          {user.description && (
-            <span className="text-md mt-3 text-gray-500 italic before:pr-1 before:content-['„'] after:pl-1 after:content-['″']">
-              {user.description}
-            </span>
-          )}
+          {user.description && <span className="text-md mt-3 text-gray-500 italic">{user.description}</span>}
         </CardTitle>
       </CardHeader>
       <Separator className="bg-separator m-auto w-[80%]" />
