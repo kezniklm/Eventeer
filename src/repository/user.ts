@@ -42,7 +42,7 @@ export const updateProfile = async (data: Omit<UserProfileSchema, "email">, user
 };
 
 export const updateProfilePicture = async (url: string, userID: string) =>
-  db.transaction(async (tx) => {
+  await db.transaction(async (tx) => {
     const oldImageRows = await tx.select({ image: users.image }).from(users).where(eq(users.id, userID));
     const rows = await tx.update(users).set({ image: url }).where(eq(users.id, userID));
 
