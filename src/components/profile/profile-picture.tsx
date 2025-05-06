@@ -63,8 +63,9 @@ export const ProfilePicture = ({ user }: ProfilePictureProps) => {
         toast.success("Profile picture successfully updated!");
         form.reset();
       },
-      onError: () => {
-        toast.error("Failed to update profile picture.");
+      onError: (error) => {
+        toast.error(`Failed to update profile picture: ${error.message}`);
+        form.reset();
       }
     });
   };

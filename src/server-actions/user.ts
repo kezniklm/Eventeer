@@ -12,7 +12,7 @@ import {
   type UserProfileSchema
 } from "@/db/zod/user";
 import { updateProfile, updateProfilePicture } from "@/repository/user";
-import { composeAvatarPath, getUserId } from "@/server-actions/utils";
+import { composeAvatarPath, getUserId, removeBlob, uploadBlob } from "@/server-actions/utils";
 
 export const updateProfileAction = async (userForm: UserProfileSchema) => {
   const data = userProfileSchema.omit({ email: true }).parse(userForm);
@@ -23,7 +23,7 @@ export const updateProfileAction = async (userForm: UserProfileSchema) => {
 };
 
 export const updateProfilePictureAction = async (file?: File) => {
-  console.log(file);
+  const userID = await getUserId();
 
   if (!file) {
     return;
@@ -39,21 +39,12 @@ export const updateProfilePictureAction = async (file?: File) => {
 
   const randomID = randomUUID();
   const blobPath = composeAvatarPath(randomID, file);
-  const { url } = await put(blobPath, file, { access: "public" });
-  const userID = await getUserId();
+  const { url } = await uploadBlob(blobPath, file);
+  console.info(`Saved blob ${url} for user ${userID}`);
 
   const oldPicturePath = await updateProfilePicture(url, userID);
 
-  if (oldPicturePath) removeOldPicture(oldPicturePath);
+  if (oldPicturePath) removeBlob(oldPicturePath);
 
   revalidatePath("/profile");
-};
-
-const removeOldPicture = async (url: string) => {
-  // TODO
-  if (!url.startsWith("vercel")) {
-    return;
-  }
-
-  await del(url);
 };

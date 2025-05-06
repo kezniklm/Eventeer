@@ -46,7 +46,7 @@ export const updateProfilePicture = async (url: string, userID: string) =>
     const oldImageRows = await tx.select({ image: users.image }).from(users).where(eq(users.id, userID));
     const rows = await tx.update(users).set({ image: url }).where(eq(users.id, userID));
 
-    if (rows.rowsAffected) {
+    if (rows.rowsAffected !== 1) {
       tx.rollback();
       throw new Error("Failed to update users's image");
     }

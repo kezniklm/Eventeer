@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 
-import { userProfileSchema, type UserProfileSchema } from "@/db/zod/user";
+import { PROFILE_PICTURE_MAX_SIZE, userProfileSchema, type UserProfileSchema } from "@/db/zod/user";
 import { updateProfileAction, updateProfilePictureAction } from "@/server-actions/user";
 
 export const useUpdateProfileMutation = () =>
@@ -15,6 +15,10 @@ export const useUpdateProfileMutation = () =>
 export const useUpdateProfilePictureMutation = () =>
   useMutation({
     mutationFn: async (file: File) => {
+      if (file.size >= PROFILE_PICTURE_MAX_SIZE) {
+        throw new Error("Exceeded maximum file size (4 MB)!");
+      }
+
       await updateProfilePictureAction(file);
     }
   });

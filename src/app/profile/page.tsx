@@ -1,5 +1,6 @@
 import { type Metadata } from "next";
 import { redirect } from "next/navigation";
+import { head } from "@vercel/blob";
 
 import { auth } from "@/auth";
 import { ProfileCard } from "@/components/profile/profile-card";
