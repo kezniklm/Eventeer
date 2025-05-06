@@ -2,6 +2,7 @@ import { type Metadata } from "next";
 import { eq } from "drizzle-orm";
 
 import { EventCard } from "@/components/rooms/EventCard";
+import { RoomActions } from "@/components/rooms/RoomActions";
 import { SettleUpCard } from "@/components/rooms/SettleUpCard";
 import { TaskCard } from "@/components/rooms/TaskCard";
 import { db } from "@/db";
@@ -16,8 +17,7 @@ export const metadata: Metadata = {
 type RoomDetailPageProps = { params: { id: string } };
 
 const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
-  // Await the params Promise to get the actual parameters
-  const { id } = await params;
+  const { id } = params;
   const roomId = Number(id);
 
   const roomData = await db
@@ -48,8 +48,11 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   return (
     <div className="space-y-12 p-4">
-      <header className="space-y-2">
-        <h1 className="text-4xl font-bold">{roomData.name}</h1>
+      <header className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-4xl font-bold">{roomData.name}</h1>
+          <RoomActions roomId={roomId} />
+        </div>
         {roomData.description && <p className="text-muted-foreground">{roomData.description}</p>}
       </header>
 
