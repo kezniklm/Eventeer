@@ -2,6 +2,7 @@ import "./globals.css";
 
 import { type Metadata } from "next";
 
+import { auth } from "@/auth";
 import { PrivateLayout } from "@/components/layout/private-layout";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { Providers } from "@/components/providers";
@@ -30,12 +31,13 @@ export const metadata: Metadata = {
   }
 };
 
-const RootLayout = ({
+const RootLayout = async ({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const isLoggedIn = false; //Session verification,...
+  const session = await auth();
+  const isLoggedIn = session?.user ? true : false; //Session verification,...
 
   return (
     <html lang="en" className="h-full bg-gray-100">

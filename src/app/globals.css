@@ -2,6 +2,8 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
 
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
 @import "tailwindcss";
 
 @import "tw-animate-css";
@@ -79,6 +81,12 @@ html {
   --sidebar-border: oklch(0.922 0 0);
 
   --sidebar-ring: oklch(0.708 0 0);
+
+  --providers-border-color: oklch(0.57 0.0047 157.09);
+
+  --providers-color: oklch(0.24 0 0);
+
+  --separator: oklch(0.51 0.0076 17.41);
 }
 
 /* Base styles */
@@ -105,6 +113,12 @@ h3 {
   color: var(--foreground);
 }
 
+h4 {
+  font-size: 1.3rem; /* ~24px */
+  font-weight: medium;
+  color: var(--foreground);
+}
+
 /* Reusable utilities */
 .navbar {
   background: var(--tertiary);
@@ -124,6 +138,23 @@ h3 {
   background: var(--background);
   color: var(--foreground);
   @apply rounded-md p-6 shadow;
+}
+
+.border-providers {
+  border-color: var(--providers-border-color);
+  color: var(--providers-color);
+}
+
+.bg-tertiary {
+  background-color: var(--tertiary);
+}
+
+.bg-separator {
+  background-color: var(--separator);
+}
+
+.edit-icon {
+  color: var(--color-white);
 }
 
 @layer utilities {

@@ -18,12 +18,6 @@ export const PublicLayout = ({
           <span>Sign in</span>
         </NavigationLink>
       </Button>
-      <Button asChild variant="secondary">
-        <NavigationLink href="/register">
-          <User />
-          <span>Sign up</span>
-        </NavigationLink>
-      </Button>
     </Navigation>
 
     <main className="container mx-auto max-w-4/5 px-2 py-8">{children}</main>
