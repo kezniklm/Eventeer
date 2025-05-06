@@ -35,28 +35,30 @@ export const getRoomUsersNames = async (roomId: number) =>
     .where(and(eq(userHasRoom.room_id, roomId), eq(userHasRoom.invitation_state, true)));
 
 export const createUserHasRoom = async (roomId: number, userEmail: string) => {
-  const userResult = await db.select({ id: users.id }).from(users).where(eq(users.email, userEmail));
+  await db.transaction(async () => {
+    const userResult = await db.select({ id: users.id }).from(users).where(eq(users.email, userEmail));
 
-  if (userResult.length === 0) {
-    throw new Error("User with the provided email does not exist.");
-  }
+    if (userResult.length === 0) {
+      throw new Error("User with the provided email does not exist.");
+    }
 
-  const userId = userResult[0].id;
+    const userId = userResult[0].id;
 
-  const existingInvitation = await db
-    .select()
-    .from(userHasRoom)
-    .where(
-      and(eq(userHasRoom.room_id, roomId), eq(userHasRoom.user_id, userId), eq(userHasRoom.invitation_state, false))
-    );
+    const existingInvitation = await db
+      .select()
+      .from(userHasRoom)
+      .where(
+        and(eq(userHasRoom.room_id, roomId), eq(userHasRoom.user_id, userId), eq(userHasRoom.invitation_state, false))
+      );
 
-  if (existingInvitation.length > 0) {
-    throw new Error("User has already been invited to this room.");
-  }
+    if (existingInvitation.length > 0) {
+      throw new Error("User has already been invited to this room.");
+    }
 
-  await db.insert(userHasRoom).values({
-    user_id: userId,
-    room_id: roomId
+    await db.insert(userHasRoom).values({
+      user_id: userId,
+      room_id: roomId
+    });
   });
 };
 
