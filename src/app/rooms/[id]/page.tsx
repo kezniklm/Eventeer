@@ -19,8 +19,7 @@ type RoomDetailPageProps = {
 };
 
 const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
-  const resolvedParams = await params;
-  const { id } = resolvedParams;
+  const { id } = await params;
   const roomId = Number(id);
 
   const roomData = await db
