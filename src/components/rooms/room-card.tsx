@@ -1,4 +1,6 @@
-import { Plus } from "lucide-react";
+"use client";
+
+import Link from "next/link";
 
 import {
   AlertDialog,
@@ -14,18 +16,30 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { type Result } from "@/result";
+
+import { InviteUserForm } from "./user-invite";
 
 type RoomCardProps = {
   id: number;
   title: string;
+  linkName: string;
   badges: string[];
   handleLeave?: () => void;
-  handleAddUser?: () => void;
+  handleAddUser?: (email: string) => Promise<Result>;
   handleAccept?: () => void;
   handleDecline?: () => void;
 };
 
-export const RoomCard = ({ title, badges, handleLeave, handleAddUser, handleAccept, handleDecline }: RoomCardProps) => (
+export const RoomCard = ({
+  title,
+  linkName,
+  badges,
+  handleLeave,
+  handleAddUser,
+  handleAccept,
+  handleDecline
+}: RoomCardProps) => (
   <Card className="bg-secondary animate-fade-in-slow transition duration-500 hover:-translate-y-2 hover:shadow-lg">
     <CardHeader>
       <CardTitle className="flex text-3xl">
@@ -64,20 +78,21 @@ export const RoomCard = ({ title, badges, handleLeave, handleAddUser, handleAcce
               Decline
             </Button>
           )}
+          {!handleAccept && !handleDecline && (
+            <Button asChild variant="default" size="sm">
+              <Link href={`/rooms/${linkName}`}>Go to Room</Link>
+            </Button>
+          )}
         </div>
       </CardTitle>
     </CardHeader>
-    <CardContent className="flex flex-wrap gap-2">
+    <CardContent className="flex flex-wrap items-center gap-2">
       {badges.map((badge, index) => (
         <Badge key={index} className="bg-[#BDD1D2] px-3 py-2 text-sm">
           {badge}
         </Badge>
       ))}
-      {handleAddUser && (
-        <Button className="bg-[#BDD1D2]">
-          <Plus /> Add user
-        </Button>
-      )}
+      {handleAddUser && <InviteUserForm onInvite={handleAddUser} />}
     </CardContent>
   </Card>
 );
