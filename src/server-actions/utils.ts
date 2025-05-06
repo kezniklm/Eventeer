@@ -52,7 +52,7 @@ export const uploadBlob = async (blobPath: string, file: File) => {
 };
 
 const isBlobStorageConfigured = () => {
-  if (!process.env.BLOB_READ_WRITE_TOKEN || !process.env.VERCEL_OIDC_TOKEN) {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
     return false;
   }
 
