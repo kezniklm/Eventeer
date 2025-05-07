@@ -1,31 +1,31 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
 export const RoomActions = ({ roomId }: { roomId: number }) => {
-  const router = useRouter();
-
   const handleSettleUp = () => {
     console.log("Settle up in room", roomId);
-    // TODO
+    // TODO: implement settle up logic
   };
 
   const handleCreateEvent = () => {
-    console.log("CreateEvent in room", roomId);
-    // TODO
+    console.log("Create event in room", roomId);
+    // TODO: implement create event logic
   };
 
   const handleCreateTask = () => {
-    console.log("CreateTask in room", roomId);
-    // TODO
-  };
-
-  const handleLeave = async () => {
-    if (!confirm("Naozaj chceš opustiť túto miestnosť?")) return;
-    await fetch(`/api/rooms/${roomId}/leave`, { method: "POST" });
-    router.push("/rooms");
+    console.log("Create task in room", roomId);
+    // TODO: implement create task logic
   };
 
   return (
@@ -39,9 +39,25 @@ export const RoomActions = ({ roomId }: { roomId: number }) => {
       <Button variant="secondary" size="sm" onClick={handleCreateTask}>
         Create task
       </Button>
-      <Button variant="destructive" size="sm" onClick={handleLeave}>
-        Leave
-      </Button>
+
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="destructive" size="sm">
+            Leave room
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Leave</AlertDialogTitle>
+            <AlertDialogDescription>Are you sure you want to leave this room?</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction formAction={() => console.log("Leaving room", roomId)} type="submit">
+              Yes, leave
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

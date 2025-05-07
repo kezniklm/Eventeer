@@ -1,13 +1,13 @@
+import React from "react";
 import { type Metadata } from "next";
-import { eq } from "drizzle-orm";
+import { notFound } from "next/navigation";
 
 import { EventCard } from "@/components/rooms/EventCard";
 import { RoomActions } from "@/components/rooms/RoomActions";
 import { SettleUpCard } from "@/components/rooms/SettleUpCard";
 import { TaskCard } from "@/components/rooms/TaskCard";
-import { db } from "@/db";
-import { roomActivity } from "@/db/schema/activity";
-import { room } from "@/db/schema/room";
+import { getActivitiesByRoom } from "@/repository/activityRepository";
+import { getRoomById } from "@/repository/roomRepository";
 
 export const metadata: Metadata = {
   title: "Room Details",
@@ -22,31 +22,13 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   const { id } = await params;
   const roomId = Number(id);
 
-  const roomData = await db
-    .select({ name: room.name, description: room.description })
-    .from(room)
-    .where(eq(room.id, roomId))
-    .get();
+  const roomData = await getRoomById(roomId.toString());
 
   if (!roomData) {
-    return <p>Room not found.</p>;
+    notFound();
   }
 
-  const activities = await db
-    .select({
-      id: roomActivity.id,
-      name: roomActivity.name,
-      description: roomActivity.description,
-      taskId: roomActivity.fk_task,
-      eventId: roomActivity.fk_event,
-      settleUpId: roomActivity.fk_settle_up
-    })
-    .from(roomActivity)
-    .where(eq(roomActivity.fk_room, roomId));
-
-  const tasks = activities.filter((a) => a.taskId !== null);
-  const events = activities.filter((a) => a.eventId !== null);
-  const settleUps = activities.filter((a) => a.settleUpId !== null);
+  const { tasks, events, settleUps } = await getActivitiesByRoom(roomId.toString());
 
   return (
     <div className="space-y-12 p-4">
