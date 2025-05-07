@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,6 +15,8 @@ import {
 import { Button } from "@/components/ui/button";
 
 export const RoomActions = ({ roomId }: { roomId: number }) => {
+  const [open, setOpen] = useState(false);
+
   const handleSettleUp = () => {
     console.log("Settle up in room", roomId);
     // TODO: implement settle up logic
@@ -28,6 +32,12 @@ export const RoomActions = ({ roomId }: { roomId: number }) => {
     // TODO: implement create task logic
   };
 
+  const handleLeaveRoom = () => {
+    console.log("Leaving room", roomId);
+    setOpen(false); // Close the dialog after "Yes, leave"
+    // TODO: implement leave room logic
+  };
+
   return (
     <div className="flex flex-wrap gap-2">
       <Button variant="secondary" size="sm" onClick={handleSettleUp}>
@@ -40,7 +50,7 @@ export const RoomActions = ({ roomId }: { roomId: number }) => {
         Create task
       </Button>
 
-      <AlertDialog>
+      <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogTrigger asChild>
           <Button variant="destructive" size="sm">
             Leave room
@@ -52,7 +62,10 @@ export const RoomActions = ({ roomId }: { roomId: number }) => {
             <AlertDialogDescription>Are you sure you want to leave this room?</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction formAction={() => console.log("Leaving room", roomId)} type="submit">
+            <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
+              No, I want to stay
+            </Button>
+            <AlertDialogAction onClick={handleLeaveRoom} type="button">
               Yes, leave
             </AlertDialogAction>
           </AlertDialogFooter>
