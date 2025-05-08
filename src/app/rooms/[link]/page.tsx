@@ -2,12 +2,13 @@ import React from "react";
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { RoomDetailActions } from "@/components/rooms/room-detail-actions";
+import { RoomDetailActionsWrapper } from "@/components/rooms/room-detail-actions-wrapper";
 import { SettleUpCard } from "@/components/rooms/settleup-card";
 import { TaskCard } from "@/components/rooms/task-card";
 import { getActivitiesByRoom } from "@/repository/activity";
-import { getRoomByLink } from "@/repository/room";
+import { getRoomByLink, isUserInRoom } from "@/repository/room";
 import { EventCard } from "@/components/rooms/event-card";
+import { auth } from "@/auth";
 
 export const metadata: Metadata = {
   title: "Room Details",
@@ -20,12 +21,15 @@ type RoomDetailPageProps = {
 
 const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   const { link } = await params;
-
   const room = await getRoomByLink(link);
+  if (!room) notFound();
 
-  if (!room) {
-    notFound();
-  }
+  const session = await auth();
+  if (!session?.user?.id) notFound();
+  const userId = session.user.id;
+
+  const allowed = await isUserInRoom(room.id, userId);
+  if (!allowed) notFound();
 
   const { tasks, events, settleUps } = await getActivitiesByRoom(room.id);
 
@@ -34,7 +38,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       <header className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-4xl font-bold">{room.name}</h1>
-          <RoomDetailActions roomId={room.id} />
+          <RoomDetailActionsWrapper roomId={room.id} userId={userId} />
         </div>
         {room.description && <p className="text-muted-foreground">{room.description}</p>}
       </header>
