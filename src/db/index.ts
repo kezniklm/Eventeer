@@ -5,13 +5,11 @@ import {
   event,
   roomActivity,
   roomActivityRelations,
-  settledUpRelations,
   settleUp,
   subtask,
   subtaskRelations,
   task,
   taskRelations,
-  userHasActivity,
   userSettledUp,
   userSettledUpRelations
 } from "./schema/activity";
@@ -42,9 +40,7 @@ export const db = drizzle(client, {
     event,
     settleUp,
     userSettledUp,
-    settledUpRelations,
     userSettledUpRelations,
-    roomActivityRelations,
-    userHasActivity
+    roomActivityRelations
   }
 });
