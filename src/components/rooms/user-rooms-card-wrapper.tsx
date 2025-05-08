@@ -6,7 +6,7 @@ import { type Result } from "@/result";
 import { RoomCard } from "./room-card";
 
 type Props = {
-  room: { id: number; name: string };
+  room: { id: number; name: string; link: string };
   userId: string;
   badges: string[];
 };
@@ -35,7 +35,7 @@ export const RoomCardWrapper = ({ room, userId, badges }: Props) => {
     <RoomCard
       id={room.id}
       title={room.name}
-      linkName={room.name}
+      linkName={room.link}
       badges={badges}
       handleLeave={handleLeave}
       handleAddUser={handleAddUser}
