@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { roomActivity } from "@/db/schema/activity";
 
-export const getActivitiesByRoom = async (roomId: string) => {
+export const getActivitiesByRoom = async (roomId: number) => {
   const activities = await db
     .select({
       id: roomActivity.id,
@@ -14,7 +14,7 @@ export const getActivitiesByRoom = async (roomId: string) => {
       settleUpId: roomActivity.fk_settle_up
     })
     .from(roomActivity)
-    .where(eq(roomActivity.fk_room, Number(roomId)));
+    .where(eq(roomActivity.fk_room, roomId));
 
   return {
     tasks: activities.filter((a) => a.taskId !== null),
