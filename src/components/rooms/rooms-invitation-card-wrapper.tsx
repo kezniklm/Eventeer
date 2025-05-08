@@ -23,7 +23,6 @@ export const RoomInvitationCardWrapper = ({ room, userId, badges }: Props) => {
     <RoomCard
       id={room.id}
       title={room.name}
-      linkName={room.name}
       badges={badges}
       handleAccept={handleAccept}
       handleDecline={handleDecline}
