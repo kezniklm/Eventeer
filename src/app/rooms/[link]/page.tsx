@@ -2,12 +2,12 @@ import React from "react";
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { EventCard } from "@/components/rooms/EventCard";
-import { RoomActions } from "@/components/rooms/RoomActions";
-import { SettleUpCard } from "@/components/rooms/SettleUpCard";
-import { TaskCard } from "@/components/rooms/TaskCard";
-import { getActivitiesByRoom } from "@/repository/activityRepository";
-import { getRoomById } from "@/repository/roomRepository";
+import { RoomDetailActions } from "@/components/rooms/room-detail-actions";
+import { SettleUpCard } from "@/components/rooms/settleup-card";
+import { TaskCard } from "@/components/rooms/task-card";
+import { getActivitiesByRoom } from "@/repository/activity";
+import { getRoomByLink } from "@/repository/room";
+import { EventCard } from "@/components/rooms/event-card";
 
 export const metadata: Metadata = {
   title: "Room Details",
@@ -15,29 +15,28 @@ export const metadata: Metadata = {
 };
 
 type RoomDetailPageProps = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ link: string }>;
 };
 
 const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
-  const { id } = await params;
-  const roomId = Number(id);
+  const { link } = await params;
 
-  const roomData = await getRoomById(roomId.toString());
+  const room = await getRoomByLink(link);
 
-  if (!roomData) {
+  if (!room) {
     notFound();
   }
 
-  const { tasks, events, settleUps } = await getActivitiesByRoom(roomId.toString());
+  const { tasks, events, settleUps } = await getActivitiesByRoom(room.id);
 
   return (
     <div className="space-y-12 p-4">
       <header className="space-y-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-4xl font-bold">{roomData.name}</h1>
-          <RoomActions roomId={roomId} />
+          <h1 className="text-4xl font-bold">{room.name}</h1>
+          <RoomDetailActions roomId={room.id} />
         </div>
-        {roomData.description && <p className="text-muted-foreground">{roomData.description}</p>}
+        {room.description && <p className="text-muted-foreground">{room.description}</p>}
       </header>
 
       {tasks.length > 0 && (
