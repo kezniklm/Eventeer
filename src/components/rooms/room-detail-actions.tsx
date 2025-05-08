@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-export const RoomActions = ({ roomId }: { roomId: number }) => {
+export const RoomDetailActions = ({ roomId }: { roomId: number }) => {
   const [open, setOpen] = useState(false);
 
   const handleSettleUp = () => {
