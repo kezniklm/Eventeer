@@ -9,6 +9,7 @@ export const room = sqliteTable("room", {
     .notNull()
     .references(() => users.id),
   name: text().notNull(),
+  link: text().notNull().unique(),
   description: text().notNull()
 });
 
