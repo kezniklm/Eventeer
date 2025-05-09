@@ -4,7 +4,7 @@ import { check, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { users } from "./auth";
 import { room } from "./room";
 
-const periodEnum = ["DAILY, WEEKLY, MONTHLY, YEARLY"] as const;
+const periodEnum = ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"] as const;
 
 export const roomActivity = sqliteTable(
   "room_activity",
@@ -15,6 +15,7 @@ export const roomActivity = sqliteTable(
     fk_event: integer().references(() => event.id),
     fk_settle_up: integer().references(() => settleUp.id),
     name: text().notNull(),
+    created_by: integer().references(() => users.id),
     description: text()
   },
   (table) => [
@@ -32,13 +33,18 @@ export const task = sqliteTable("task", {
   id: integer().primaryKey(),
   priority: integer().default(0),
   repeatable_type: text({ enum: periodEnum }),
-  repeatable_value: integer()
+  repeatable_value: integer(),
+  due_date: integer({ mode: "timestamp" }),
+  created_by: integer().references(() => users.id)
 });
 
 export const subtask = sqliteTable("subtask", {
   id: integer().primaryKey(),
   fk_task: integer().references(() => task.id),
-  is_done: integer({ mode: "boolean" }).default(false)
+  is_done: integer({ mode: "boolean" }).default(false),
+  name: text()
+    .notNull()
+    .$default(() => "new subtask")
 });
 
 export const taskRelations = relations(task, ({ many }) => ({

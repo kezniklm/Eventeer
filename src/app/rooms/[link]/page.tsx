@@ -9,6 +9,8 @@ import { getActivitiesByRoom } from "@/repository/activity";
 import { getRoomByLink, isUserInRoom } from "@/repository/room";
 import { EventCard } from "@/components/rooms/event-card";
 import { auth } from "@/auth";
+import { getSubtasksByTask } from "@/repository/subtask";
+import { getRoomUsersNames } from "@/repository/rooms";
 
 export const metadata: Metadata = {
   title: "Room Details",
@@ -33,6 +35,26 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   const { tasks, events, settleUps } = await getActivitiesByRoom(room.id);
 
+  const tasksWithDetails = await Promise.all(
+    tasks.map(async (t) => {
+      const rawSubtasks = await getSubtasksByTask(t.id);
+      const subtasks: { id: number; name: string; is_done: boolean }[] = rawSubtasks.map((s, i) => ({
+        id: s.id,
+        is_done: Boolean(s.is_done),
+        name: s.name
+      }));
+      const users = await getRoomUsersNames(room.id); // Ensure users are fetched
+      const dueDate = t.dueDate ? new Date(t.dueDate).toISOString().slice(0, 10) : undefined;
+      return {
+        ...t,
+        subtasks,
+        users,
+        dueDate,
+        authorName: t.authorName ?? "Unknown"
+      };
+    })
+  );
+
   return (
     <div className="space-y-12 p-4">
       <header className="space-y-4">
@@ -43,12 +65,21 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         {room.description && <p className="text-muted-foreground">{room.description}</p>}
       </header>
 
-      {tasks.length > 0 && (
+      {tasksWithDetails.length > 0 && (
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Tasks</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {tasks.map((t) => (
-              <TaskCard key={t.id} name={t.name} description={t.description ?? undefined} />
+            {tasksWithDetails.map((t) => (
+              <TaskCard
+                key={t.id}
+                id={t.id}
+                name={t.name}
+                description={t.description ?? undefined}
+                subtasks={t.subtasks}
+                users={t.users.map((user) => user.name ?? "Unknown")}
+                date={t.dueDate}
+                author={t.authorName}
+              />
             ))}
           </div>
         </section>
