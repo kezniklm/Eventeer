@@ -19,6 +19,13 @@ type TaskCardProps = {
   author?: string;
 };
 
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("sk-SK", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric"
+  });
+
 export const TaskCard = ({ name, description, subtasks, users, date, author }: TaskCardProps) => {
   const [items, setItems] = useState(subtasks);
   const doneCount = items.filter((s) => s.is_done).length;
@@ -30,15 +37,15 @@ export const TaskCard = ({ name, description, subtasks, users, date, author }: T
   };
 
   return (
-    <Card className="bg-secondary space-y-4 p-4">
+    <Card className="bg-secondary animate-fade-in-slow space-y-4 p-4">
       <CardHeader className="flex items-start justify-between">
         <div>
           <CardTitle className="text-2xl">{name}</CardTitle>
           {description && <p className="text-muted-foreground text-sm">{description}</p>}
         </div>
-        <div className="text-muted-foreground text-xs">
-          {date && <div>{date}</div>}
-          <div className="mt-1 text-sm">Created by: {author ?? "Unknown"}</div>
+        <div className="text-muted-foreground text-right text-xs">
+          {date && <span className="mt-1">{formatDate(date)}</span>}
+          {author && <div className="mt-1">By: {author}</div>}
         </div>
       </CardHeader>
 

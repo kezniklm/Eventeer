@@ -55,6 +55,39 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
     })
   );
 
+  const eventsWithDetails = await Promise.all(
+    events.map(async (e) => {
+      const users = (await getRoomUsersNames(room.id)).map((u) => u.name!);
+      const date = e.eventDateTime ? new Date(e.eventDateTime).toLocaleDateString("sk-SK") : undefined;
+      return {
+        ...e,
+        users,
+        date,
+        author: e.authorName,
+        place: e.eventPlace
+      };
+    })
+  );
+
+  const settleUpsWithDetails = await Promise.all(
+    settleUps.map(async (s) => {
+      const users = (await getRoomUsersNames(room.id)).map((u) => u.name!);
+      const total = (s.settleMoney ?? 0).toString();
+      const transactions = users.map((u) => ({
+        user: u,
+        amount: `${Math.ceil((s.settleMoney ?? 0) / users.length / 10) * 10}`
+      }));
+      const date = s.settleDate ? new Date(s.settleDate).toLocaleDateString("sk-SK") : undefined;
+      return {
+        ...s,
+        transactions,
+        total,
+        date,
+        author: s.authorName
+      };
+    })
+  );
+
   return (
     <div className="space-y-12 p-4">
       <header className="space-y-4">
@@ -89,8 +122,16 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Events</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {events.map((e) => (
-              <EventCard key={e.id} name={e.name} description={e.description ?? undefined} />
+            {eventsWithDetails.map((e) => (
+              <EventCard
+                key={e.id}
+                name={e.name}
+                description={e.description ?? undefined}
+                date={e.date}
+                author={e.author ?? undefined}
+                users={e.users}
+                place={e.place ?? undefined}
+              />
             ))}
           </div>
         </section>
@@ -100,8 +141,16 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Settle Ups</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {settleUps.map((s) => (
-              <SettleUpCard key={s.id} name={s.name} description={s.description ?? undefined} />
+            {settleUpsWithDetails.map((s) => (
+              <SettleUpCard
+                key={s.id}
+                name={s.name}
+                description={s.description ?? undefined}
+                date={s.date}
+                author={s.author ?? undefined}
+                transactions={s.transactions}
+                total={s.total}
+              />
             ))}
           </div>
         </section>

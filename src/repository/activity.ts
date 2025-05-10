@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { roomActivity, task } from "@/db/schema/activity";
+import { roomActivity, settleUp, task, event } from "@/db/schema/activity";
 import { users } from "@/db/schema/auth";
 
 export const getActivitiesByRoom = async (roomId: number) => {
@@ -15,11 +15,17 @@ export const getActivitiesByRoom = async (roomId: number) => {
       createdById: roomActivity.created_by,
       authorName: users.name,
       eventId: roomActivity.fk_event,
-      settleUpId: roomActivity.fk_settle_up
+      settleUpId: roomActivity.fk_settle_up,
+      eventDateTime: event.dateTime,
+      eventPlace: event.place,
+      settleDate: settleUp.date,
+      settleMoney: settleUp.money
     })
     .from(roomActivity)
     .leftJoin(task, eq(task.id, roomActivity.fk_task))
     .leftJoin(users, eq(users.id, roomActivity.created_by))
+    .leftJoin(event, eq(event.id, roomActivity.fk_event))
+    .leftJoin(settleUp, eq(settleUp.id, roomActivity.fk_settle_up))
     .where(eq(roomActivity.fk_room, roomId));
 
   return {

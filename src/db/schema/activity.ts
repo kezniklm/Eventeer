@@ -59,15 +59,39 @@ export const subtaskRelations = relations(subtask, ({ one }) => ({
 }));
 
 export const event = sqliteTable("event", {
-  id: integer().primaryKey(),
-  date: integer({ mode: "timestamp" }),
-  repeatable_type: text({ enum: periodEnum }),
-  repeatable_value: integer()
+  id: integer("id").primaryKey(),
+  roomId: integer("room_id")
+    .references(() => room.id)
+    .notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  authorId: integer("author_id")
+    .references(() => users.id)
+    .notNull(),
+  dateTime: integer({ mode: "timestamp" }),
+  priority: integer("priority").notNull().default(0),
+  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
+  repeatableType: text("repeatable_type"),
+  repeatableValue: integer("repeatable_value"),
+  place: text("place"),
+  createdAt: integer({ mode: "timestamp" })
 });
 
 export const settleUp = sqliteTable("settle_up", {
-  id: integer().primaryKey(),
-  money: integer().notNull()
+  id: integer("id").primaryKey(),
+  roomId: integer("room_id")
+    .references(() => room.id)
+    .notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  authorId: integer("author_id")
+    .references(() => users.id)
+    .notNull(),
+  date: integer({ mode: "timestamp" }),
+  money: integer("money").notNull(), // v centoch
+  priority: integer("priority").notNull().default(0),
+  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
+  createdAt: integer({ mode: "timestamp" })
 });
 
 export const userSettledUp = sqliteTable("user_settled_up", {
