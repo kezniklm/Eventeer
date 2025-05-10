@@ -23,7 +23,7 @@ import { InviteUserForm } from "./user-invite";
 type RoomCardProps = {
   id: number;
   title: string;
-  linkName: string;
+  linkName?: string;
   badges: string[];
   handleLeave?: () => void;
   handleAddUser?: (email: string) => Promise<Result>;
@@ -78,7 +78,7 @@ export const RoomCard = ({
               Decline
             </Button>
           )}
-          {!handleAccept && !handleDecline && (
+          {!handleAccept && !handleDecline && linkName && (
             <Button asChild variant="default" size="sm">
               <Link href={`/rooms/${linkName}`}>Go to Room</Link>
             </Button>
