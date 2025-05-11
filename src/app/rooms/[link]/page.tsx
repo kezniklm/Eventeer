@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { RoomDetailActionsWrapper } from "@/components/rooms/room-detail-actions-wrapper";
 import { SettleUpCard } from "@/components/rooms/settleup-card";
 import { TaskCard } from "@/components/rooms/task-card";
-import { getActivitiesByRoom } from "@/repository/activity";
+import { getActivitiesByRoom, getActivityUsersNames } from "@/repository/activity";
 import { getRoomByLink, isUserInRoom } from "@/repository/room";
 import { EventCard } from "@/components/rooms/event-card";
 import { auth } from "@/auth";
@@ -43,7 +43,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         is_done: Boolean(s.is_done),
         name: s.name
       }));
-      const users = await getRoomUsersNames(room.id);
+      const users = (await getActivityUsersNames(t.id)).map((u) => u.name!);
       const dueDate = t.dueDate ? new Date(t.dueDate).toISOString().slice(0, 10) : undefined;
       return {
         ...t,
@@ -57,7 +57,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   const eventsWithDetails = await Promise.all(
     events.map(async (e) => {
-      const users = (await getRoomUsersNames(room.id)).map((u) => u.name!);
+      const users = (await getActivityUsersNames(e.id)).map((u) => u.name!);
       const date = e.eventDateTime ? new Date(e.eventDateTime).toLocaleDateString("sk-SK") : undefined;
       return {
         ...e,
@@ -71,7 +71,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   const settleUpsWithDetails = await Promise.all(
     settleUps.map(async (s) => {
-      const users = (await getRoomUsersNames(room.id)).map((u) => u.name!);
+      const users = (await getActivityUsersNames(s.id)).map((u) => u.name!);
       const total = (s.settleMoney ?? 0).toString();
       const transactions = users.map((u) => ({
         user: u,
@@ -111,7 +111,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 name={t.name}
                 description={t.description ?? undefined}
                 subtasks={t.subtasks}
-                users={t.users.map((user) => user.name ?? "Unknown")}
+                users={t.users}
                 date={t.dueDate}
                 author={t.authorName}
               />

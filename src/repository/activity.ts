@@ -1,8 +1,15 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { roomActivity, settleUp, task, event } from "@/db/schema/activity";
+import { roomActivity, settleUp, task, event, userHasActivity } from "@/db/schema/activity";
 import { users } from "@/db/schema/auth";
+
+export const getActivityUsersNames = async (activityId: number) =>
+  await db
+    .select({ id: users.id, name: users.name })
+    .from(users)
+    .innerJoin(userHasActivity, eq(userHasActivity.fk_user_id, users.id))
+    .where(eq(userHasActivity.fk_activity_id, activityId));
 
 export const getActivitiesByRoom = async (roomId: number) => {
   const activities = await db
