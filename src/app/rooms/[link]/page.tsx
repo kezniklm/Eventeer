@@ -61,7 +61,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   const visibleTasks = tasksWithDetails.filter((t) => t.isPublic || t.assignedUserIds.includes(userId));
   const eventsWithDetails = await Promise.all(
     events.map(async (e) => {
-      const isPublic = Boolean(e.taskIsPublic);
+      const isPublic = Boolean(e.eventIsPublic);
       const rawUsers = await getActivityUsersNames(e.id);
       const assignedUserIds = rawUsers.map((u) => u.id!);
       const users = rawUsers.map((u) => u.name!);
@@ -81,7 +81,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   const settleUpsWithDetails = await Promise.all(
     settleUps.map(async (s) => {
-      const isPublic = Boolean(s.taskIsPublic);
+      const isPublic = Boolean(s.settleUpIsPublic);
       const rawUsers = await getActivityUsersNames(s.id);
       const assignedUserIds = rawUsers.map((u) => u.id!);
       const users = rawUsers.map((u) => u.name!);
