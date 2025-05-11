@@ -5,6 +5,7 @@ import { users } from "./auth";
 import { room } from "./room";
 
 const periodEnum = ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"] as const;
+const priorityEnum = ["LOW", "NORMAL", "HIGH"] as const;
 
 export const roomActivity = sqliteTable(
   "room_activity",
@@ -31,7 +32,7 @@ export const roomActivity = sqliteTable(
 
 export const task = sqliteTable("task", {
   id: integer().primaryKey(),
-  priority: integer().default(0),
+  priority: text({ enum: priorityEnum }).default("NORMAL"),
   repeatable_type: text({ enum: periodEnum }),
   repeatable_value: integer(),
   due_date: integer({ mode: "timestamp" }),
@@ -69,7 +70,7 @@ export const event = sqliteTable("event", {
     .references(() => users.id)
     .notNull(),
   dateTime: integer({ mode: "timestamp" }),
-  priority: integer("priority").notNull().default(0),
+  priority: text("priority", { enum: priorityEnum }).default("NORMAL"),
   isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
   repeatableType: text("repeatable_type"),
   repeatableValue: integer("repeatable_value"),
@@ -89,7 +90,7 @@ export const settleUp = sqliteTable("settle_up", {
     .notNull(),
   date: integer({ mode: "timestamp" }),
   money: integer("money").notNull(), // v centoch
-  priority: integer("priority").notNull().default(0),
+  priority: text("priority", { enum: priorityEnum }).default("NORMAL"),
   isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
   createdAt: integer({ mode: "timestamp" })
 });
