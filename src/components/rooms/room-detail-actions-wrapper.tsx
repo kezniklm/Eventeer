@@ -17,7 +17,7 @@ export const RoomDetailActionsWrapper = ({ roomInfo, userId }: Props) => {
   const router = useRouter();
 
   const handleLeave = async () => {
-    await leaveRoomAction(roomInfo.id, userId);
+    await leaveRoomAction(roomInfo.room.id, userId);
     router.push("/rooms");
   };
 

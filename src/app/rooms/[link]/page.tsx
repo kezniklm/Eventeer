@@ -1,16 +1,15 @@
-import React from "react";
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { auth } from "@/auth";
+import { EventCard } from "@/components/rooms/event-card";
 import { RoomDetailActionsWrapper } from "@/components/rooms/room-detail-actions-wrapper";
 import { SettleUpCard } from "@/components/rooms/settleup-card";
 import { TaskCard } from "@/components/rooms/task-card";
 import { getActivitiesByRoom } from "@/repository/activity";
 import { getRoomByLink, isUserInRoom } from "@/repository/room";
-import { EventCard } from "@/components/rooms/event-card";
-import { auth } from "@/auth";
-import { getSubtasksByTask } from "@/repository/subtask";
 import { getRoomUsersNames } from "@/repository/rooms";
+import { getSubtasksByTask } from "@/repository/subtask";
 
 export const metadata: Metadata = {
   title: "Room Details",
@@ -34,6 +33,8 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   if (!allowed) notFound();
 
   const { tasks, events, settleUps } = await getActivitiesByRoom(room.id);
+
+  const usersInRoom = await getRoomUsersNames(room.id);
 
   const tasksWithDetails = await Promise.all(
     tasks.map(async (t) => {
@@ -93,7 +94,13 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       <header className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">{room.name}</h1>
-          <RoomDetailActionsWrapper roomInfo={room} userId={userId} />
+          <RoomDetailActionsWrapper
+            roomInfo={{
+              room,
+              users: usersInRoom
+            }}
+            userId={userId}
+          />
         </div>
         {room.description && (
           <p className="text-muted-foreground text-sm sm:text-base md:text-lg">{room.description}</p>
