@@ -2,22 +2,11 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { event } from "@/db/schema/activity";
-export type CreateEventInput = {
-  roomId: number;
-  name: string;
-  description?: string;
-  authorId: string;
-  dateTime: Date;
-  priority: number;
-  isPublic: boolean;
-  repeatableType?: string;
-  repeatableValue?: number;
-  place?: string;
-};
+import { type CreateEventSchema } from "@/db/zod/event";
 
 export const getEventsByRoom = async (roomId: number) => await db.select().from(event).where(eq(event.roomId, roomId));
 
-export const createEvent = async (data: CreateEventInput) => {
+export const createEvent = async (data: CreateEventSchema) => {
   const [inserted] = await db
     .insert(event)
     .values({
