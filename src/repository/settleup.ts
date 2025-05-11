@@ -2,22 +2,12 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { settleUp } from "@/db/schema/activity";
-
-export type CreateSettleUpInput = {
-  roomId: number;
-  name: string;
-  description?: string;
-  authorId: string;
-  date: Date;
-  money: number;
-  priority: number;
-  isPublic: boolean;
-};
+import { type SettleUpInsertSchema } from "@/db/zod/settle-up";
 
 export const getSettleUpsByRoom = async (roomId: number) =>
   await db.select().from(settleUp).where(eq(settleUp.roomId, roomId));
 
-export const createSettleUp = async (data: CreateSettleUpInput) => {
+export const createSettleUp = async (data: SettleUpInsertSchema) => {
   const [inserted] = await db
     .insert(settleUp)
     .values({

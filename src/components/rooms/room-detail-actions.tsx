@@ -14,25 +14,17 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
+import PopupForm from "../pop-up-form";
+
 import { ResponsiveActionButtons } from "./responsive-action-buttons";
 
 type Props = {
-  roomId: number;
   handleLeave: () => Promise<void>;
 };
 
-export const RoomDetailActions = ({ roomId, handleLeave }: Props) => {
+export const RoomDetailActions = ({ handleLeave }: Props) => {
   const [open, setOpen] = useState(false);
-
-  const handleSettleUp = () => {
-    console.log("Settle up in room", roomId);
-  };
-  const handleCreateEvent = () => {
-    console.log("Create event in room", roomId);
-  };
-  const handleCreateTask = () => {
-    console.log("Create task in room", roomId);
-  };
+  const [popupType, setPopupType] = useState<"task" | "event" | "settleup">("task");
 
   const onConfirmLeave = async () => {
     setOpen(false);
@@ -41,15 +33,21 @@ export const RoomDetailActions = ({ roomId, handleLeave }: Props) => {
 
   return (
     <ResponsiveActionButtons>
-      <Button variant="secondary" size="sm" onClick={handleSettleUp}>
-        Settle up
-      </Button>
-      <Button variant="secondary" size="sm" onClick={handleCreateEvent}>
-        Create event
-      </Button>
-      <Button variant="secondary" size="sm" onClick={handleCreateTask}>
-        Create task
-      </Button>
+      <PopupForm type={popupType} setType={setPopupType}>
+        <Button onClick={() => setPopupType("task")} size="sm">
+          Create task
+        </Button>
+      </PopupForm>
+      <PopupForm type={popupType} setType={setPopupType}>
+        <Button onClick={() => setPopupType("event")} size="sm">
+          Create event
+        </Button>
+      </PopupForm>
+      <PopupForm type={popupType} setType={setPopupType}>
+        <Button onClick={() => setPopupType("settleup")} size="sm">
+          Create Settle Up
+        </Button>
+      </PopupForm>
 
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogTrigger asChild>
