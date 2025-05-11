@@ -3,8 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -12,17 +12,27 @@ import { useRoomContext } from "@/context/room-context";
 import { priorityEnumSchema } from "@/db/zod/activity";
 import { settleUpFormSchema, type SettleUpForm } from "@/db/zod/settle-up";
 import { firstLetterUppercase } from "@/lib/utils";
+import { useCreateSettleUpMutation } from "@/hooks/mutations/settle-up";
 
+import { Button } from "../ui/button";
 import { FormInput } from "../ui/form-input";
+import { LoadingWheel } from "../ui/loader";
 
 export const CreateSettleUpForm = () => {
   const form = useForm<SettleUpForm>({
     resolver: zodResolver(settleUpFormSchema)
   });
   const roomInfo = useRoomContext();
+  const mutation = useCreateSettleUpMutation();
 
   const onSubmit = (data: SettleUpForm) => {
-    console.log(data);
+    mutation.mutate(
+      { roomId: roomInfo.room.id, data },
+      {
+        onSuccess: (data) => toast.success(`Settle Up ${data.name} created!`),
+        onError: (error) => toast.error(`Failed to create Settle Up: ${error.message}`)
+      }
+    );
   };
 
   useEffect(() => console.log(form.formState.errors), [form.formState.errors]);
@@ -38,21 +48,21 @@ export const CreateSettleUpForm = () => {
           <FormInput type="text" name="description" label="Description" placeholderAsLabel />
 
           {/* Amount */}
-          <FormInput type="number" name="amount" label="Amount" placeholderAsLabel />
+          <FormInput type="number" name="money" label="Amount" placeholderAsLabel />
 
-          {/* Users */}
-          {roomInfo.users.map((userItem) => (
-            <Controller
-              key={userItem.id}
-              control={form.control}
-              name="users"
-              defaultValue={[]}
-              render={({ field }) => (
-                <div className="grid w-full items-center gap-2">
-                  <Label>Users</Label>
+          <div className="grid w-full items-center gap-2">
+            <Label>Users</Label>
+            {roomInfo.users.map((userItem) => (
+              <Controller
+                key={userItem.id}
+                control={form.control}
+                name="users"
+                defaultValue={[]}
+                render={({ field }) => (
                   <div className="flex flex-wrap gap-4 px-2">
                     <div className="flex gap-2">
                       <Checkbox
+                        id={`checkbox-${userItem.id}`}
                         checked={field.value?.find((value) => value.id === userItem.id) ? true : false}
                         onCheckedChange={(checked) =>
                           checked
@@ -60,23 +70,29 @@ export const CreateSettleUpForm = () => {
                             : field.onChange(field.value?.filter((value) => value.id !== userItem.id))
                         }
                       />
-                      <Label className="text-xs text-gray-500">{userItem.name}</Label>
+                      <Label className="text-xs text-gray-500" htmlFor={`checkbox-${userItem.id}`}>
+                        {userItem.name}
+                      </Label>
                     </div>
                   </div>
-                </div>
-              )}
-            />
-          ))}
+                )}
+              />
+            ))}
+          </div>
 
           {/* Priority */}
           <Controller
             control={form.control}
             name="priority"
-            defaultValue="NORMAL"
+            defaultValue={priorityEnumSchema.enum.NORMAL}
             render={({ field }) => (
               <div className="grid w-full items-center gap-2">
                 <Label>Priority</Label>
-                <RadioGroup defaultValue="NORMAL" className="flex flex-wrap gap-4 px-2" onChange={field.onChange}>
+                <RadioGroup
+                  defaultValue={priorityEnumSchema.enum.NORMAL}
+                  className="flex flex-wrap gap-4 px-2"
+                  onChange={field.onChange}
+                >
                   {Object.values(priorityEnumSchema.enum).map((value) => (
                     <div key={value} className="flex gap-2">
                       <RadioGroupItem value={value} id={`priority-${value}`} />
@@ -122,8 +138,8 @@ export const CreateSettleUpForm = () => {
             )}
           />
 
-          <Button className="m-auto" type="submit">
-            Submit
+          <Button className="m-auto" type="submit" disabled={mutation.isPending}>
+            {mutation.isPending ? <LoadingWheel /> : "Submit"}
           </Button>
         </div>
       </form>

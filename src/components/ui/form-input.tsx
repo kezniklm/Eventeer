@@ -21,7 +21,7 @@ export const FormInput = ({ label, name, placeholderAsLabel = false, ...props }:
       <Label htmlFor={name}>{label}</Label>
       <Input
         {...props}
-        {...register(name)}
+        {...register(name, { valueAsNumber: props.type === "number" })}
         placeholder={placeholderAsLabel ? label : props.placeholder}
         className="bg-white"
       />

@@ -13,7 +13,8 @@ export const settleUpFormSchema = settleUpInsertSchema
     description: true,
     isPublic: true,
     priority: true,
-    name: true
+    name: true,
+    money: true
   })
   .extend({ users: z.array(userIdNamePair) });
 export type SettleUpForm = z.infer<typeof settleUpFormSchema>;
