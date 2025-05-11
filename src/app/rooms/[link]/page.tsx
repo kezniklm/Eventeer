@@ -43,39 +43,48 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         is_done: Boolean(s.is_done),
         name: s.name
       }));
-      const users = (await getActivityUsersNames(t.id)).map((u) => u.name!);
+      const rawUsers = await getActivityUsersNames(t.id);
+      const assignedUserIds = rawUsers.map((u) => u.id!);
+      const users = rawUsers.map((u) => u.name!);
       const dueDate = t.dueDate ? new Date(t.dueDate).toISOString().slice(0, 10) : undefined;
       return {
         ...t,
         subtasks,
         users,
+        assignedUserIds,
         dueDate,
         authorName: t.authorName ?? "Unknown",
         isPublic
       };
     })
   );
-
+  const visibleTasks = tasksWithDetails.filter((t) => t.isPublic || t.assignedUserIds.includes(userId));
   const eventsWithDetails = await Promise.all(
     events.map(async (e) => {
       const isPublic = Boolean(e.taskIsPublic);
-      const users = (await getActivityUsersNames(e.id)).map((u) => u.name!);
+      const rawUsers = await getActivityUsersNames(e.id);
+      const assignedUserIds = rawUsers.map((u) => u.id!);
+      const users = rawUsers.map((u) => u.name!);
       const date = e.eventDateTime ? new Date(e.eventDateTime).toLocaleDateString("sk-SK") : undefined;
       return {
         ...e,
         users,
         date,
         author: e.authorName,
+        assignedUserIds,
         place: e.eventPlace,
         isPublic
       };
     })
   );
+  const visibleEvents = eventsWithDetails.filter((e) => e.isPublic || e.assignedUserIds.includes(userId));
 
   const settleUpsWithDetails = await Promise.all(
     settleUps.map(async (s) => {
       const isPublic = Boolean(s.taskIsPublic);
-      const users = (await getActivityUsersNames(s.id)).map((u) => u.name!);
+      const rawUsers = await getActivityUsersNames(s.id);
+      const assignedUserIds = rawUsers.map((u) => u.id!);
+      const users = rawUsers.map((u) => u.name!);
       const total = (s.settleMoney ?? 0).toString();
       const transactions = users.map((u) => ({
         user: u,
@@ -87,11 +96,13 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         transactions,
         total,
         date,
+        assignedUserIds,
         author: s.authorName,
         isPublic
       };
     })
   );
+  const visibleSettleUps = settleUpsWithDetails.filter((s) => s.isPublic || s.assignedUserIds.includes(userId));
 
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:px-6 md:space-y-10 md:px-8 lg:space-y-12 lg:px-12">
@@ -109,7 +120,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Tasks</h2>
           <div className="flex flex-col space-y-4">
-            {tasksWithDetails.map((t) => (
+            {visibleTasks.map((t) => (
               <TaskCard
                 key={t.id}
                 id={t.id}
@@ -130,7 +141,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Events</h2>
           <div className="flex flex-col space-y-4">
-            {eventsWithDetails.map((e) => (
+            {visibleEvents.map((e) => (
               <EventCard
                 key={e.id}
                 name={e.name}
@@ -150,7 +161,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Settle Ups</h2>
           <div className="flex flex-col space-y-4">
-            {settleUpsWithDetails.map((s) => (
+            {visibleSettleUps.map((s) => (
               <SettleUpCard
                 key={s.id}
                 name={s.name}
