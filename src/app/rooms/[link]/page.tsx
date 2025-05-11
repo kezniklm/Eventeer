@@ -10,7 +10,6 @@ import { getRoomByLink, isUserInRoom } from "@/repository/room";
 import { EventCard } from "@/components/rooms/event-card";
 import { auth } from "@/auth";
 import { getSubtasksByTask } from "@/repository/subtask";
-import { getRoomUsersNames } from "@/repository/rooms";
 
 export const metadata: Metadata = {
   title: "Room Details",
