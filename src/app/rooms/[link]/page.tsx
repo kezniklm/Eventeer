@@ -24,14 +24,24 @@ type RoomDetailPageProps = {
 const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   const { link } = await params;
   const room = await getRoomByLink(link);
-  if (!room) notFound();
+
+  if (!room) {
+    notFound();
+  }
 
   const session = await auth();
-  if (!session?.user?.id) notFound();
+
+  if (!session?.user?.id) {
+    notFound();
+  }
+
   const userId = session.user.id;
 
   const allowed = await isUserInRoom(room.id, userId);
-  if (!allowed) notFound();
+
+  if (!allowed) {
+    notFound();
+  }
 
   const { tasks, events, settleUps } = await getActivitiesByRoom(room.id);
 
