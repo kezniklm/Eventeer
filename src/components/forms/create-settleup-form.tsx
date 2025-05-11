@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { type SettleUpForm } from "@/db/zod/event";
 import { useRoomContext } from "@/context/room-context";
+import { type SettleUpForm } from "@/db/zod/settle-up";
 
 import { FormInput } from "../ui/form-input";
 
