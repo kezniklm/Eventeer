@@ -15,9 +15,13 @@ export const CreateSettleUpForm = () => {
   const form = useForm<SettleUpForm>();
   const roomInfo = useRoomContext();
 
+  const onSubmit = (data: SettleUpForm) => {
+    console.log(data);
+  };
+
   return (
     <FormProvider {...form}>
-      <form>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col space-y-6">
           {/* Name */}
           <FormInput type="text" name="name" label="Name" placeholderAsLabel />
@@ -29,9 +33,9 @@ export const CreateSettleUpForm = () => {
           <FormInput type="number" name="amount" label="Amount" placeholderAsLabel />
 
           {/* Users */}
-          {roomInfo.users.map((userField) => (
+          {roomInfo.users.map((userItem) => (
             <Controller
-              key={userField.id}
+              key={userItem.id}
               control={form.control}
               name="users"
               render={({ field }) => (
@@ -39,10 +43,16 @@ export const CreateSettleUpForm = () => {
                   <Label>Users</Label>
                   <div className="flex flex-wrap gap-4 px-2">
                     <div className="flex gap-2">
-                      <Checkbox id="user1" checked={field.value.find((user) => user.id === userField.id)} />
-                      <Label className="text-xs text-gray-500" htmlFor="user1">
-                        User1
-                      </Label>
+                      <Checkbox
+                        aria-checked
+                        checked={field.value?.find((value) => value.id === userItem.id) ? true : false}
+                        onCheckedChange={(checked) =>
+                          checked
+                            ? field.onChange([...(field.value ?? []), userItem])
+                            : field.onChange(field.value?.filter((value) => value.id !== userItem.id))
+                        }
+                      />
+                      <Label className="text-xs text-gray-500">{userItem.name}</Label>
                     </div>
                   </div>
                 </div>
@@ -88,7 +98,9 @@ export const CreateSettleUpForm = () => {
             </RadioGroup>
           </div>
 
-          <Button className="m-auto">Submit</Button>
+          <Button className="m-auto" type="submit">
+            Submit
+          </Button>
         </div>
       </form>
     </FormProvider>
