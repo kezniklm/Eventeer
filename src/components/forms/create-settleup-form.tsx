@@ -61,23 +61,29 @@ export const CreateSettleUpForm = () => {
           ))}
 
           {/* Priority */}
-          <div className="grid w-full items-center gap-2">
-            <Label>Priority</Label>
-            <RadioGroup defaultValue="low" className="flex flex-wrap gap-4 px-2">
-              <div className="flex gap-2">
-                <RadioGroupItem value="high" id="high" />
-                <Label htmlFor="high" className="text-xs text-gray-500">
-                  High
-                </Label>
+          <Controller
+            control={form.control}
+            name="priority"
+            render={({ field }) => (
+              <div className="grid w-full items-center gap-2">
+                <Label>Priority</Label>
+                <RadioGroup defaultValue="low" className="flex flex-wrap gap-4 px-2" onChange={field.onChange}>
+                  <div className="flex gap-2">
+                    <RadioGroupItem value="high" id="high" />
+                    <Label htmlFor="high" className="text-xs text-gray-500">
+                      High
+                    </Label>
+                  </div>
+                  <div className="flex gap-2">
+                    <RadioGroupItem value="low" id="low" />
+                    <Label htmlFor="low" className="text-xs text-gray-500">
+                      Low
+                    </Label>
+                  </div>
+                </RadioGroup>
               </div>
-              <div className="flex gap-2">
-                <RadioGroupItem value="low" id="low" />
-                <Label htmlFor="low" className="text-xs text-gray-500">
-                  Low
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
+            )}
+          />
 
           {/* Status */}
           <div className="grid w-full items-center gap-2">
