@@ -15,7 +15,7 @@ export const roomActivity = sqliteTable(
     fk_event: integer().references(() => event.id),
     fk_settle_up: integer().references(() => settleUp.id),
     name: text().notNull(),
-    created_by: integer().references(() => users.id),
+    created_by: text().references(() => users.id),
     description: text()
   },
   (table) => [
@@ -35,7 +35,7 @@ export const task = sqliteTable("task", {
   repeatable_type: text({ enum: periodEnum }),
   repeatable_value: integer(),
   due_date: integer({ mode: "timestamp" }),
-  created_by: integer().references(() => users.id)
+  created_by: text().references(() => users.id)
 });
 
 export const subtask = sqliteTable("subtask", {
@@ -65,7 +65,7 @@ export const event = sqliteTable("event", {
     .notNull(),
   name: text("name").notNull(),
   description: text("description"),
-  authorId: integer("author_id")
+  authorId: text("author_id")
     .references(() => users.id)
     .notNull(),
   dateTime: integer({ mode: "timestamp" }),
@@ -84,7 +84,7 @@ export const settleUp = sqliteTable("settle_up", {
     .notNull(),
   name: text("name").notNull(),
   description: text("description"),
-  authorId: integer("author_id")
+  authorId: text("author_id")
     .references(() => users.id)
     .notNull(),
   date: integer({ mode: "timestamp" }),
