@@ -36,6 +36,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   const tasksWithDetails = await Promise.all(
     tasks.map(async (t) => {
+      const isPublic = Boolean(t.taskIsPublic);
       const rawSubtasks = await getSubtasksByTask(t.id);
       const subtasks: { id: number; name: string; is_done: boolean }[] = rawSubtasks.map((s) => ({
         id: s.id,
@@ -49,13 +50,15 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         subtasks,
         users,
         dueDate,
-        authorName: t.authorName ?? "Unknown"
+        authorName: t.authorName ?? "Unknown",
+        isPublic
       };
     })
   );
 
   const eventsWithDetails = await Promise.all(
     events.map(async (e) => {
+      const isPublic = Boolean(e.taskIsPublic);
       const users = (await getActivityUsersNames(e.id)).map((u) => u.name!);
       const date = e.eventDateTime ? new Date(e.eventDateTime).toLocaleDateString("sk-SK") : undefined;
       return {
@@ -63,13 +66,15 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         users,
         date,
         author: e.authorName,
-        place: e.eventPlace
+        place: e.eventPlace,
+        isPublic
       };
     })
   );
 
   const settleUpsWithDetails = await Promise.all(
     settleUps.map(async (s) => {
+      const isPublic = Boolean(s.taskIsPublic);
       const users = (await getActivityUsersNames(s.id)).map((u) => u.name!);
       const total = (s.settleMoney ?? 0).toString();
       const transactions = users.map((u) => ({
@@ -82,7 +87,8 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         transactions,
         total,
         date,
-        author: s.authorName
+        author: s.authorName,
+        isPublic
       };
     })
   );
@@ -113,6 +119,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 users={t.users}
                 date={t.dueDate}
                 author={t.authorName}
+                isPublic={t.isPublic}
               />
             ))}
           </div>
@@ -132,6 +139,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 author={e.author ?? undefined}
                 users={e.users}
                 place={e.place ?? undefined}
+                isPublic={e.isPublic}
               />
             ))}
           </div>
@@ -151,6 +159,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 author={s.author ?? undefined}
                 transactions={s.transactions}
                 total={s.total}
+                isPublic={s.isPublic}
               />
             ))}
           </div>

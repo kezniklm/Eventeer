@@ -16,7 +16,8 @@ export const roomActivity = sqliteTable(
     fk_settle_up: integer().references(() => settleUp.id),
     name: text().notNull(),
     created_by: text().references(() => users.id),
-    description: text()
+    description: text(),
+    isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false)
   },
   (table) => [
     check(
@@ -31,11 +32,17 @@ export const roomActivity = sqliteTable(
 
 export const task = sqliteTable("task", {
   id: integer().primaryKey(),
+  roomId: integer("room_id")
+    .references(() => room.id)
+    .notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
   priority: integer().default(0),
   repeatable_type: text({ enum: periodEnum }),
   repeatable_value: integer(),
   due_date: integer({ mode: "timestamp" }),
-  created_by: text().references(() => users.id)
+  authorId: text().references(() => users.id),
+  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false)
 });
 
 export const subtask = sqliteTable("subtask", {

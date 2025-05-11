@@ -12,6 +12,7 @@ type Subtask = { id: number; name: string; is_done: boolean };
 type TaskCardProps = {
   id: number;
   name: string;
+  isPublic: boolean;
   description?: string;
   subtasks: Subtask[];
   users: string[];
@@ -26,7 +27,7 @@ const formatDate = (iso: string) =>
     year: "numeric"
   });
 
-export const TaskCard = ({ name, description, subtasks, users, date, author }: TaskCardProps) => {
+export const TaskCard = ({ name, description, subtasks, users, date, author, isPublic }: TaskCardProps) => {
   const [items, setItems] = useState(subtasks);
   const doneCount = items.filter((s) => s.is_done).length;
   const progress = items.length ? Math.round((doneCount / items.length) * 100) : 0;
@@ -42,6 +43,11 @@ export const TaskCard = ({ name, description, subtasks, users, date, author }: T
         <div>
           <CardTitle className="text-2xl">{name}</CardTitle>
           {description && <p className="text-muted-foreground text-sm">{description}</p>}
+          <span
+            className={`inline-block rounded-full px-2 py-0.5 text-xs ${isPublic ? "bg-green-100 text-green-800" : "bg-gray-200 text-red-600"}`}
+          >
+            {isPublic ? "Public" : "Private"}
+          </span>
         </div>
         <div className="text-muted-foreground text-right text-xs">
           {date && <span className="mt-1">{formatDate(date)}</span>}

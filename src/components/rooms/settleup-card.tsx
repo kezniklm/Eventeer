@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 
 type SettleUpCardProps = {
   name: string;
+  isPublic: boolean;
   description?: string;
   date?: string;
   author?: string;
@@ -10,12 +11,25 @@ type SettleUpCardProps = {
   total?: string;
 };
 
-export const SettleUpCard = ({ name, description, date, author, transactions = [], total }: SettleUpCardProps) => (
+export const SettleUpCard = ({
+  name,
+  isPublic,
+  description,
+  date,
+  author,
+  transactions = [],
+  total
+}: SettleUpCardProps) => (
   <Card className="bg-secondary animate-fade-in-slow space-y-4 p-4">
     <CardHeader className="flex items-start justify-between">
       <div>
         <CardTitle className="text-2xl">{name}</CardTitle>
         {description && <p className="text-muted-foreground text-sm">{description}</p>}
+        <span
+          className={`inline-block rounded-full px-2 py-0.5 text-xs ${isPublic ? "bg-green-100 text-green-800" : "bg-gray-200 text-red-600"}`}
+        >
+          {isPublic ? "Public" : "Private"}
+        </span>
       </div>
       <div className="text-muted-foreground text-right text-xs">
         {date && <div>{date}</div>}

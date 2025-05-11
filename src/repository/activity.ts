@@ -16,6 +16,9 @@ export const getActivitiesByRoom = async (roomId: number) => {
     .select({
       id: roomActivity.id,
       name: roomActivity.name,
+      taskIsPublic: task.isPublic,
+      eventIsPublic: event.isPublic,
+      settleUpIsPublic: settleUp.isPublic,
       description: roomActivity.description,
       taskId: roomActivity.fk_task,
       dueDate: task.due_date,
