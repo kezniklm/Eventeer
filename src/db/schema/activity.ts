@@ -4,7 +4,7 @@ import { check, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { users } from "./auth";
 import { room } from "./room";
 
-const periodEnum = ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"] as const;
+export const periodEnum = ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"] as const;
 
 export const roomActivity = sqliteTable(
   "room_activity",
@@ -18,7 +18,11 @@ export const roomActivity = sqliteTable(
     description: text(),
     isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
     priority: integer("priority").notNull().default(0),
-    created_by: text().references(() => users.id)
+    created_by: text().references(() => users.id),
+    repeatable_type: text("repeatable_type", { enum: periodEnum }),
+    repeatable_value: integer("repeatable_value"),
+    timestamp: integer({ mode: "timestamp" }),
+    createdAt: integer({ mode: "timestamp" })
   },
   (table) => [
     check(
@@ -35,10 +39,7 @@ export const task = sqliteTable("task", {
   id: integer().primaryKey(),
   roomId: integer("room_id")
     .references(() => room.id)
-    .notNull(),
-  due_date: integer({ mode: "timestamp" }),
-  repeatable_type: text({ enum: periodEnum }),
-  repeatable_value: integer()
+    .notNull()
 });
 
 export const subtask = sqliteTable("subtask", {
@@ -66,11 +67,7 @@ export const event = sqliteTable("event", {
   roomId: integer("room_id")
     .references(() => room.id)
     .notNull(),
-  dateTime: integer({ mode: "timestamp" }),
-  repeatableType: text("repeatable_type"),
-  repeatableValue: integer("repeatable_value"),
-  place: text("place"),
-  createdAt: integer({ mode: "timestamp" })
+  place: text("place")
 });
 
 export const settleUp = sqliteTable("settle_up", {
@@ -78,9 +75,7 @@ export const settleUp = sqliteTable("settle_up", {
   roomId: integer("room_id")
     .references(() => room.id)
     .notNull(),
-  date: integer({ mode: "timestamp" }),
-  money: integer("money").notNull(),
-  createdAt: integer({ mode: "timestamp" })
+  money: integer("money").notNull()
 });
 
 export const userSettledUp = sqliteTable("user_settled_up", {

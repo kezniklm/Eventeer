@@ -47,12 +47,15 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       const assignedUserIds = rawUsers.map((u) => u.id!);
       const users = rawUsers.map((u) => u.name!);
 
+      // převedeme timestamp na ISO a extract
+      const date = t.timestamp ? new Date(t.timestamp).toISOString().slice(0, 10) : undefined;
+
       return {
         ...t,
         subtasks,
         users,
         assignedUserIds,
-        dueDate: t.dueDate ? new Date(t.dueDate).toISOString().slice(0, 10) : undefined,
+        date,
         authorName: t.authorName ?? "Unknown",
         isPublic: t.isPublic
       };
@@ -66,13 +69,14 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       const assignedUserIds = rawUsers.map((u) => u.id!);
       const users = rawUsers.map((u) => u.name!);
 
+      const date = e.timestamp ? new Date(e.timestamp).toLocaleDateString("sk-SK") : undefined;
+
       return {
         ...e,
         users,
         assignedUserIds,
-        date: e.eventDateTime ? new Date(e.eventDateTime).toLocaleDateString("sk-SK") : undefined,
+        date,
         author: e.authorName,
-        place: e.eventPlace,
         isPublic: e.isPublic
       };
     })
@@ -85,6 +89,8 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       const assignedUserIds = rawUsers.map((u) => u.id!);
       const users = rawUsers.map((u) => u.name!);
 
+      const date = s.timestamp ? new Date(s.timestamp).toLocaleDateString("sk-SK") : undefined;
+
       return {
         ...s,
         assignedUserIds,
@@ -94,7 +100,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
           user: u,
           amount: `${Math.ceil((s.settleMoney ?? 0) / users.length / 10) * 10}`
         })),
-        date: s.settleDate ? new Date(s.settleDate).toLocaleDateString("sk-SK") : undefined,
+        date,
         author: s.authorName,
         isPublic: s.isPublic
       };
@@ -126,7 +132,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 description={t.description ?? undefined}
                 subtasks={t.subtasks}
                 users={t.users}
-                date={t.dueDate}
+                date={t.date}
                 author={t.authorName}
                 isPublic={t.isPublic}
               />
@@ -147,7 +153,6 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 date={e.date}
                 author={e.author ?? undefined}
                 users={e.users}
-                place={e.place ?? undefined}
                 isPublic={e.isPublic}
               />
             ))}

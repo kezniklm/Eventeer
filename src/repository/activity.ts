@@ -21,13 +21,14 @@ export const getActivitiesByRoom = async (roomId: number) => {
       priority: roomActivity.priority,
       createdById: roomActivity.created_by,
       authorName: users.name,
+      repeatableType: roomActivity.repeatable_type,
+      repeatableValue: roomActivity.repeatable_value,
+      timestamp: roomActivity.timestamp,
+      createdAt: roomActivity.createdAt,
       taskId: roomActivity.fk_task,
-      dueDate: task.due_date,
       eventId: roomActivity.fk_event,
-      eventDateTime: event.dateTime,
       eventPlace: event.place,
       settleUpId: roomActivity.fk_settle_up,
-      settleDate: settleUp.date,
       settleMoney: settleUp.money
     })
     .from(roomActivity)
