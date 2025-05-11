@@ -38,7 +38,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   const tasksWithDetails = await Promise.all(
     tasks.map(async (t) => {
       const rawSubtasks = await getSubtasksByTask(t.id);
-      const subtasks: { id: number; name: string; is_done: boolean }[] = rawSubtasks.map((s, i) => ({
+      const subtasks: { id: number; name: string; is_done: boolean }[] = rawSubtasks.map((s) => ({
         id: s.id,
         is_done: Boolean(s.is_done),
         name: s.name
