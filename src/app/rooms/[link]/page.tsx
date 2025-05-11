@@ -93,7 +93,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       <header className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">{room.name}</h1>
-          <RoomDetailActionsWrapper roomId={room.id} userId={userId} />
+          <RoomDetailActionsWrapper roomInfo={room} userId={userId} />
         </div>
         {room.description && (
           <p className="text-muted-foreground text-sm sm:text-base md:text-lg">{room.description}</p>

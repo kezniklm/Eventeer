@@ -4,7 +4,7 @@ import { type Dispatch, type SetStateAction } from "react";
 
 import { CreateEventForm } from "@/components/forms/create-event-form";
 import { CreateTaskForm } from "@/components/forms/create-task-form";
-import { SettleupForm } from "@/components/forms/settleup-form";
+import { CreateSettleUpForm } from "@/components/forms/create-settleup-form";
 import {
   Dialog,
   DialogContent,
@@ -47,7 +47,7 @@ const PopupForm = ({ children, type, setType }: PopupFormProps) => (
 
           {type === "task" && <CreateTaskForm />}
           {type === "event" && <CreateEventForm />}
-          {type === "settleup" && <SettleupForm />}
+          {type === "settleup" && <CreateSettleUpForm />}
         </div>
       </DialogContent>
     </Dialog>
