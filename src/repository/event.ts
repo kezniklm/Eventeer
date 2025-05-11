@@ -6,7 +6,7 @@ export type CreateEventInput = {
   roomId: number;
   name: string;
   description?: string;
-  authorId: number;
+  authorId: string;
   dateTime: Date;
   priority: number;
   isPublic: boolean;

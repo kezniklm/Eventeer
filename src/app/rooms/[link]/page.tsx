@@ -24,24 +24,14 @@ type RoomDetailPageProps = {
 const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   const { link } = await params;
   const room = await getRoomByLink(link);
-
-  if (!room) {
-    notFound();
-  }
+  if (!room) notFound();
 
   const session = await auth();
-
-  if (!session?.user?.id) {
-    notFound();
-  }
-
+  if (!session?.user?.id) notFound();
   const userId = session.user.id;
 
   const allowed = await isUserInRoom(room.id, userId);
-
-  if (!allowed) {
-    notFound();
-  }
+  if (!allowed) notFound();
 
   const { tasks, events, settleUps } = await getActivitiesByRoom(room.id);
 
@@ -53,7 +43,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         is_done: Boolean(s.is_done),
         name: s.name
       }));
-      const users = await getRoomUsersNames(room.id); // Ensure users are fetched
+      const users = await getRoomUsersNames(room.id);
       const dueDate = t.dueDate ? new Date(t.dueDate).toISOString().slice(0, 10) : undefined;
       return {
         ...t,
@@ -99,19 +89,21 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   );
 
   return (
-    <div className="space-y-12 p-4">
+    <div className="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:px-6 md:space-y-10 md:px-8 lg:space-y-12 lg:px-12">
       <header className="space-y-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-4xl font-bold">{room.name}</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">{room.name}</h1>
           <RoomDetailActionsWrapper roomId={room.id} userId={userId} />
         </div>
-        {room.description && <p className="text-muted-foreground">{room.description}</p>}
+        {room.description && (
+          <p className="text-muted-foreground text-sm sm:text-base md:text-lg">{room.description}</p>
+        )}
       </header>
 
       {tasksWithDetails.length > 0 && (
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Tasks</h2>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-col space-y-4">
             {tasksWithDetails.map((t) => (
               <TaskCard
                 key={t.id}
@@ -128,10 +120,10 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         </section>
       )}
 
-      {events.length > 0 && (
+      {eventsWithDetails.length > 0 && (
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Events</h2>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-col space-y-4">
             {eventsWithDetails.map((e) => (
               <EventCard
                 key={e.id}
@@ -147,10 +139,10 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         </section>
       )}
 
-      {settleUps.length > 0 && (
+      {settleUpsWithDetails.length > 0 && (
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Settle Ups</h2>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-col space-y-4">
             {settleUpsWithDetails.map((s) => (
               <SettleUpCard
                 key={s.id}

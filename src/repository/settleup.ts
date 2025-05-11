@@ -7,7 +7,7 @@ export type CreateSettleUpInput = {
   roomId: number;
   name: string;
   description?: string;
-  authorId: number;
+  authorId: string;
   date: Date;
   money: number;
   priority: number;
