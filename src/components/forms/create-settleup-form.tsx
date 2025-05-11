@@ -13,7 +13,7 @@ import { FormInput } from "../ui/form-input";
 
 export const CreateSettleUpForm = () => {
   const form = useForm<SettleUpForm>();
-  const _roomInfo = useRoomContext();
+  const roomInfo = useRoomContext();
 
   return (
     <FormProvider {...form}>
@@ -29,30 +29,26 @@ export const CreateSettleUpForm = () => {
           <FormInput type="number" name="amount" label="Amount" placeholderAsLabel />
 
           {/* Users */}
-
-          <Controller
-            control={form.control}
-            name="users"
-            render={({ field }) => (
-              <div className="grid w-full items-center gap-2">
-                <Label>Users</Label>
-                <div className="flex flex-wrap gap-4 px-2">
-                  <div className="flex gap-2">
-                    <Checkbox id="user1" checked={field.value.find((user) => user.id === field.id)} />
-                    <Label className="text-xs text-gray-500" htmlFor="user1">
-                      User1
-                    </Label>
-                  </div>
-                  <div className="flex gap-2">
-                    <Checkbox id="user2" />
-                    <Label className="text-xs text-gray-500" htmlFor="user2">
-                      User2
-                    </Label>
+          {roomInfo.users.map((userField) => (
+            <Controller
+              key={userField.id}
+              control={form.control}
+              name="users"
+              render={({ field }) => (
+                <div className="grid w-full items-center gap-2">
+                  <Label>Users</Label>
+                  <div className="flex flex-wrap gap-4 px-2">
+                    <div className="flex gap-2">
+                      <Checkbox id="user1" checked={field.value.find((user) => user.id === userField.id)} />
+                      <Label className="text-xs text-gray-500" htmlFor="user1">
+                        User1
+                      </Label>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          />
+              )}
+            />
+          ))}
 
           {/* Priority */}
           <div className="grid w-full items-center gap-2">
