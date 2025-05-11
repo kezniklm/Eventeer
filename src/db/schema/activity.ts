@@ -5,7 +5,7 @@ import { users } from "./auth";
 import { room } from "./room";
 
 const periodEnum = ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"] as const;
-const priorityEnum = ["LOW", "NORMAL", "HIGH"] as const;
+export const priorityEnum = ["LOW", "NORMAL", "HIGH"] as const;
 
 export const roomActivity = sqliteTable(
   "room_activity",
