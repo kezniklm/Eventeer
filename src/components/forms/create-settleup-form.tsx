@@ -1,16 +1,16 @@
 "use client";
 
-import { Controller, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useRoomContext } from "@/context/room-context";
-import { settleUpFormSchema, type SettleUpForm } from "@/db/zod/settle-up";
 import { priorityEnumSchema } from "@/db/zod/activity";
+import { settleUpFormSchema, type SettleUpForm } from "@/db/zod/settle-up";
 import { firstLetterUppercase } from "@/lib/utils";
 
 import { FormInput } from "../ui/form-input";
@@ -91,23 +91,36 @@ export const CreateSettleUpForm = () => {
           />
 
           {/* Status */}
-          <div className="grid w-full items-center gap-2">
-            <Label>Status</Label>
-            <RadioGroup defaultValue="public" className="flex flex-wrap gap-4 px-2">
-              <div className="flex gap-2">
-                <RadioGroupItem value="public" id="public" />
-                <Label htmlFor="public" className="text-xs text-gray-500">
-                  Public
-                </Label>
+          <Controller
+            control={form.control}
+            name="isPublic"
+            defaultValue={false}
+            render={({ field: { onChange } }) => (
+              <div className="grid w-full items-center gap-2">
+                <Label>Status</Label>
+                <RadioGroup
+                  defaultValue="false"
+                  className="flex flex-wrap gap-4 px-2"
+                  onValueChange={(event) => {
+                    onChange(event === "true");
+                  }}
+                >
+                  <div className="flex gap-2">
+                    <RadioGroupItem value="true" id="status-public" />
+                    <Label htmlFor="status-public" className="text-xs text-gray-500">
+                      Public
+                    </Label>
+                  </div>
+                  <div className="flex gap-2">
+                    <RadioGroupItem value="false" id="status-private" />
+                    <Label htmlFor="status-private" className="text-xs text-gray-500">
+                      Private
+                    </Label>
+                  </div>
+                </RadioGroup>
               </div>
-              <div className="flex gap-2">
-                <RadioGroupItem value="private" id="private" />
-                <Label htmlFor="private" className="text-xs text-gray-500">
-                  Private
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
+            )}
+          />
 
           <Button className="m-auto" type="submit">
             Submit
