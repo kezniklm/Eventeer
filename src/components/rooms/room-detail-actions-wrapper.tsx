@@ -3,21 +3,27 @@
 import { useRouter } from "next/navigation";
 
 import { leaveRoomAction } from "@/server-actions/rooms";
+import { RoomContextProvider } from "@/context/room-context";
+import { type RoomInfo } from "@/db/zod/room";
 
 import { RoomDetailActions } from "./room-detail-actions";
 
 type Props = {
-  roomId: number;
+  roomInfo: RoomInfo;
   userId: string;
 };
 
-export const RoomDetailActionsWrapper = ({ roomId, userId }: Props) => {
+export const RoomDetailActionsWrapper = ({ roomInfo, userId }: Props) => {
   const router = useRouter();
 
   const handleLeave = async () => {
-    await leaveRoomAction(roomId, userId);
+    await leaveRoomAction(roomInfo.id, userId);
     router.push("/rooms");
   };
 
-  return <RoomDetailActions roomId={roomId} handleLeave={handleLeave} />;
+  return (
+    <RoomContextProvider value={roomInfo}>
+      <RoomDetailActions handleLeave={handleLeave} />
+    </RoomContextProvider>
+  );
 };
