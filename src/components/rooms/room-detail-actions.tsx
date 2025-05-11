@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
+import { ResponsiveActionButtons } from "./responsive-action-buttons";
+
 type Props = {
   roomId: number;
   handleLeave: () => Promise<void>;
@@ -38,7 +40,7 @@ export const RoomDetailActions = ({ roomId, handleLeave }: Props) => {
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <ResponsiveActionButtons>
       <Button variant="secondary" size="sm" onClick={handleSettleUp}>
         Settle up
       </Button>
@@ -68,6 +70,6 @@ export const RoomDetailActions = ({ roomId, handleLeave }: Props) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </ResponsiveActionButtons>
   );
 };

@@ -33,7 +33,7 @@ export const SettleUpCard = ({ name, description, date, author, transactions = [
       </div>
 
       {total && (
-        <Button className="mt-2 flex items-center gap-1" variant="outline" size="sm">
+        <Button className="mt-2 flex items-center gap-1 font-bold" variant="outline" size="sm">
           {total} czk
         </Button>
       )}
