@@ -4,7 +4,7 @@ import { check, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { users } from "./auth";
 import { room } from "./room";
 
-const periodEnum = ["DAILY, WEEKLY, MONTHLY, YEARLY"] as const;
+const periodEnum = ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"] as const;
 
 export const roomActivity = sqliteTable(
   "room_activity",
@@ -15,6 +15,7 @@ export const roomActivity = sqliteTable(
     fk_event: integer().references(() => event.id),
     fk_settle_up: integer().references(() => settleUp.id),
     name: text().notNull(),
+    created_by: text().references(() => users.id),
     description: text()
   },
   (table) => [
@@ -32,13 +33,18 @@ export const task = sqliteTable("task", {
   id: integer().primaryKey(),
   priority: integer().default(0),
   repeatable_type: text({ enum: periodEnum }),
-  repeatable_value: integer()
+  repeatable_value: integer(),
+  due_date: integer({ mode: "timestamp" }),
+  created_by: text().references(() => users.id)
 });
 
 export const subtask = sqliteTable("subtask", {
   id: integer().primaryKey(),
   fk_task: integer().references(() => task.id),
-  is_done: integer({ mode: "boolean" }).default(false)
+  is_done: integer({ mode: "boolean" }).default(false),
+  name: text()
+    .notNull()
+    .$default(() => "new subtask")
 });
 
 export const taskRelations = relations(task, ({ many }) => ({
@@ -53,15 +59,39 @@ export const subtaskRelations = relations(subtask, ({ one }) => ({
 }));
 
 export const event = sqliteTable("event", {
-  id: integer().primaryKey(),
-  date: integer({ mode: "timestamp" }),
-  repeatable_type: text({ enum: periodEnum }),
-  repeatable_value: integer()
+  id: integer("id").primaryKey(),
+  roomId: integer("room_id")
+    .references(() => room.id)
+    .notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  authorId: text("author_id")
+    .references(() => users.id)
+    .notNull(),
+  dateTime: integer({ mode: "timestamp" }),
+  priority: integer("priority").notNull().default(0),
+  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
+  repeatableType: text("repeatable_type"),
+  repeatableValue: integer("repeatable_value"),
+  place: text("place"),
+  createdAt: integer({ mode: "timestamp" })
 });
 
 export const settleUp = sqliteTable("settle_up", {
-  id: integer().primaryKey(),
-  money: integer().notNull()
+  id: integer("id").primaryKey(),
+  roomId: integer("room_id")
+    .references(() => room.id)
+    .notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  authorId: text("author_id")
+    .references(() => users.id)
+    .notNull(),
+  date: integer({ mode: "timestamp" }),
+  money: integer("money").notNull(), // v centoch
+  priority: integer("priority").notNull().default(0),
+  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
+  createdAt: integer({ mode: "timestamp" })
 });
 
 export const userSettledUp = sqliteTable("user_settled_up", {
