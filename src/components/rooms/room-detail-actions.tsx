@@ -14,32 +14,33 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-export const RoomDetailActions = ({ roomId }: { roomId: number }) => {
+import { ResponsiveActionButtons } from "./responsive-action-buttons";
+
+type Props = {
+  roomId: number;
+  handleLeave: () => Promise<void>;
+};
+
+export const RoomDetailActions = ({ roomId, handleLeave }: Props) => {
   const [open, setOpen] = useState(false);
 
   const handleSettleUp = () => {
     console.log("Settle up in room", roomId);
-    // TODO: implement settle up logic
   };
-
   const handleCreateEvent = () => {
     console.log("Create event in room", roomId);
-    // TODO: implement create event logic
   };
-
   const handleCreateTask = () => {
     console.log("Create task in room", roomId);
-    // TODO: implement create task logic
   };
 
-  const handleLeaveRoom = () => {
-    console.log("Leaving room", roomId);
-    setOpen(false); // Close the dialog after "Yes, leave"
-    // TODO: implement leave room logic
+  const onConfirmLeave = async () => {
+    setOpen(false);
+    await handleLeave();
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <ResponsiveActionButtons>
       <Button variant="secondary" size="sm" onClick={handleSettleUp}>
         Settle up
       </Button>
@@ -62,15 +63,13 @@ export const RoomDetailActions = ({ roomId }: { roomId: number }) => {
             <AlertDialogDescription>Are you sure you want to leave this room?</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
-              No, I want to stay
+            <Button variant="secondary" onClick={() => setOpen(false)}>
+              No, stay
             </Button>
-            <AlertDialogAction onClick={handleLeaveRoom} type="button">
-              Yes, leave
-            </AlertDialogAction>
+            <AlertDialogAction onClick={onConfirmLeave}>Yes, leave</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </ResponsiveActionButtons>
   );
 };
