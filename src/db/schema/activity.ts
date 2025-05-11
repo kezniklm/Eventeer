@@ -15,9 +15,10 @@ export const roomActivity = sqliteTable(
     fk_event: integer().references(() => event.id),
     fk_settle_up: integer().references(() => settleUp.id),
     name: text().notNull(),
-    created_by: text().references(() => users.id),
     description: text(),
-    isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false)
+    isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
+    priority: integer("priority").notNull().default(0),
+    created_by: text().references(() => users.id)
   },
   (table) => [
     check(
@@ -25,7 +26,7 @@ export const roomActivity = sqliteTable(
       sql`
       (CASE WHEN ${table.fk_event} IS NOT NULL THEN 1 ELSE 0 END) +
       (CASE WHEN ${table.fk_task} IS NOT NULL THEN 1 ELSE 0 END) +
-      (CASE WHEN ${table.fk_settle_up} IS NOT NULL THEN 1 ELSE 0 END)= 1`
+      (CASE WHEN ${table.fk_settle_up} IS NOT NULL THEN 1 ELSE 0 END) = 1`
     )
   ]
 );
@@ -35,14 +36,9 @@ export const task = sqliteTable("task", {
   roomId: integer("room_id")
     .references(() => room.id)
     .notNull(),
-  name: text("name").notNull(),
-  description: text("description"),
-  priority: integer().default(0),
-  repeatable_type: text({ enum: periodEnum }),
-  repeatable_value: integer(),
   due_date: integer({ mode: "timestamp" }),
-  authorId: text().references(() => users.id),
-  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false)
+  repeatable_type: text({ enum: periodEnum }),
+  repeatable_value: integer()
 });
 
 export const subtask = sqliteTable("subtask", {
@@ -70,14 +66,7 @@ export const event = sqliteTable("event", {
   roomId: integer("room_id")
     .references(() => room.id)
     .notNull(),
-  name: text("name").notNull(),
-  description: text("description"),
-  authorId: text("author_id")
-    .references(() => users.id)
-    .notNull(),
   dateTime: integer({ mode: "timestamp" }),
-  priority: integer("priority").notNull().default(0),
-  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
   repeatableType: text("repeatable_type"),
   repeatableValue: integer("repeatable_value"),
   place: text("place"),
@@ -89,15 +78,8 @@ export const settleUp = sqliteTable("settle_up", {
   roomId: integer("room_id")
     .references(() => room.id)
     .notNull(),
-  name: text("name").notNull(),
-  description: text("description"),
-  authorId: text("author_id")
-    .references(() => users.id)
-    .notNull(),
   date: integer({ mode: "timestamp" }),
-  money: integer("money").notNull(), // v centoch
-  priority: integer("priority").notNull().default(0),
-  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
+  money: integer("money").notNull(),
   createdAt: integer({ mode: "timestamp" })
 });
 

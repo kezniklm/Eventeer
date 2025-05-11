@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { roomActivity, settleUp, task, event, userHasActivity } from "@/db/schema/activity";
+import { roomActivity, task, event, settleUp, userHasActivity } from "@/db/schema/activity";
 import { users } from "@/db/schema/auth";
 
 export const getActivityUsersNames = async (activityId: number) =>
@@ -16,24 +16,23 @@ export const getActivitiesByRoom = async (roomId: number) => {
     .select({
       id: roomActivity.id,
       name: roomActivity.name,
-      taskIsPublic: task.isPublic,
-      eventIsPublic: event.isPublic,
-      settleUpIsPublic: settleUp.isPublic,
       description: roomActivity.description,
-      taskId: roomActivity.fk_task,
-      dueDate: task.due_date,
+      isPublic: roomActivity.isPublic,
+      priority: roomActivity.priority,
       createdById: roomActivity.created_by,
       authorName: users.name,
+      taskId: roomActivity.fk_task,
+      dueDate: task.due_date,
       eventId: roomActivity.fk_event,
-      settleUpId: roomActivity.fk_settle_up,
       eventDateTime: event.dateTime,
       eventPlace: event.place,
+      settleUpId: roomActivity.fk_settle_up,
       settleDate: settleUp.date,
       settleMoney: settleUp.money
     })
     .from(roomActivity)
-    .leftJoin(task, eq(task.id, roomActivity.fk_task))
     .leftJoin(users, eq(users.id, roomActivity.created_by))
+    .leftJoin(task, eq(task.id, roomActivity.fk_task))
     .leftJoin(event, eq(event.id, roomActivity.fk_event))
     .leftJoin(settleUp, eq(settleUp.id, roomActivity.fk_settle_up))
     .where(eq(roomActivity.fk_room, roomId));

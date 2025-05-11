@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { settleUp } from "@/db/schema/activity";
+import { settleUp, roomActivity } from "@/db/schema/activity";
 
 export type CreateSettleUpInput = {
   roomId: number;
@@ -15,21 +15,42 @@ export type CreateSettleUpInput = {
 };
 
 export const getSettleUpsByRoom = async (roomId: number) =>
-  await db.select().from(settleUp).where(eq(settleUp.roomId, roomId));
+  await db
+    .select({
+      activityId: roomActivity.id,
+      name: roomActivity.name,
+      description: roomActivity.description,
+      isPublic: roomActivity.isPublic,
+      priority: roomActivity.priority,
+      authorId: roomActivity.created_by,
+      date: settleUp.date,
+      money: settleUp.money
+    })
+    .from(roomActivity)
+    .innerJoin(settleUp, eq(settleUp.id, roomActivity.fk_settle_up))
+    .where(eq(roomActivity.fk_room, roomId));
 
 export const createSettleUp = async (data: CreateSettleUpInput) => {
-  const [inserted] = await db
+  const [insertedSU] = await db
     .insert(settleUp)
     .values({
       roomId: data.roomId,
-      name: data.name,
-      description: data.description,
-      authorId: data.authorId,
       date: data.date,
-      money: data.money,
-      priority: data.priority,
-      isPublic: data.isPublic
+      money: data.money
     })
     .returning();
-  return inserted;
+  const [insertedActivity] = await db
+    .insert(roomActivity)
+    .values({
+      fk_room: data.roomId,
+      fk_settle_up: insertedSU.id,
+      name: data.name,
+      description: data.description,
+      isPublic: data.isPublic,
+      priority: data.priority,
+      created_by: data.authorId
+    })
+    .returning();
+
+  return { ...insertedSU, activityId: insertedActivity.id };
 };

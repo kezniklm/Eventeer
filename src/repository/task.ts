@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { task } from "@/db/schema/activity";
+import { task, roomActivity } from "@/db/schema/activity";
 
 export type CreateTaskInput = {
   roomId: number;
@@ -13,20 +13,41 @@ export type CreateTaskInput = {
   isPublic: boolean;
 };
 
-export const getTasksByRoom = async (roomId: number) => await db.select().from(task).where(eq(task.roomId, roomId));
+export const getTasksByRoom = async (roomId: number) =>
+  await db
+    .select({
+      activityId: roomActivity.id,
+      name: roomActivity.name,
+      description: roomActivity.description,
+      isPublic: roomActivity.isPublic,
+      priority: roomActivity.priority,
+      authorId: roomActivity.created_by,
+      dueDate: task.due_date
+    })
+    .from(roomActivity)
+    .innerJoin(task, eq(task.id, roomActivity.fk_task))
+    .where(eq(roomActivity.fk_room, roomId));
 
 export const createTask = async (data: CreateTaskInput) => {
-  const [inserted] = await db
+  const [insertedTask] = await db
     .insert(task)
     .values({
       roomId: data.roomId,
-      name: data.name,
-      description: data.description,
-      authorId: data.authorId,
-      due_date: data.dueDate,
-      priority: data.priority,
-      isPublic: data.isPublic
+      due_date: data.dueDate
     })
     .returning();
-  return inserted;
+  const [insertedActivity] = await db
+    .insert(roomActivity)
+    .values({
+      fk_room: data.roomId,
+      fk_task: insertedTask.id,
+      name: data.name,
+      description: data.description,
+      isPublic: data.isPublic,
+      priority: data.priority,
+      created_by: data.authorId
+    })
+    .returning();
+
+  return { ...insertedTask, activityId: insertedActivity.id };
 };

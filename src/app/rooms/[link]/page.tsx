@@ -5,11 +5,11 @@ import { notFound } from "next/navigation";
 import { RoomDetailActionsWrapper } from "@/components/rooms/room-detail-actions-wrapper";
 import { SettleUpCard } from "@/components/rooms/settleup-card";
 import { TaskCard } from "@/components/rooms/task-card";
+import { EventCard } from "@/components/rooms/event-card";
 import { getActivitiesByRoom, getActivityUsersNames } from "@/repository/activity";
 import { getRoomByLink, isUserInRoom } from "@/repository/room";
-import { EventCard } from "@/components/rooms/event-card";
-import { auth } from "@/auth";
 import { getSubtasksByTask } from "@/repository/subtask";
+import { auth } from "@/auth";
 
 export const metadata: Metadata = {
   title: "Room Details",
@@ -36,44 +36,44 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   const tasksWithDetails = await Promise.all(
     tasks.map(async (t) => {
-      const isPublic = Boolean(t.taskIsPublic);
-      const rawSubtasks = await getSubtasksByTask(t.id);
-      const subtasks: { id: number; name: string; is_done: boolean }[] = rawSubtasks.map((s) => ({
+      const rawSubtasks = await getSubtasksByTask(t.taskId!);
+      const subtasks = rawSubtasks.map((s) => ({
         id: s.id,
-        is_done: Boolean(s.is_done),
-        name: s.name
+        name: s.name,
+        is_done: Boolean(s.is_done)
       }));
+
       const rawUsers = await getActivityUsersNames(t.id);
       const assignedUserIds = rawUsers.map((u) => u.id!);
       const users = rawUsers.map((u) => u.name!);
-      const dueDate = t.dueDate ? new Date(t.dueDate).toISOString().slice(0, 10) : undefined;
+
       return {
         ...t,
         subtasks,
         users,
         assignedUserIds,
-        dueDate,
+        dueDate: t.dueDate ? new Date(t.dueDate).toISOString().slice(0, 10) : undefined,
         authorName: t.authorName ?? "Unknown",
-        isPublic
+        isPublic: t.isPublic
       };
     })
   );
   const visibleTasks = tasksWithDetails.filter((t) => t.isPublic || t.assignedUserIds.includes(userId));
+
   const eventsWithDetails = await Promise.all(
     events.map(async (e) => {
-      const isPublic = Boolean(e.eventIsPublic);
       const rawUsers = await getActivityUsersNames(e.id);
       const assignedUserIds = rawUsers.map((u) => u.id!);
       const users = rawUsers.map((u) => u.name!);
-      const date = e.eventDateTime ? new Date(e.eventDateTime).toLocaleDateString("sk-SK") : undefined;
+
       return {
         ...e,
         users,
-        date,
-        author: e.authorName,
         assignedUserIds,
+        date: e.eventDateTime ? new Date(e.eventDateTime).toLocaleDateString("sk-SK") : undefined,
+        author: e.authorName,
         place: e.eventPlace,
-        isPublic
+        isPublic: e.isPublic
       };
     })
   );
@@ -81,24 +81,22 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   const settleUpsWithDetails = await Promise.all(
     settleUps.map(async (s) => {
-      const isPublic = Boolean(s.settleUpIsPublic);
       const rawUsers = await getActivityUsersNames(s.id);
       const assignedUserIds = rawUsers.map((u) => u.id!);
       const users = rawUsers.map((u) => u.name!);
-      const total = (s.settleMoney ?? 0).toString();
-      const transactions = users.map((u) => ({
-        user: u,
-        amount: `${Math.ceil((s.settleMoney ?? 0) / users.length / 10) * 10}`
-      }));
-      const date = s.settleDate ? new Date(s.settleDate).toLocaleDateString("sk-SK") : undefined;
+
       return {
         ...s,
-        transactions,
-        total,
-        date,
         assignedUserIds,
+        users,
+        total: s.settleMoney?.toString() ?? "0",
+        transactions: users.map((u) => ({
+          user: u,
+          amount: `${Math.ceil((s.settleMoney ?? 0) / users.length / 10) * 10}`
+        })),
+        date: s.settleDate ? new Date(s.settleDate).toLocaleDateString("sk-SK") : undefined,
         author: s.authorName,
-        isPublic
+        isPublic: s.isPublic
       };
     })
   );
@@ -116,14 +114,14 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         )}
       </header>
 
-      {tasksWithDetails.length > 0 && (
+      {visibleTasks.length > 0 && (
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Tasks</h2>
           <div className="flex flex-col space-y-4">
             {visibleTasks.map((t) => (
               <TaskCard
                 key={t.id}
-                id={t.id}
+                id={t.taskId!}
                 name={t.name}
                 description={t.description ?? undefined}
                 subtasks={t.subtasks}
@@ -137,7 +135,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         </section>
       )}
 
-      {eventsWithDetails.length > 0 && (
+      {visibleEvents.length > 0 && (
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Events</h2>
           <div className="flex flex-col space-y-4">
@@ -157,7 +155,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         </section>
       )}
 
-      {settleUpsWithDetails.length > 0 && (
+      {visibleSettleUps.length > 0 && (
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Settle Ups</h2>
           <div className="flex flex-col space-y-4">
