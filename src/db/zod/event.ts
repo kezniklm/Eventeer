@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import { settleUp } from "../schema/activity";
 
+import { userIdNamePair } from "./user";
+
 export const createSettleUpSchema = createInsertSchema(settleUp);
 export type CreateSettleUp = z.infer<typeof createSettleUpSchema>;
 
@@ -13,5 +15,5 @@ export const settleUpFormSchema = createSettleUpSchema
     priority: true,
     name: true
   })
-  .extend({ users: z.array(z.object({ name: z.string(), id: z.number() })) }); // TODO:
+  .extend({ users: z.array(userIdNamePair) }); // TODO:
 export type SettleUpForm = z.infer<typeof settleUpFormSchema>;
