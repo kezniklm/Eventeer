@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { createUserHasRoom, deleteUserHasRoom, updateUserHasRoom } from "@/repository/rooms";
 import type { RoomInsertSchema } from "@/db/zod/room";
-import { insertRoom } from "@/repository/room";
+import { insertRoom, insertUserHasRoom } from "@/repository/room";
 
 export const leaveRoomAction = async (roomId: number, userId: string) => {
   await deleteUserHasRoom(roomId, userId);
@@ -28,6 +28,7 @@ export const inviteUserToRoomAction = async (roomId: number, email: string) => {
 
 export const insertRoomAction = async (data: RoomInsertSchema) => {
   const insertedRoom = await insertRoom(data);
+  await insertUserHasRoom(insertedRoom.id, insertedRoom.owner);
   revalidatePath("/rooms");
   return insertedRoom;
 };
