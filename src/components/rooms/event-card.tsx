@@ -1,6 +1,7 @@
 "use client";
 
 import { MapPin, Check } from "lucide-react";
+import { type User } from "next-auth";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,11 +13,11 @@ type EventCardProps = {
   description?: string;
   isPublic: boolean;
   date?: string;
-  author?: string;
+  author?: User;
   users?: { id: string; name: string; willAttend: boolean }[];
   place?: string;
   repeatableType?: string;
-  repeatableValue?: number | null;
+  repeatableValue?: boolean | null;
 };
 
 export const EventCard = ({
@@ -43,14 +44,14 @@ export const EventCard = ({
         </span>
         <span
           className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs ${
-            repeatableValue !== undefined && repeatableValue !== null && repeatableValue > 0
+            repeatableValue !== undefined && repeatableValue !== null && repeatableValue
               ? "bg-purple-200 text-purple-800"
               : "bg-indigo-200 text-indigo-800"
           }`}
         >
-          {repeatableValue !== undefined && repeatableValue !== null && repeatableValue > 0 ? "Repeatable" : "One-time"}
+          {repeatableValue !== undefined && repeatableValue !== null && repeatableValue ? "Repeatable" : "One-time"}
         </span>
-        {repeatableValue !== undefined && repeatableValue !== null && repeatableValue > 0 && (
+        {repeatableValue !== undefined && repeatableValue !== null && repeatableValue && (
           <span
             className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs ${
               repeatableType === "day"
@@ -62,7 +63,7 @@ export const EventCard = ({
                     : "bg-purple-200 text-purple-800"
             }`}
           >
-            {repeatableValue === 1
+            {repeatableValue
               ? (repeatableType ?? "").charAt(0).toUpperCase() + (repeatableType ?? "").slice(1).toLowerCase()
               : `${repeatableValue} ${(repeatableType ?? "").toLowerCase()}s`}
           </span>
@@ -70,7 +71,7 @@ export const EventCard = ({
       </div>
       <div className="text-muted-foreground text-right text-xs">
         {date && <div>{date}</div>}
-        {author && <div className="mt-1">By: {author}</div>}
+        {author && <div className="mt-1">By: {author.name}</div>}
       </div>
     </CardHeader>
 

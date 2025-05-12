@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { type User } from "next-auth";
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { toggleSubtaskAction } from "@/server-actions/subtasks";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
+import { toggleSubtaskAction } from "@/server-actions/subtasks";
 
 type Subtask = { id: number; name: string; is_done: boolean };
 type TaskCardProps = {
@@ -17,9 +18,9 @@ type TaskCardProps = {
   subtasks: Subtask[];
   users: string[];
   date?: string;
-  author?: string;
+  author?: User;
   repeatableType?: string;
-  repeatableValue?: number | null;
+  repeatableValue?: boolean | null;
 };
 
 const formatDate = (iso: string) =>
@@ -62,16 +63,14 @@ export const TaskCard = ({
           </span>
           <span
             className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs ${
-              repeatableValue !== undefined && repeatableValue !== null && repeatableValue > 0
+              repeatableValue !== undefined && repeatableValue !== null && repeatableValue
                 ? "bg-purple-200 text-purple-800"
                 : "bg-indigo-200 text-indigo-800"
             }`}
           >
-            {repeatableValue !== undefined && repeatableValue !== null && repeatableValue > 0
-              ? "Repeatable"
-              : "One-time"}
+            {repeatableValue !== undefined && repeatableValue !== null && repeatableValue ? "Repeatable" : "One-time"}
           </span>
-          {repeatableValue !== undefined && repeatableValue !== null && repeatableValue > 0 && (
+          {repeatableValue !== undefined && repeatableValue !== null && repeatableValue && (
             <span
               className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs ${
                 repeatableType === "day"
@@ -83,7 +82,7 @@ export const TaskCard = ({
                       : "bg-purple-200 text-purple-800"
               }`}
             >
-              {repeatableValue === 1
+              {repeatableValue
                 ? (repeatableType ?? "").charAt(0).toUpperCase() + (repeatableType ?? "").slice(1).toLowerCase()
                 : `${repeatableValue} ${(repeatableType ?? "").toLowerCase()}s`}
             </span>
@@ -91,7 +90,7 @@ export const TaskCard = ({
         </div>
         <div className="text-muted-foreground text-right text-xs">
           {date && <span className="mt-1">{formatDate(date)}</span>}
-          {author && <div className="mt-1">By: {author}</div>}
+          {author && <div className="mt-1">By: {author.name}</div>}
         </div>
       </CardHeader>
 
