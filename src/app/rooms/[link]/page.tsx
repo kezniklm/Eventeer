@@ -1,16 +1,16 @@
-import React from "react";
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { auth } from "@/auth";
+import { EventCard } from "@/components/rooms/event-card";
 import { RoomDetailActionsWrapper } from "@/components/rooms/room-detail-actions-wrapper";
 import { SettleUpCard } from "@/components/rooms/settleup-card";
 import { TaskCard } from "@/components/rooms/task-card";
-import { EventCard } from "@/components/rooms/event-card";
 import { getActivitiesByRoom, getActivityUsersNames } from "@/repository/activity";
+import { getAttendeesByActivity } from "@/repository/attendance";
 import { getRoomByLink, isUserInRoom } from "@/repository/room";
 import { getSubtasksByTask } from "@/repository/subtask";
-import { auth } from "@/auth";
-import { getAttendeesByActivity } from "@/repository/attendance";
+import { getRoomUsersNames } from "@/repository/rooms";
 
 export const metadata: Metadata = {
   title: "Room Details",
@@ -34,6 +34,8 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   if (!allowed) notFound();
 
   const { tasks, events, settleUps } = await getActivitiesByRoom(room.id);
+
+  const usersInRoom = await getRoomUsersNames(room.id);
 
   const tasksWithDetails = await Promise.all(
     tasks.map(async (t) => {
@@ -62,7 +64,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       };
     })
   );
-  const visibleTasks = tasksWithDetails.filter((t) => t.isPublic || t.assignedUserIds.includes(userId));
+  const visibleTasks = tasksWithDetails.filter((t) => t.isPublic ?? t.assignedUserIds.includes(userId));
 
   const eventsWithDetails = await Promise.all(
     events.map(async (e) => {
@@ -91,7 +93,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       };
     })
   );
-  const visibleEvents = eventsWithDetails.filter((e) => e.isPublic || e.assignedUserIds.includes(userId));
+  const visibleEvents = eventsWithDetails.filter((e) => e.isPublic ?? e.assignedUserIds.includes(userId));
 
   const settleUpsWithDetails = await Promise.all(
     settleUps.map(async (s) => {
@@ -115,14 +117,20 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
     })
   );
 
-  const visibleSettleUps = settleUpsWithDetails.filter((s) => s.isPublic || s.assignedUserIds.includes(userId));
+  const visibleSettleUps = settleUpsWithDetails.filter((s) => s.isPublic ?? s.assignedUserIds.includes(userId));
 
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:px-6 md:space-y-10 md:px-8 lg:space-y-12 lg:px-12">
       <header className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">{room.name}</h1>
-          <RoomDetailActionsWrapper roomId={room.id} userId={userId} />
+          <RoomDetailActionsWrapper
+            roomInfo={{
+              room,
+              users: usersInRoom
+            }}
+            userId={userId}
+          />
         </div>
         {room.description && (
           <p className="text-muted-foreground text-sm sm:text-base md:text-lg">{room.description}</p>

@@ -1,21 +1,9 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { settleUp, roomActivity } from "@/db/schema/activity";
-import { type periodEnum } from "@/db/schema/activity";
-
-export type CreateSettleUpInput = {
-  roomId: number;
-  name: string;
-  description?: string;
-  authorId: string;
-  date: Date;
-  money: number;
-  priority: number;
-  isPublic: boolean;
-  repeatableType?: (typeof periodEnum)[number];
-  repeatableValue?: number | null;
-};
+import { roomActivity, settleUp, userHasActivity } from "@/db/schema/activity";
+import { type SettleUpInsertSchema } from "@/db/zod/settle-up";
+import { type UserIdNamePair } from "@/db/zod/user";
 
 export const getSettleUpsByRoom = async (roomId: number) =>
   await db
@@ -34,37 +22,31 @@ export const getSettleUpsByRoom = async (roomId: number) =>
     .innerJoin(settleUp, eq(settleUp.id, roomActivity.fk_settle_up))
     .where(eq(roomActivity.fk_room, roomId));
 
-export const createSettleUp = async (data: CreateSettleUpInput) => {
-  const [insertedSU] = await db
-    .insert(settleUp)
-    .values({
-      roomId: data.roomId,
-      money: data.money
-    })
-    .returning();
+export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNamePair[]) =>
+  db.transaction(async (tx) => {
+    const [inserted] = await tx
+      .insert(settleUp)
+      .values({
+        roomId: data.roomId,
+        money: data.money
+      })
+      .returning();
 
-  const activityData: typeof roomActivity.$inferInsert = {
-    fk_room: data.roomId,
-    fk_settle_up: insertedSU.id,
-    name: data.name,
-    description: data.description,
-    isPublic: data.isPublic,
-    priority: data.priority,
-    created_by: data.authorId,
-    timestamp: data.date,
-    createdAt: new Date(),
-    repeatable_type: null,
-    repeatable_value: null
-  };
+    const [activity] = await tx
+      .insert(roomActivity)
+      .values({
+        fk_settle_up: inserted.id,
+        name: data.name,
+        description: data.description,
+        created_by: data.created_by,
+        fk_room: data.roomId
+      })
+      .returning();
 
-  if (data.repeatableType) {
-    activityData.repeatable_type = data.repeatableType;
-  }
-  if (data.repeatableValue !== null) {
-    activityData.repeatable_value = data.repeatableValue;
-  }
+    if (users.length !== 0) {
+      const usersWithSettleUp = users.map((user) => ({ fk_user_id: user.id, fk_activity_id: activity.id }));
+      tx.insert(userHasActivity).values([...usersWithSettleUp]);
+    }
 
-  const [insertedActivity] = await db.insert(roomActivity).values(activityData).returning();
-
-  return { ...insertedSU, activityId: insertedActivity.id };
-};
+    return inserted;
+  });
