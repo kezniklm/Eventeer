@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { type Result } from "@/result";
 
 import { InviteUserForm } from "./user-invite";
@@ -23,6 +23,7 @@ import { InviteUserForm } from "./user-invite";
 type RoomCardProps = {
   id: number;
   title: string;
+  description: string;
   linkName?: string;
   badges: string[];
   handleLeave?: () => void;
@@ -33,6 +34,7 @@ type RoomCardProps = {
 
 export const RoomCard = ({
   title,
+  description,
   linkName,
   badges,
   handleLeave,
@@ -85,6 +87,7 @@ export const RoomCard = ({
           )}
         </div>
       </CardTitle>
+      <CardDescription>{description}</CardDescription>
     </CardHeader>
     <CardContent className="flex flex-wrap items-center gap-2">
       {badges.map((badge, index) => (
