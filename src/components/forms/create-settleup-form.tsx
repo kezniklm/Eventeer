@@ -8,11 +8,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useRoomContext } from "@/context/room-context";
+import { useUpdateSettleUpContext } from "@/context/settle-up-update-context";
 import { priorityEnumSchema } from "@/db/zod/activity";
 import { settleUpFormSchema, type SettleUpForm } from "@/db/zod/settle-up";
 import { useCreateSettleUpMutation, useUpdateSettleUpMutation } from "@/hooks/mutations/settle-up";
 import { firstLetterUppercase } from "@/lib/utils";
-import { useUpdateSettleUpContext } from "@/context/settle-up-update-context";
 
 import { Button } from "../ui/button";
 import { FormInput } from "../ui/form-input";
@@ -115,6 +115,7 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
           <Controller
             control={form.control}
             name="priority"
+            defaultValue={updateData?.data.priority ?? priorityEnumSchema.Enum.NORMAL}
             render={({ field: { value, onChange } }) => (
               <div className="grid w-full items-center gap-2">
                 <Label>Priority</Label>
@@ -140,7 +141,7 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
           <Controller
             control={form.control}
             name="isPublic"
-            defaultValue={updateData?.data.isPublic}
+            defaultValue={updateData?.data.isPublic ?? false}
             render={({ field: { onChange, value } }) => (
               <div className="grid w-full items-center gap-2">
                 <Label>Status</Label>

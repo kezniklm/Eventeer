@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { roomActivity, settleUp, userHasActivity, userHasActivityRelations } from "@/db/schema/activity";
+import { roomActivity, settleUp, userHasActivity } from "@/db/schema/activity";
 import { type SettleUpInsertSchema } from "@/db/zod/settle-up";
 import { type UserIdNamePair } from "@/db/zod/user";
 
@@ -40,7 +40,9 @@ export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
         name: data.name,
         description: data.description,
         created_by: data.created_by,
-        fk_room: data.roomId
+        fk_room: data.roomId,
+        priority: data.priority,
+        isPublic: data.isPublic
       })
       .returning();
 
@@ -58,13 +60,7 @@ export const updateSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
       .update(settleUp)
       .set({
         roomId: data.roomId,
-        name: data.name,
-        description: data.description,
-        authorId: data.authorId,
-        date: data.date,
-        money: data.money,
-        priority: data.priority,
-        isPublic: data.isPublic
+        money: data.money
       })
       .where(eq(settleUp.id, settleUpId))
       .returning();
@@ -75,8 +71,9 @@ export const updateSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
         fk_settle_up: updated.id,
         name: data.name,
         description: data.description,
-        created_by: data.authorId,
-        fk_room: data.roomId
+        fk_room: data.roomId,
+        priority: data.priority,
+        isPublic: data.isPublic
       })
       .where(eq(roomActivity.fk_settle_up, settleUpId))
       .returning();
@@ -87,5 +84,5 @@ export const updateSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
       await tx.insert(userHasActivity).values([...usersWithSettleUp]);
     }
 
-    return updated;
+    return { ...updated, ...activity };
   });

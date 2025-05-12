@@ -22,8 +22,8 @@ export const roomActivity = sqliteTable(
     created_by: text().references(() => users.id),
     repeatableType: text("repeatable_type", { enum: periodEnum }),
     repeatableValue: integer("repeatable_value"),
-    timestamp: integer({ mode: "timestamp" }),
-    createdAt: integer({ mode: "timestamp" })
+    timestamp: integer({ mode: "timestamp" }).default(sql`(unixepoch())`),
+    createdAt: integer({ mode: "timestamp" }).default(sql`(unixepoch())`)
   },
   (table) => [
     check(
