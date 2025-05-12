@@ -46,8 +46,6 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       const rawUsers = await getActivityUsersNames(t.id);
       const assignedUserIds = rawUsers.map((u) => u.id!);
       const users = rawUsers.map((u) => u.name!);
-
-      // převedeme timestamp na ISO a extract
       const date = t.timestamp ? new Date(t.timestamp).toISOString().slice(0, 10) : undefined;
 
       return {
@@ -57,7 +55,9 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         assignedUserIds,
         date,
         authorName: t.authorName ?? "Unknown",
-        isPublic: t.isPublic
+        isPublic: t.isPublic,
+        repeatableType: t.repeatableType,
+        repeatableValue: t.repeatableValue
       };
     })
   );
@@ -77,7 +77,9 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         assignedUserIds,
         date,
         author: e.authorName,
-        isPublic: e.isPublic
+        isPublic: e.isPublic,
+        repeatableType: e.repeatableType,
+        repeatableValue: e.repeatableValue
       };
     })
   );
@@ -102,7 +104,9 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         })),
         date,
         author: s.authorName,
-        isPublic: s.isPublic
+        isPublic: s.isPublic,
+        repeatableType: s.repeatableType,
+        repeatableValue: s.repeatableValue
       };
     })
   );
@@ -135,6 +139,8 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 date={t.date}
                 author={t.authorName}
                 isPublic={t.isPublic}
+                repeatableType={t.repeatableType ?? undefined}
+                repeatableValue={t.repeatableValue}
               />
             ))}
           </div>
@@ -154,6 +160,8 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 author={e.author ?? undefined}
                 users={e.users}
                 isPublic={e.isPublic}
+                repeatableType={e.repeatableType ?? undefined}
+                repeatableValue={e.repeatableValue}
               />
             ))}
           </div>
@@ -174,6 +182,8 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 transactions={s.transactions}
                 total={s.total}
                 isPublic={s.isPublic}
+                repeatableType={s.repeatableType ?? undefined}
+                repeatableValue={s.repeatableValue}
               />
             ))}
           </div>
