@@ -22,7 +22,9 @@ export const CreateRoomPopup = ({ user }: CreateRoomFormProps) => {
   return (
     <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
       <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)}>Create room</Button>
+        <Button onClick={() => setOpen(true)} className="w-full">
+          Create room
+        </Button>
       </DialogTrigger>
       <DialogContent className="bg-secondary max-h h-fit overflow-auto">
         <DialogHeader>
