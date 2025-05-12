@@ -17,12 +17,12 @@ import { DeleteButton } from "../controls/delete-button";
 
 import { Button } from "./button";
 
-type LeaveDialogProps = {
+type DeleteDialogProps = {
   subject: string;
   onConfirm: () => void;
 };
 
-export const LeaveDialog = ({ subject, onConfirm }: LeaveDialogProps) => {
+export const DeleteDialog = ({ subject, onConfirm }: DeleteDialogProps) => {
   const [open, setOpen] = useState(false);
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -31,7 +31,7 @@ export const LeaveDialog = ({ subject, onConfirm }: LeaveDialogProps) => {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Confirm Leave</AlertDialogTitle>
+          <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
           <AlertDialogDescription>Are you sure you want to delete this {subject}?</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

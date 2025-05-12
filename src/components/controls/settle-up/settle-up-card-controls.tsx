@@ -4,7 +4,7 @@ import { type User } from "next-auth";
 import { toast } from "sonner";
 
 import PopupForm from "@/components/pop-up-form";
-import { LeaveDialog } from "@/components/ui/leave-dialog";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { SettleUpUpdateProvider } from "@/context/settle-up-update-context";
 import { type SettleUpForm } from "@/db/zod/settle-up";
 import { useDeleteSettleUpMutation } from "@/hooks/mutations/settle-up";
@@ -39,7 +39,7 @@ export const SettleUpCardControls = ({ forUpdateData, settleUpId, userId, author
           <UpdateButton />
         </PopupForm>
       </SettleUpUpdateProvider>
-      {userId === author?.id && <LeaveDialog subject="Settle Up" onConfirm={async () => await handleDelete()} />}
+      {userId === author?.id && <DeleteDialog subject="Settle Up" onConfirm={async () => await handleDelete()} />}
     </CardActionsWrapper>
   );
 };
