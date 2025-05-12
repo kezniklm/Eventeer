@@ -6,7 +6,21 @@ import { type SettleUpInsertSchema } from "@/db/zod/settle-up";
 import { type UserIdNamePair } from "@/db/zod/user";
 
 export const getSettleUpsByRoom = async (roomId: number) =>
-  await db.select().from(settleUp).where(eq(settleUp.roomId, roomId));
+  await db
+    .select({
+      activityId: roomActivity.id,
+      name: roomActivity.name,
+      description: roomActivity.description,
+      isPublic: roomActivity.isPublic,
+      priority: roomActivity.priority,
+      authorId: roomActivity.created_by,
+      timestamp: roomActivity.timestamp,
+      createdAt: roomActivity.createdAt,
+      money: settleUp.money
+    })
+    .from(roomActivity)
+    .innerJoin(settleUp, eq(settleUp.id, roomActivity.fk_settle_up))
+    .where(eq(roomActivity.fk_room, roomId));
 
 export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNamePair[]) =>
   db.transaction(async (tx) => {
@@ -14,13 +28,7 @@ export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
       .insert(settleUp)
       .values({
         roomId: data.roomId,
-        name: data.name,
-        description: data.description,
-        authorId: data.authorId,
-        date: data.date,
-        money: data.money,
-        priority: data.priority,
-        isPublic: data.isPublic
+        money: data.money
       })
       .returning();
 
@@ -30,7 +38,7 @@ export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
         fk_settle_up: inserted.id,
         name: data.name,
         description: data.description,
-        created_by: data.authorId,
+        created_by: data.created_by,
         fk_room: data.roomId
       })
       .returning();
@@ -40,5 +48,5 @@ export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
       tx.insert(userHasActivity).values([...usersWithSettleUp]);
     }
 
-    return inserted;
+    return { ...inserted, ...activity };
   });

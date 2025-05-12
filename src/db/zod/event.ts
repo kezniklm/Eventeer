@@ -3,22 +3,14 @@ import { z } from "zod";
 
 import { event } from "../schema/activity";
 
+import { commonFormSchema, commonInsertSchema } from "./activity";
 import { userIdNamePair } from "./user";
-import { commonFormSchema } from "./activity";
 
-export const createEventSchema = createInsertSchema(event).omit({ id: true });
-
+export const createEventSchema = createInsertSchema(event).omit({ id: true }).merge(commonInsertSchema);
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
 
 export const createEventFormSchema = createEventSchema
-  .pick({
-    isPublic: true,
-    priority: true,
-    dateTime: true,
-    repeatableType: true,
-    repeatableValue: true,
-    place: true
-  })
+  .pick({ place: true, dateTime: true })
   .extend({ users: z.array(userIdNamePair) })
   .and(commonFormSchema);
 

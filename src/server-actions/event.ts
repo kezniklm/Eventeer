@@ -25,7 +25,7 @@ export const createEventAction = async (eventData: CreateEventFormSchema, roomId
   const insertData: CreateEventSchema = {
     ...formData,
     roomId,
-    authorId
+    created_by: authorId
   };
 
   revalidatePath("/rooms");
