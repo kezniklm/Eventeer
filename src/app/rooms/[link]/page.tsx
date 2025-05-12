@@ -34,8 +34,6 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   const { tasks, events, settleUps } = await getActivitiesByRoom(room.id);
 
-  const usersInRoom = await getRoomUsersNames(room.id);
-
   const tasksWithDetails = await Promise.all(
     tasks.map(async (t) => {
       const rawSubtasks = await getSubtasksByTask(t.id);
@@ -94,13 +92,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       <header className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">{room.name}</h1>
-          <RoomDetailActionsWrapper
-            roomInfo={{
-              room,
-              users: usersInRoom
-            }}
-            userId={userId}
-          />
+          <RoomDetailActionsWrapper roomId={room.id} userId={userId} />
         </div>
         {room.description && (
           <p className="text-muted-foreground text-sm sm:text-base md:text-lg">{room.description}</p>

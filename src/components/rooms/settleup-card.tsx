@@ -1,6 +1,8 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
+import PopupForm from "../pop-up-form";
+
 type SettleUpCardProps = {
   name: string;
   description?: string;
@@ -37,6 +39,10 @@ export const SettleUpCard = ({ name, description, date, author, transactions = [
           {total} czk
         </Button>
       )}
+
+      <PopupForm type="settleup">
+        <Button size="sm">Update</Button>
+      </PopupForm>
     </CardContent>
   </Card>
 );
