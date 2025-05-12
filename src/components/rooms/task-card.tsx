@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { type User } from "next-auth";
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { toggleSubtaskAction } from "@/server-actions/subtasks";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
+import { toggleSubtaskAction } from "@/server-actions/subtasks";
 
 type Subtask = { id: number; name: string; is_done: boolean };
 type TaskCardProps = {
@@ -17,7 +18,7 @@ type TaskCardProps = {
   subtasks: Subtask[];
   users: string[];
   date?: string;
-  author?: string;
+  author?: User;
   repeatableType?: string;
   repeatableValue?: number | null;
 };
@@ -91,7 +92,7 @@ export const TaskCard = ({
         </div>
         <div className="text-muted-foreground text-right text-xs">
           {date && <span className="mt-1">{formatDate(date)}</span>}
-          {author && <div className="mt-1">By: {author}</div>}
+          {author && <div className="mt-1">By: {author.name}</div>}
         </div>
       </CardHeader>
 

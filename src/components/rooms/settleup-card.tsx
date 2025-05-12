@@ -1,12 +1,13 @@
+import { type User } from "next-auth";
+
+import { getCurrentUser } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SettleUpUpdateProvider } from "@/context/settle-up-update-context";
+import { type PriorityEnum } from "@/db/zod/activity";
 import { type SettleUpForm } from "@/db/zod/settle-up";
 import { type UserIdNamePair } from "@/db/zod/user";
-import { type PriorityEnum } from "@/db/zod/activity";
 
-import { UpdateButton } from "../controls/update-button";
-import PopupForm from "../pop-up-form";
+import { SettleUpCardControls } from "../controls/settle-up/settle-up-card-controls";
 
 type SettleUpCardProps = {
   settleUpId: number;
@@ -14,7 +15,7 @@ type SettleUpCardProps = {
   isPublic: boolean;
   description?: string;
   date?: string;
-  author?: string;
+  author?: User;
   transactions?: { user: UserIdNamePair; amount: string }[];
   money?: number;
   repeatableType?: string;
@@ -23,7 +24,7 @@ type SettleUpCardProps = {
   priority: PriorityEnum;
 };
 
-export const SettleUpCard = ({
+export const SettleUpCard = async ({
   name,
   isPublic,
   description,
@@ -42,9 +43,11 @@ export const SettleUpCard = ({
     name,
     money: money!,
     users,
-    isPublic, // TODO,
+    isPublic,
     priority
   };
+
+  const { id } = await getCurrentUser();
 
   return (
     <Card className="bg-secondary animate-fade-in-slow group space-y-4 p-4">
@@ -88,7 +91,7 @@ export const SettleUpCard = ({
         </div>
         <div className="text-muted-foreground text-right text-xs">
           {date && <div>{date}</div>}
-          {author && <div className="mt-1">By: {author}</div>}
+          {author && <div className="mt-1">By: {author.name}</div>}
         </div>
       </CardHeader>
 
@@ -105,11 +108,7 @@ export const SettleUpCard = ({
             {money} czk
           </Button>
         )}
-        <SettleUpUpdateProvider data={forUpdateData} settleUpId={settleUpId}>
-          <PopupForm type="settleup">
-            <UpdateButton />
-          </PopupForm>
-        </SettleUpUpdateProvider>
+        <SettleUpCardControls forUpdateData={forUpdateData} settleUpId={settleUpId} userId={id} author={author} />
       </CardContent>
     </Card>
   );

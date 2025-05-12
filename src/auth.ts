@@ -64,3 +64,13 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
     }
   }
 });
+
+export const getCurrentUser = async () => {
+  const session = await auth();
+
+  if (!session?.user) {
+    throw new Error("You are not logged in!");
+  }
+
+  return session.user;
+};

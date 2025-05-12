@@ -20,7 +20,7 @@ export const getActivitiesByRoom = async (roomId: number) => {
       isPublic: roomActivity.isPublic,
       priority: roomActivity.priority,
       createdById: roomActivity.created_by,
-      authorName: users.name,
+      author: users,
       repeatableType: roomActivity.repeatableType,
       repeatableValue: roomActivity.repeatableValue,
       timestamp: roomActivity.timestamp,

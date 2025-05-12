@@ -54,7 +54,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         users,
         assignedUserIds,
         date,
-        authorName: t.authorName ?? "Unknown",
+        author: t.author,
         isPublic: t.isPublic,
         repeatableType: t.repeatableType,
         repeatableValue: t.repeatableValue
@@ -83,7 +83,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         place: e.eventPlace,
         assignedUserIds,
         date,
-        author: e.authorName,
+        author: e.author,
         isPublic: e.isPublic,
         repeatableType: e.repeatableType,
         repeatableValue: e.repeatableValue
@@ -106,7 +106,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         assignedUserIds,
         total: s.settleMoney ?? 0,
         date,
-        author: s.authorName,
+        author: s.author,
         isPublic: s.isPublic,
         repeatableType: s.repeatableType,
         repeatableValue: s.repeatableValue
@@ -141,7 +141,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 subtasks={t.subtasks}
                 users={t.users}
                 date={t.date}
-                author={t.authorName}
+                author={t.author!}
                 isPublic={t.isPublic}
                 repeatableType={t.repeatableType ?? undefined}
                 repeatableValue={t.repeatableValue}
@@ -162,7 +162,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 place={e.place ?? undefined}
                 description={e.description ?? undefined}
                 date={e.date}
-                author={e.author ?? undefined}
+                author={e.author!}
                 users={e.users}
                 isPublic={e.isPublic}
                 repeatableType={e.repeatableType ?? undefined}
@@ -185,7 +185,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 name={s.name}
                 description={s.description ?? undefined}
                 date={s.date}
-                author={s.author ?? undefined}
+                author={s.author!}
                 money={s.total}
                 isPublic={s.isPublic}
                 users={s.users}

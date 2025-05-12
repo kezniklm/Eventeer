@@ -1,6 +1,7 @@
 "use client";
 
 import { MapPin, Check } from "lucide-react";
+import { type User } from "next-auth";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,7 @@ type EventCardProps = {
   description?: string;
   isPublic: boolean;
   date?: string;
-  author?: string;
+  author?: User;
   users?: { id: string; name: string; willAttend: boolean }[];
   place?: string;
   repeatableType?: string;
@@ -70,7 +71,7 @@ export const EventCard = ({
       </div>
       <div className="text-muted-foreground text-right text-xs">
         {date && <div>{date}</div>}
-        {author && <div className="mt-1">By: {author}</div>}
+        {author && <div className="mt-1">By: {author.name}</div>}
       </div>
     </CardHeader>
 

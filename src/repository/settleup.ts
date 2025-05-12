@@ -86,3 +86,26 @@ export const updateSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
 
     return { ...updated, ...activity };
   });
+
+export const deleteSettleUp = async (settleUpId: number) => {
+  await db.transaction(async (tx) => {
+    const rows = await tx.delete(roomActivity).where(eq(roomActivity.fk_settle_up, settleUpId));
+
+    if (rows.rowsAffected !== 1) {
+      throw new Error("Failed to delete settle up!");
+    }
+
+    const rowsSettleUp = await tx.delete(settleUp).where(eq(settleUp.id, settleUpId));
+
+    if (rowsSettleUp.rowsAffected !== 1) {
+      throw new Error("Failed to delete settle up!");
+    }
+  });
+};
+
+export const getSettleUpById = async (settleUpId: number) =>
+  db
+    .select()
+    .from(settleUp)
+    .innerJoin(roomActivity, eq(roomActivity.id, settleUpId))
+    .where(eq(settleUp.id, settleUpId));
