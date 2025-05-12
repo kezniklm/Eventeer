@@ -55,7 +55,7 @@ const PopupForm = ({ children, type, setType }: PopupFormProps) => {
             </Select>
 
             {type === "task" && <CreateTaskForm />}
-            {type === "event" && <CreateEventForm />}
+            {type === "event" && <CreateEventForm onSubmit={handleClose} />}
             {type === "settleup" && <CreateSettleUpForm onSubmit={handleClose} />}
           </div>
         </DialogContent>

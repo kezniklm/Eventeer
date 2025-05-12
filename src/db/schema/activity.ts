@@ -21,7 +21,7 @@ export const roomActivity = sqliteTable(
     priority: text("priority", { enum: priorityEnum }).notNull().default("NORMAL"),
     created_by: text().references(() => users.id),
     repeatableType: text("repeatable_type", { enum: periodEnum }),
-    repeatableValue: integer("repeatable_value"),
+    repeatableValue: integer("repeatable_value", { mode: "boolean" }).notNull().default(false),
     timestamp: integer({ mode: "timestamp" }).default(sql`(unixepoch())`),
     createdAt: integer({ mode: "timestamp" }).default(sql`(unixepoch())`)
   },
@@ -68,7 +68,8 @@ export const event = sqliteTable("event", {
   roomId: integer("room_id")
     .references(() => room.id)
     .notNull(),
-  place: text("place")
+  place: text("place"),
+  dateTime: integer({ mode: "timestamp" })
 });
 
 export const settleUp = sqliteTable("settle_up", {

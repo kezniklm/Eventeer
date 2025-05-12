@@ -61,7 +61,10 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       };
     })
   );
-  const visibleTasks = tasksWithDetails.filter((t) => t.isPublic || t.assignedUserIds.includes(userId));
+
+  const visibleTasks = tasksWithDetails.filter(
+    (t) => (t.createdById === userId || t.isPublic) ?? t.assignedUserIds.includes(userId)
+  );
 
   const eventsWithDetails = await Promise.all(
     events.map(async (e) => {
@@ -69,7 +72,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       const rawAtt = await getAttendeesByActivity(e.id);
 
       const users = rawUsers.map((u) => ({
-        id: u.id!,
+        id: u.id,
         name: u.name!,
         willAttend: !!rawAtt.find((a) => a.fk_user_id === u.id!)?.will_attend
       }));
@@ -90,7 +93,10 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       };
     })
   );
-  const visibleEvents = eventsWithDetails.filter((e) => e.isPublic || e.assignedUserIds.includes(userId));
+
+  const visibleEvents = eventsWithDetails.filter(
+    (e) => (e.createdById === userId || e.isPublic) ?? e.assignedUserIds.includes(userId)
+  );
 
   const settleUpsWithDetails = await Promise.all(
     settleUps.map(async (s) => {
@@ -114,7 +120,9 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
     })
   );
 
-  const visibleSettleUps = settleUpsWithDetails.filter((s) => s.isPublic || s.assignedUserIds.includes(userId));
+  const visibleSettleUps = settleUpsWithDetails.filter(
+    (s) => (s.createdById === userId || s.isPublic) ?? s.assignedUserIds.includes(userId)
+  );
 
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:px-6 md:space-y-10 md:px-8 lg:space-y-12 lg:px-12">
