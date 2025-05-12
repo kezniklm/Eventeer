@@ -1,8 +1,15 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { roomActivity, settleUp, task, event } from "@/db/schema/activity";
+import { roomActivity, task, event, settleUp, userHasActivity } from "@/db/schema/activity";
 import { users } from "@/db/schema/auth";
+
+export const getActivityUsersNames = async (activityId: number) =>
+  await db
+    .select({ id: users.id, name: users.name })
+    .from(users)
+    .innerJoin(userHasActivity, eq(userHasActivity.fk_user_id, users.id))
+    .where(eq(userHasActivity.fk_activity_id, activityId));
 
 export const getActivitiesByRoom = async (roomId: number) => {
   const activities = await db
@@ -10,20 +17,23 @@ export const getActivitiesByRoom = async (roomId: number) => {
       id: roomActivity.id,
       name: roomActivity.name,
       description: roomActivity.description,
-      taskId: roomActivity.fk_task,
-      dueDate: task.due_date,
+      isPublic: roomActivity.isPublic,
+      priority: roomActivity.priority,
       createdById: roomActivity.created_by,
       authorName: users.name,
+      repeatableType: roomActivity.repeatableType,
+      repeatableValue: roomActivity.repeatableValue,
+      timestamp: roomActivity.timestamp,
+      createdAt: roomActivity.createdAt,
+      taskId: roomActivity.fk_task,
       eventId: roomActivity.fk_event,
-      settleUpId: roomActivity.fk_settle_up,
-      eventDateTime: event.dateTime,
       eventPlace: event.place,
-      settleDate: settleUp.date,
+      settleUpId: roomActivity.fk_settle_up,
       settleMoney: settleUp.money
     })
     .from(roomActivity)
-    .leftJoin(task, eq(task.id, roomActivity.fk_task))
     .leftJoin(users, eq(users.id, roomActivity.created_by))
+    .leftJoin(task, eq(task.id, roomActivity.fk_task))
     .leftJoin(event, eq(event.id, roomActivity.fk_event))
     .leftJoin(settleUp, eq(settleUp.id, roomActivity.fk_settle_up))
     .where(eq(roomActivity.fk_room, roomId));

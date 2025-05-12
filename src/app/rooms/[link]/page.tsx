@@ -6,10 +6,11 @@ import { EventCard } from "@/components/rooms/event-card";
 import { RoomDetailActionsWrapper } from "@/components/rooms/room-detail-actions-wrapper";
 import { SettleUpCard } from "@/components/rooms/settleup-card";
 import { TaskCard } from "@/components/rooms/task-card";
-import { getActivitiesByRoom } from "@/repository/activity";
+import { getActivitiesByRoom, getActivityUsersNames } from "@/repository/activity";
+import { getAttendeesByActivity } from "@/repository/attendance";
 import { getRoomByLink, isUserInRoom } from "@/repository/room";
-import { getRoomUsersNames } from "@/repository/rooms";
 import { getSubtasksByTask } from "@/repository/subtask";
+import { getRoomUsersNames } from "@/repository/rooms";
 
 export const metadata: Metadata = {
   title: "Room Details",
@@ -38,56 +39,85 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   const tasksWithDetails = await Promise.all(
     tasks.map(async (t) => {
-      const rawSubtasks = await getSubtasksByTask(t.id);
-      const subtasks: { id: number; name: string; is_done: boolean }[] = rawSubtasks.map((s) => ({
+      const rawSubtasks = await getSubtasksByTask(t.taskId!);
+      const subtasks = rawSubtasks.map((s) => ({
         id: s.id,
-        is_done: Boolean(s.is_done),
-        name: s.name
+        name: s.name,
+        is_done: Boolean(s.is_done)
       }));
-      const users = await getRoomUsersNames(room.id);
-      const dueDate = t.dueDate ? new Date(t.dueDate).toISOString().slice(0, 10) : undefined;
+
+      const rawUsers = await getActivityUsersNames(t.id);
+      const assignedUserIds = rawUsers.map((u) => u.id!);
+      const users = rawUsers.map((u) => u.name!);
+      const date = t.timestamp ? new Date(t.timestamp).toISOString().slice(0, 10) : undefined;
+
       return {
         ...t,
         subtasks,
         users,
-        dueDate,
-        authorName: t.authorName ?? "Unknown"
+        assignedUserIds,
+        date,
+        authorName: t.authorName ?? "Unknown",
+        isPublic: t.isPublic,
+        repeatableType: t.repeatableType,
+        repeatableValue: t.repeatableValue
       };
     })
   );
+  const visibleTasks = tasksWithDetails.filter((t) => t.isPublic || t.assignedUserIds.includes(userId));
 
   const eventsWithDetails = await Promise.all(
     events.map(async (e) => {
-      const users = (await getRoomUsersNames(room.id)).map((u) => u.name!);
-      const date = e.eventDateTime ? new Date(e.eventDateTime).toLocaleDateString("sk-SK") : undefined;
+      const rawUsers = await getActivityUsersNames(e.id);
+      const rawAtt = await getAttendeesByActivity(e.id);
+
+      const users = rawUsers.map((u) => ({
+        id: u.id!,
+        name: u.name!,
+        willAttend: !!rawAtt.find((a) => a.fk_user_id === u.id!)?.will_attend
+      }));
+      const assignedUserIds = users.map((u) => u.id);
+
+      const date = e.timestamp ? new Date(e.timestamp).toLocaleDateString("sk-SK") : undefined;
+
       return {
         ...e,
         users,
+        place: e.eventPlace,
+        assignedUserIds,
         date,
         author: e.authorName,
-        place: e.eventPlace
+        isPublic: e.isPublic,
+        repeatableType: e.repeatableType,
+        repeatableValue: e.repeatableValue
+      };
+    })
+  );
+  const visibleEvents = eventsWithDetails.filter((e) => e.isPublic || e.assignedUserIds.includes(userId));
+
+  const settleUpsWithDetails = await Promise.all(
+    settleUps.map(async (s) => {
+      const names = await getActivityUsersNames(s.id);
+
+      const assignedUserIds = names.map((u) => u.id!);
+
+      const date = s.timestamp ? new Date(s.timestamp).toLocaleDateString("sk-SK") : undefined;
+
+      return {
+        ...s,
+        assignedUserIds,
+        users: names.map((u) => u.name!),
+        total: s.settleMoney?.toString() ?? "0",
+        date,
+        author: s.authorName,
+        isPublic: s.isPublic,
+        repeatableType: s.repeatableType,
+        repeatableValue: s.repeatableValue
       };
     })
   );
 
-  const settleUpsWithDetails = await Promise.all(
-    settleUps.map(async (s) => {
-      const users = (await getRoomUsersNames(room.id)).map((u) => u.name!);
-      const total = (s.settleMoney ?? 0).toString();
-      const transactions = users.map((u) => ({
-        user: u,
-        amount: `${Math.ceil((s.settleMoney ?? 0) / users.length / 10) * 10}`
-      }));
-      const date = s.settleDate ? new Date(s.settleDate).toLocaleDateString("sk-SK") : undefined;
-      return {
-        ...s,
-        transactions,
-        total,
-        date,
-        author: s.authorName
-      };
-    })
-  );
+  const visibleSettleUps = settleUpsWithDetails.filter((s) => s.isPublic || s.assignedUserIds.includes(userId));
 
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:px-6 md:space-y-10 md:px-8 lg:space-y-12 lg:px-12">
@@ -107,58 +137,67 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         )}
       </header>
 
-      {tasksWithDetails.length > 0 && (
+      {visibleTasks.length > 0 && (
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Tasks</h2>
           <div className="flex flex-col space-y-4">
-            {tasksWithDetails.map((t) => (
+            {visibleTasks.map((t) => (
               <TaskCard
                 key={t.id}
-                id={t.id}
+                id={t.taskId!}
                 name={t.name}
                 description={t.description ?? undefined}
                 subtasks={t.subtasks}
-                users={t.users.map((user) => user.name ?? "Unknown")}
-                date={t.dueDate}
+                users={t.users}
+                date={t.date}
                 author={t.authorName}
+                isPublic={t.isPublic}
+                repeatableType={t.repeatableType ?? undefined}
+                repeatableValue={t.repeatableValue}
               />
             ))}
           </div>
         </section>
       )}
 
-      {eventsWithDetails.length > 0 && (
+      {visibleEvents.length > 0 && (
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Events</h2>
           <div className="flex flex-col space-y-4">
-            {eventsWithDetails.map((e) => (
+            {visibleEvents.map((e) => (
               <EventCard
                 key={e.id}
                 name={e.name}
+                place={e.place ?? undefined}
                 description={e.description ?? undefined}
                 date={e.date}
                 author={e.author ?? undefined}
                 users={e.users}
-                place={e.place ?? undefined}
+                isPublic={e.isPublic}
+                repeatableType={e.repeatableType ?? undefined}
+                repeatableValue={e.repeatableValue}
+                id={e.id}
               />
             ))}
           </div>
         </section>
       )}
 
-      {settleUpsWithDetails.length > 0 && (
+      {visibleSettleUps.length > 0 && (
         <section>
           <h2 className="mb-4 text-2xl font-semibold">Settle Ups</h2>
           <div className="flex flex-col space-y-4">
-            {settleUpsWithDetails.map((s) => (
+            {visibleSettleUps.map((s) => (
               <SettleUpCard
                 key={s.id}
                 name={s.name}
                 description={s.description ?? undefined}
                 date={s.date}
                 author={s.author ?? undefined}
-                transactions={s.transactions}
                 total={s.total}
+                isPublic={s.isPublic}
+                repeatableType={s.repeatableType ?? undefined}
+                repeatableValue={s.repeatableValue}
               />
             ))}
           </div>
