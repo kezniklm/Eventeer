@@ -191,6 +191,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 users={s.users}
                 repeatableType={s.repeatableType ?? undefined}
                 repeatableValue={s.repeatableValue ?? undefined}
+                priority={s.priority}
               />
             ))}
           </div>

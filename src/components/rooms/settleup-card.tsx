@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SettleUpUpdateProvider } from "@/context/settle-up-update-context";
 import { type SettleUpForm } from "@/db/zod/settle-up";
 import { type UserIdNamePair } from "@/db/zod/user";
+import { type PriorityEnum } from "@/db/zod/activity";
 
 import { UpdateButton } from "../controls/update-button";
 import PopupForm from "../pop-up-form";
@@ -19,6 +20,7 @@ type SettleUpCardProps = {
   repeatableType?: string;
   repeatableValue?: number;
   users: UserIdNamePair[];
+  priority: PriorityEnum;
 };
 
 export const SettleUpCard = ({
@@ -32,15 +34,16 @@ export const SettleUpCard = ({
   repeatableType,
   repeatableValue,
   settleUpId,
-  users
+  users,
+  priority
 }: SettleUpCardProps) => {
   const forUpdateData: SettleUpForm = {
     description: description!,
     name,
     money: money!,
     users,
-    isPublic: false, // TODO,
-    priority: "LOW"
+    isPublic, // TODO,
+    priority
   };
 
   return (

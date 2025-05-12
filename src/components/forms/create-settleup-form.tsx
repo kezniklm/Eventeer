@@ -40,7 +40,7 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
       {
         onSuccess: (data) => {
           toast.success(`Settle Up ${data.name} created!`);
-          setTimeout(onSubmit);
+          setTimeout(onSubmit, 500);
         },
         onError: (error) => toast.error(`Failed to create Settle Up: ${error.message}`)
       }
@@ -53,7 +53,7 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
       {
         onSuccess: (data) => {
           toast.success(`Settle Up ${data.name} updated!`);
-          setTimeout(onSubmit);
+          setTimeout(onSubmit, 500);
         },
         onError: (error) => toast.error(`Failed to update Settle Up: ${error.message}`)
       }
@@ -122,7 +122,7 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
                 <RadioGroup
                   defaultValue={value ?? priorityEnumSchema.Enum.NORMAL}
                   className="flex flex-wrap gap-4 px-2"
-                  onChange={onChange}
+                  onValueChange={onChange}
                 >
                   {Object.values(priorityEnumSchema.enum).map((value) => (
                     <div key={value} className="flex gap-2">
