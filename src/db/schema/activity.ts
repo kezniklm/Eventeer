@@ -72,8 +72,8 @@ export const event = sqliteTable("event", {
   dateTime: integer({ mode: "timestamp" }),
   priority: text("priority", { enum: priorityEnum }).default("NORMAL"),
   isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
-  repeatableType: text("repeatable_type"),
-  repeatableValue: integer("repeatable_value"),
+  repeatableType: text("repeatable_type", { enum: periodEnum }),
+  repeatableValue: integer("repeatable_value", { mode: "boolean" }).notNull().default(false),
   place: text("place"),
   createdAt: integer({ mode: "timestamp" })
 });

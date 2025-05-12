@@ -19,10 +19,15 @@ import { useRoomContext } from "@/context/room-context";
 import { createEventFormSchema, type CreateEventFormSchema } from "@/db/zod/event";
 import { priorityEnumSchema } from "@/db/zod/activity";
 import { periodEnum } from "@/db/schema/activity";
+import { useCreateEventMutation } from "@/hooks/mutations/event";
 
 import { FormInput } from "../ui/form-input";
 
-export const CreateEventForm = () => {
+type FormProps = {
+  onSubmit: () => void;
+};
+
+export const CreateEventForm = ({ onSubmit }: FormProps) => {
   const roomInfo = useRoomContext();
 
   const form = useForm<CreateEventFormSchema>({
@@ -35,27 +40,26 @@ export const CreateEventForm = () => {
     defaultValue: false
   });
 
-  // const mutation = useCreateEventMutation();
+  const mutation = useCreateEventMutation();
 
-  const onSubmit = (data: CreateEventFormSchema) => {
-    // mutation.mutate(
-    //   { roomId: roomInfo.room.id, data },
-    //   {
-    //     onSuccess: (data) => {
-    //       toast.success(`Event ${data.name} created!`);
-    //       setTimeout(onSubmit);
-    //     },
-    //     onError: (error) => toast.error(`Failed to create Event: ${error.message}`)
-    //   }
-    // );
-    console.log(data);
+  const handleSubmit = async (data: CreateEventFormSchema) => {
+    await mutation.mutateAsync(
+      { roomId: roomInfo.room.id, data },
+      {
+        onSuccess: (data) => {
+          toast.success(`Event ${data.name} created!`);
+          setTimeout(onSubmit);
+        },
+        onError: (error) => toast.error(`Failed to create Event: ${error.message}`)
+      }
+    );
   };
 
   useEffect(() => console.log(form.formState.errors), [form.formState.errors]);
 
   return (
     <FormProvider {...form}>
-      <form className="flex flex-col space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="flex flex-col space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
         {/* Name */}
         <FormInput required type="text" name="name" label="Name" placeholderAsLabel />
 
