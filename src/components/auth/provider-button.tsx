@@ -17,7 +17,7 @@ export const ProviderButton = ({ name, children, className, ...props }: Provider
     {...props}
     type="submit"
     className={cn(
-      "enabled:animate-fade-in-slow border-providers width-auto mt-2 flex min-w-80 flex-row justify-center gap-3 rounded-2xl border border-solid bg-white p-2 align-middle font-[Roboto] transition duration-500 enabled:cursor-pointer enabled:hover:-translate-y-1 enabled:hover:shadow-lg disabled:bg-gray-100",
+      "enabled:animate-fade-in-slow border-providers mt-2 flex w-full flex-row justify-center gap-3 rounded-2xl border border-solid bg-white p-2 align-middle font-[Roboto] transition duration-500 enabled:cursor-pointer enabled:hover:-translate-y-1 enabled:hover:shadow-lg disabled:bg-gray-100",
       className
     )}
   >
