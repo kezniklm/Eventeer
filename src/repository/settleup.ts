@@ -46,7 +46,7 @@ export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
       })
       .returning();
 
-    if (users.length !== 0) {
+    if (users && users.length !== 0) {
       const usersWithSettleUp = users.map((user) => ({ fk_user_id: user.id, fk_activity_id: activity.id }));
       await tx.insert(userHasActivity).values([...usersWithSettleUp]);
     }

@@ -19,7 +19,7 @@ export const settleUpFormSchema = settleUpInsertSchema
   .pick({
     money: true
   })
-  .extend({ users: z.array(userIdNamePair) })
+  .extend({ users: z.array(userIdNamePair).optional() })
   .merge(commonFormSchema)
   .omit({ repeatableType: true, repeatableValue: true }); //TODO
 export type SettleUpForm = z.infer<typeof settleUpFormSchema>;

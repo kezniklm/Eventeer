@@ -29,14 +29,14 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
     resolver: zodResolver(settleUpFormSchema),
     defaultValues: updateData?.data
   });
-  const roomInfo = useRoomContext();
+  const { users, room } = useRoomContext();
   const createMutation = useCreateSettleUpMutation();
   const updateMutation = useUpdateSettleUpMutation();
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   const handleCreate = (data: SettleUpForm) => {
     createMutation.mutate(
-      { roomId: roomInfo.room.id, data },
+      { roomId: room.id, data },
       {
         onSuccess: (data) => {
           toast.success(`Settle Up ${data.name} created!`);
@@ -49,7 +49,7 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
 
   const handleUpdate = (data: SettleUpForm, settleUpId: number) => {
     updateMutation.mutate(
-      { data, settleUpId, roomId: roomInfo.room.id },
+      { data, settleUpId, roomId: room.id },
       {
         onSuccess: (data) => {
           toast.success(`Settle Up ${data.name} updated!`);
@@ -81,35 +81,37 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
           {/* Amount */}
           <FormInput type="number" name="money" label="Amount" placeholderAsLabel />
 
-          <div className="grid w-full items-center gap-2">
-            <Label>Users</Label>
-            {roomInfo.users.map((userItem) => (
-              <Controller
-                key={userItem.id}
-                control={form.control}
-                name="users"
-                defaultValue={[]}
-                render={({ field }) => (
-                  <div className="flex flex-wrap gap-4 px-2">
-                    <div className="flex gap-2">
-                      <Checkbox
-                        id={`checkbox-${userItem.id}`}
-                        checked={field.value?.find((value) => value.id === userItem.id) ? true : false}
-                        onCheckedChange={(checked) =>
-                          checked
-                            ? field.onChange([...field.value, userItem])
-                            : field.onChange(field.value?.filter((value) => value.id !== userItem.id))
-                        }
-                      />
-                      <Label className="text-xs text-gray-500" htmlFor={`checkbox-${userItem.id}`}>
-                        {userItem.name}
-                      </Label>
+          {users?.length !== 0 && (
+            <div className="grid w-full items-center gap-2">
+              <Label>Users</Label>
+              {users.map((userItem) => (
+                <Controller
+                  key={userItem.id}
+                  control={form.control}
+                  name="users"
+                  defaultValue={[]}
+                  render={({ field }) => (
+                    <div className="flex flex-wrap gap-4 px-2">
+                      <div className="flex gap-2">
+                        <Checkbox
+                          id={`checkbox-${userItem.id}`}
+                          checked={field.value?.find((value) => value.id === userItem.id) ? true : false}
+                          onCheckedChange={(checked) =>
+                            checked
+                              ? field.onChange([...(field?.value ?? []), userItem])
+                              : field.onChange(field.value?.filter((value) => value.id !== userItem.id))
+                          }
+                        />
+                        <Label className="text-xs text-gray-500" htmlFor={`checkbox-${userItem.id}`}>
+                          {userItem.name}
+                        </Label>
+                      </div>
                     </div>
-                  </div>
-                )}
-              />
-            ))}
-          </div>
+                  )}
+                />
+              ))}
+            </div>
+          )}
 
           {/* Priority */}
           <Controller
