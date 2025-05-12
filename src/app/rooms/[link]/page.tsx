@@ -64,7 +64,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       };
     })
   );
-  const visibleTasks = tasksWithDetails.filter((t) => t.isPublic || t.assignedUserIds.includes(userId));
+  const visibleTasks = tasksWithDetails.filter((t) => t.isPublic ?? t.assignedUserIds.includes(userId));
 
   const eventsWithDetails = await Promise.all(
     events.map(async (e) => {
@@ -93,7 +93,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       };
     })
   );
-  const visibleEvents = eventsWithDetails.filter((e) => e.isPublic || e.assignedUserIds.includes(userId));
+  const visibleEvents = eventsWithDetails.filter((e) => e.isPublic ?? e.assignedUserIds.includes(userId));
 
   const settleUpsWithDetails = await Promise.all(
     settleUps.map(async (s) => {
@@ -117,7 +117,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
     })
   );
 
-  const visibleSettleUps = settleUpsWithDetails.filter((s) => s.isPublic || s.assignedUserIds.includes(userId));
+  const visibleSettleUps = settleUpsWithDetails.filter((s) => s.isPublic ?? s.assignedUserIds.includes(userId));
 
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:px-6 md:space-y-10 md:px-8 lg:space-y-12 lg:px-12">
