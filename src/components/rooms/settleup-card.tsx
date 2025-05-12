@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { type UserIdNamePair } from "@/db/zod/user";
-import { type SettleUpForm } from "@/db/zod/settle-up";
 import { SettleUpUpdateProvider } from "@/context/settle-up-update-context";
+import { type SettleUpForm } from "@/db/zod/settle-up";
+import { type UserIdNamePair } from "@/db/zod/user";
 
+import { UpdateButton } from "../controls/update-button";
 import PopupForm from "../pop-up-form";
 
 type SettleUpCardProps = {
@@ -35,7 +36,7 @@ export const SettleUpCard = ({
   };
 
   return (
-    <Card className="bg-secondary animate-fade-in-slow space-y-4 p-4">
+    <Card className="bg-secondary animate-fade-in-slow group space-y-4 p-4">
       <CardHeader className="flex items-start justify-between">
         <div>
           <CardTitle className="text-2xl">{name}</CardTitle>
@@ -60,10 +61,9 @@ export const SettleUpCard = ({
             {money} czk
           </Button>
         )}
-        ``
         <SettleUpUpdateProvider data={forUpdateData} settleUpId={settleUpId}>
           <PopupForm type="settleup">
-            <Button size="sm">Update TODO</Button>
+            <UpdateButton />
           </PopupForm>
         </SettleUpUpdateProvider>
       </CardContent>
