@@ -4,7 +4,7 @@ import { check, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { users } from "./auth";
 import { room } from "./room";
 
-const periodEnum = ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"] as const;
+export const periodEnum = ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"] as const;
 export const priorityEnum = ["LOW", "NORMAL", "HIGH"] as const;
 
 export const roomActivity = sqliteTable(
@@ -16,8 +16,14 @@ export const roomActivity = sqliteTable(
     fk_event: integer().references(() => event.id),
     fk_settle_up: integer().references(() => settleUp.id),
     name: text({ length: 255 }).notNull(),
+    description: text({ length: 255 }),
+    isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
+    priority: text("priority", { enum: priorityEnum }).notNull().default("NORMAL"),
     created_by: text().references(() => users.id),
-    description: text({ length: 255 })
+    repeatableType: text("repeatable_type", { enum: periodEnum }),
+    repeatableValue: integer("repeatable_value"),
+    timestamp: integer({ mode: "timestamp" }),
+    createdAt: integer({ mode: "timestamp" })
   },
   (table) => [
     check(
@@ -25,18 +31,16 @@ export const roomActivity = sqliteTable(
       sql`
       (CASE WHEN ${table.fk_event} IS NOT NULL THEN 1 ELSE 0 END) +
       (CASE WHEN ${table.fk_task} IS NOT NULL THEN 1 ELSE 0 END) +
-      (CASE WHEN ${table.fk_settle_up} IS NOT NULL THEN 1 ELSE 0 END)= 1`
+      (CASE WHEN ${table.fk_settle_up} IS NOT NULL THEN 1 ELSE 0 END) = 1`
     )
   ]
 );
 
 export const task = sqliteTable("task", {
   id: integer().primaryKey(),
-  priority: text({ enum: priorityEnum }).default("NORMAL"),
-  repeatable_type: text({ enum: periodEnum }),
-  repeatable_value: integer(),
-  due_date: integer({ mode: "timestamp" }),
-  created_by: text().references(() => users.id)
+  roomId: integer("room_id")
+    .references(() => room.id)
+    .notNull()
 });
 
 export const subtask = sqliteTable("subtask", {
@@ -64,18 +68,7 @@ export const event = sqliteTable("event", {
   roomId: integer("room_id")
     .references(() => room.id)
     .notNull(),
-  name: text("name").notNull(),
-  description: text("description"),
-  authorId: text("author_id")
-    .references(() => users.id)
-    .notNull(),
-  dateTime: integer({ mode: "timestamp" }),
-  priority: text("priority", { enum: priorityEnum }).default("NORMAL"),
-  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
-  repeatableType: text("repeatable_type"),
-  repeatableValue: integer("repeatable_value"),
-  place: text("place"),
-  createdAt: integer({ mode: "timestamp" })
+  place: text("place")
 });
 
 export const settleUp = sqliteTable("settle_up", {
@@ -83,16 +76,7 @@ export const settleUp = sqliteTable("settle_up", {
   roomId: integer("room_id")
     .references(() => room.id)
     .notNull(),
-  name: text("name").notNull(),
-  description: text("description"),
-  authorId: text("author_id")
-    .references(() => users.id)
-    .notNull(),
-  date: integer({ mode: "timestamp" }),
-  money: integer("money").notNull(), // v centoch
-  priority: text("priority", { enum: priorityEnum }).default("NORMAL"),
-  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
-  createdAt: integer({ mode: "timestamp" })
+  money: integer("money").notNull()
 });
 
 export const userSettledUp = sqliteTable("user_settled_up", {
@@ -121,7 +105,8 @@ export const userHasActivity = sqliteTable("activity_has_user", {
   fk_user_id: text()
     .notNull()
     .references(() => users.id),
-  fk_activity_id: integer().references(() => roomActivity.id)
+  fk_activity_id: integer().references(() => roomActivity.id),
+  will_attend: integer({ mode: "boolean" }).notNull().default(false)
 });
 
 export const roomActivityRelations = relations(roomActivity, ({ one, many }) => ({

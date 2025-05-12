@@ -12,11 +12,14 @@ type Subtask = { id: number; name: string; is_done: boolean };
 type TaskCardProps = {
   id: number;
   name: string;
+  isPublic: boolean;
   description?: string;
   subtasks: Subtask[];
   users: string[];
   date?: string;
   author?: string;
+  repeatableType?: string;
+  repeatableValue?: number | null;
 };
 
 const formatDate = (iso: string) =>
@@ -26,7 +29,17 @@ const formatDate = (iso: string) =>
     year: "numeric"
   });
 
-export const TaskCard = ({ name, description, subtasks, users, date, author }: TaskCardProps) => {
+export const TaskCard = ({
+  name,
+  description,
+  subtasks,
+  users,
+  date,
+  author,
+  isPublic,
+  repeatableType,
+  repeatableValue
+}: TaskCardProps) => {
   const [items, setItems] = useState(subtasks);
   const doneCount = items.filter((s) => s.is_done).length;
   const progress = items.length ? Math.round((doneCount / items.length) * 100) : 0;
@@ -42,6 +55,39 @@ export const TaskCard = ({ name, description, subtasks, users, date, author }: T
         <div>
           <CardTitle className="text-2xl">{name}</CardTitle>
           {description && <p className="text-muted-foreground text-sm">{description}</p>}
+          <span
+            className={`inline-block rounded-full px-2 py-0.5 text-xs ${isPublic ? "bg-green-100 text-green-800" : "bg-red-100 text-red-600"}`}
+          >
+            {isPublic ? "Public" : "Private"}
+          </span>
+          <span
+            className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs ${
+              repeatableValue !== undefined && repeatableValue !== null && repeatableValue > 0
+                ? "bg-purple-200 text-purple-800"
+                : "bg-indigo-200 text-indigo-800"
+            }`}
+          >
+            {repeatableValue !== undefined && repeatableValue !== null && repeatableValue > 0
+              ? "Repeatable"
+              : "One-time"}
+          </span>
+          {repeatableValue !== undefined && repeatableValue !== null && repeatableValue > 0 && (
+            <span
+              className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs ${
+                repeatableType === "day"
+                  ? "bg-indigo-300 text-indigo-800"
+                  : repeatableType === "week"
+                    ? "bg-indigo-200 text-indigo-800"
+                    : repeatableType === "month"
+                      ? "bg-purple-300 text-purple-800"
+                      : "bg-purple-200 text-purple-800"
+              }`}
+            >
+              {repeatableValue === 1
+                ? (repeatableType ?? "").charAt(0).toUpperCase() + (repeatableType ?? "").slice(1).toLowerCase()
+                : `${repeatableValue} ${(repeatableType ?? "").toLowerCase()}s`}
+            </span>
+          )}
         </div>
         <div className="text-muted-foreground text-right text-xs">
           {date && <span className="mt-1">{formatDate(date)}</span>}
