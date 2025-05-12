@@ -29,10 +29,11 @@ export const LoginForm = ({ callbackUrl, providerMap, errorType, className, ...p
   }, [errorType]);
 
   return (
-    <div className={cn("p-5", className)} {...props}>
+    <div className={cn("p-5 md:p-10", className)} {...props}>
       <div className="flex min-h-full flex-col items-center justify-center align-middle">
         {Object.values(providerMap).map((provider) => (
           <form
+            className="w-full"
             key={provider.id}
             onSubmit={async (e) => {
               e.preventDefault();
