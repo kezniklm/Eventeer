@@ -74,6 +74,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       return {
         ...e,
         users,
+        place: e.eventPlace,
         assignedUserIds,
         date,
         author: e.authorName,
@@ -155,6 +156,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
               <EventCard
                 key={e.id}
                 name={e.name}
+                place={e.place ?? undefined}
                 description={e.description ?? undefined}
                 date={e.date}
                 author={e.author ?? undefined}
