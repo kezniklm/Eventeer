@@ -70,8 +70,8 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   const settleUpsWithDetails = await Promise.all(
     settleUps.map(async (s) => {
-      const users = (await getRoomUsersNames(room.id)).map((u) => u.name!);
-      const total = (s.settleMoney ?? 0).toString();
+      const users = await getRoomUsersNames(room.id);
+      const total = s.settleMoney ?? 0;
       const transactions = users.map((u) => ({
         user: u,
         amount: `${Math.ceil((s.settleMoney ?? 0) / users.length / 10) * 10}`
@@ -150,7 +150,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 date={s.date}
                 author={s.author ?? undefined}
                 transactions={s.transactions}
-                total={s.total}
+                money={s.total}
               />
             ))}
           </div>

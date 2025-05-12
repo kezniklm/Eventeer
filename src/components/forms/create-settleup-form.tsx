@@ -23,7 +23,8 @@ type FormProps = {
 
 export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
   const form = useForm<SettleUpForm>({
-    resolver: zodResolver(settleUpFormSchema)
+    resolver: zodResolver(settleUpFormSchema),
+    defaultValues: undefined
   });
   const roomInfo = useRoomContext();
   const mutation = useCreateSettleUpMutation();
