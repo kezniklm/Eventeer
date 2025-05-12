@@ -48,5 +48,5 @@ export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
       tx.insert(userHasActivity).values([...usersWithSettleUp]);
     }
 
-    return inserted;
+    return { ...inserted, ...activity };
   });

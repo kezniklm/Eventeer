@@ -7,5 +7,13 @@ export const priorityEnumSchema = z.enum(priorityEnum);
 
 export const activitySelectSchema = createSelectSchema(roomActivity);
 
-export const commonInsertSchema = activitySelectSchema.pick({ created_by: true, description: true, name: true });
+export const commonInsertSchema = activitySelectSchema.pick({
+  created_by: true,
+  description: true,
+  name: true,
+  isPublic: true,
+  priority: true,
+  repeatableType: true,
+  repeatableValue: true
+});
 export const commonFormSchema = commonInsertSchema.omit({ created_by: true });

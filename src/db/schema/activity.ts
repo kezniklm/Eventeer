@@ -18,10 +18,10 @@ export const roomActivity = sqliteTable(
     name: text({ length: 255 }).notNull(),
     description: text({ length: 255 }),
     isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
-    priority: integer("priority").notNull().default(0),
+    priority: text("priority", { enum: priorityEnum }).notNull().default("NORMAL"),
     created_by: text().references(() => users.id),
-    repeatable_type: text("repeatable_type", { enum: periodEnum }),
-    repeatable_value: integer("repeatable_value"),
+    repeatableType: text("repeatable_type", { enum: periodEnum }),
+    repeatableValue: integer("repeatable_value"),
     timestamp: integer({ mode: "timestamp" }),
     createdAt: integer({ mode: "timestamp" })
   },

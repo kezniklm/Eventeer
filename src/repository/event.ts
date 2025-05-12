@@ -1,20 +1,8 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { event, roomActivity, type periodEnum } from "@/db/schema/activity";
-
-export type CreateEventInput = {
-  roomId: number;
-  name: string;
-  description?: string;
-  authorId: string;
-  dateTime: Date;
-  priority: number;
-  isPublic: boolean;
-  repeatableType?: (typeof periodEnum)[number];
-  repeatableValue?: number | null;
-  place?: string;
-};
+import { event, roomActivity } from "@/db/schema/activity";
+import { type CreateEventSchema } from "@/db/zod/event";
 
 export const getEventsByRoom = async (roomId: number) =>
   await db
@@ -26,8 +14,8 @@ export const getEventsByRoom = async (roomId: number) =>
       priority: roomActivity.priority,
       authorId: roomActivity.created_by,
       timestamp: roomActivity.timestamp,
-      repeatableType: roomActivity.repeatable_type,
-      repeatableValue: roomActivity.repeatable_value,
+      repeatableType: roomActivity.repeatableType,
+      repeatableValue: roomActivity.repeatableValue,
       createdAt: roomActivity.createdAt,
       place: event.place
     })
@@ -35,7 +23,7 @@ export const getEventsByRoom = async (roomId: number) =>
     .innerJoin(event, eq(event.id, roomActivity.fk_event))
     .where(eq(roomActivity.fk_room, roomId));
 
-export const createEvent = async (data: CreateEventInput) => {
+export const createEvent = async (data: CreateEventSchema) => {
   const [insertedEvent] = await db
     .insert(event)
     .values({
@@ -44,28 +32,7 @@ export const createEvent = async (data: CreateEventInput) => {
     })
     .returning();
 
-  const activityData: typeof roomActivity.$inferInsert = {
-    fk_room: data.roomId,
-    fk_event: insertedEvent.id,
-    name: data.name,
-    description: data.description,
-    isPublic: data.isPublic,
-    priority: data.priority,
-    created_by: data.authorId,
-    timestamp: data.dateTime,
-    createdAt: new Date(),
-    repeatable_type: null,
-    repeatable_value: null
-  };
-
-  if (data.repeatableType) {
-    activityData.repeatable_type = data.repeatableType;
-  }
-  if (data.repeatableValue !== null) {
-    activityData.repeatable_value = data.repeatableValue;
-  }
-
-  const [insertedActivity] = await db.insert(roomActivity).values(activityData).returning();
+  const [insertedActivity] = await db.insert(roomActivity).values(data).returning();
 
   return { ...insertedEvent, activityId: insertedActivity.id };
 };

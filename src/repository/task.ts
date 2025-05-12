@@ -1,19 +1,8 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { task, roomActivity, type periodEnum } from "@/db/schema/activity";
-
-export type CreateTaskInput = {
-  roomId: number;
-  name: string;
-  description?: string;
-  authorId: string;
-  dueDate: Date;
-  priority: number;
-  isPublic: boolean;
-  repeatableType?: (typeof periodEnum)[number];
-  repeatableValue?: number | null;
-};
+import { roomActivity, task } from "@/db/schema/activity";
+import { type TaskInsertSchema } from "@/db/zod/task";
 
 export const getTasksByRoom = async (roomId: number) =>
   await db
@@ -25,38 +14,18 @@ export const getTasksByRoom = async (roomId: number) =>
       priority: roomActivity.priority,
       authorId: roomActivity.created_by,
       timestamp: roomActivity.timestamp,
-      repeatableType: roomActivity.repeatable_type,
-      repeatableValue: roomActivity.repeatable_value,
+      repeatableType: roomActivity.repeatableType,
+      repeatableValue: roomActivity.repeatableValue,
       createdAt: roomActivity.createdAt
     })
     .from(roomActivity)
     .innerJoin(task, eq(task.id, roomActivity.fk_task))
     .where(eq(roomActivity.fk_room, roomId));
 
-export const createTask = async (data: CreateTaskInput) => {
+export const createTask = async (data: TaskInsertSchema) => {
   const [insertedTask] = await db.insert(task).values({ roomId: data.roomId }).returning();
-  const activityData: typeof roomActivity.$inferInsert = {
-    fk_room: data.roomId,
-    fk_task: insertedTask.id,
-    name: data.name,
-    description: data.description,
-    isPublic: data.isPublic,
-    priority: data.priority,
-    created_by: data.authorId,
-    timestamp: data.dueDate,
-    createdAt: new Date(),
-    repeatable_type: null,
-    repeatable_value: null
-  };
 
-  if (data.repeatableType) {
-    activityData.repeatable_type = data.repeatableType;
-  }
-  if (data.repeatableValue !== null) {
-    activityData.repeatable_value = data.repeatableValue;
-  }
-
-  const [insertedActivity] = await db.insert(roomActivity).values(activityData).returning();
+  const [insertedActivity] = await db.insert(roomActivity).values(data).returning();
 
   return { insertedTask, activityId: insertedActivity.id };
 };
