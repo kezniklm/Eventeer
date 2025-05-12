@@ -1,21 +1,26 @@
-import { MapPin } from "lucide-react";
+"use client";
+
+import { MapPin, Check } from "lucide-react";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { toggleAttendanceAction } from "@/server-actions/attendance";
 
 type EventCardProps = {
+  id: number;
   name: string;
   description?: string;
   isPublic: boolean;
   date?: string;
   author?: string;
-  users?: string[];
+  users?: { id: string; name: string; willAttend: boolean }[];
   place?: string;
   repeatableType?: string;
   repeatableValue?: number | null;
 };
 
 export const EventCard = ({
+  id,
   name,
   description,
   isPublic,
@@ -71,9 +76,15 @@ export const EventCard = ({
 
     <CardContent className="space-y-3">
       <div className="flex flex-wrap gap-2">
-        {users.map((u, i) => (
-          <Button key={i} variant="outline" size="sm">
-            {u}
+        {users.map((u) => (
+          <Button
+            key={u.id}
+            variant="outline"
+            size="sm"
+            onClick={() => toggleAttendanceAction(u.id, id, !u.willAttend)}
+          >
+            {u.name}
+            {u.willAttend && <Check className="ml-1 h-4 w-4 text-green-500" />}
           </Button>
         ))}
       </div>

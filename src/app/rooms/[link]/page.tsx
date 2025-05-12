@@ -10,6 +10,7 @@ import { getActivitiesByRoom, getActivityUsersNames } from "@/repository/activit
 import { getRoomByLink, isUserInRoom } from "@/repository/room";
 import { getSubtasksByTask } from "@/repository/subtask";
 import { auth } from "@/auth";
+import { getAttendeesByActivity } from "@/repository/attendance";
 
 export const metadata: Metadata = {
   title: "Room Details",
@@ -66,8 +67,14 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   const eventsWithDetails = await Promise.all(
     events.map(async (e) => {
       const rawUsers = await getActivityUsersNames(e.id);
-      const assignedUserIds = rawUsers.map((u) => u.id!);
-      const users = rawUsers.map((u) => u.name!);
+      const rawAtt = await getAttendeesByActivity(e.id);
+
+      const users = rawUsers.map((u) => ({
+        id: u.id!,
+        name: u.name!,
+        willAttend: !!rawAtt.find((a) => a.fk_user_id === u.id!)?.will_attend
+      }));
+      const assignedUserIds = users.map((u) => u.id);
 
       const date = e.timestamp ? new Date(e.timestamp).toLocaleDateString("sk-SK") : undefined;
 
@@ -88,21 +95,17 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   const settleUpsWithDetails = await Promise.all(
     settleUps.map(async (s) => {
-      const rawUsers = await getActivityUsersNames(s.id);
-      const assignedUserIds = rawUsers.map((u) => u.id!);
-      const users = rawUsers.map((u) => u.name!);
+      const names = await getActivityUsersNames(s.id);
+
+      const assignedUserIds = names.map((u) => u.id!);
 
       const date = s.timestamp ? new Date(s.timestamp).toLocaleDateString("sk-SK") : undefined;
 
       return {
         ...s,
         assignedUserIds,
-        users,
+        users: names.map((u) => u.name!),
         total: s.settleMoney?.toString() ?? "0",
-        transactions: users.map((u) => ({
-          user: u,
-          amount: `${Math.ceil((s.settleMoney ?? 0) / users.length / 10) * 10}`
-        })),
         date,
         author: s.authorName,
         isPublic: s.isPublic,
@@ -111,6 +114,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       };
     })
   );
+
   const visibleSettleUps = settleUpsWithDetails.filter((s) => s.isPublic || s.assignedUserIds.includes(userId));
 
   return (
@@ -164,6 +168,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 isPublic={e.isPublic}
                 repeatableType={e.repeatableType ?? undefined}
                 repeatableValue={e.repeatableValue}
+                id={e.id}
               />
             ))}
           </div>
@@ -181,7 +186,6 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 description={s.description ?? undefined}
                 date={s.date}
                 author={s.author ?? undefined}
-                transactions={s.transactions}
                 total={s.total}
                 isPublic={s.isPublic}
                 repeatableType={s.repeatableType ?? undefined}

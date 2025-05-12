@@ -104,7 +104,8 @@ export const userHasActivity = sqliteTable("activity_has_user", {
   fk_user_id: text()
     .notNull()
     .references(() => users.id),
-  fk_activity_id: integer().references(() => roomActivity.id)
+  fk_activity_id: integer().references(() => roomActivity.id),
+  will_attend: integer({ mode: "boolean" }).notNull().default(false)
 });
 
 export const roomActivityRelations = relations(roomActivity, ({ one, many }) => ({
