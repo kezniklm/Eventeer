@@ -5,7 +5,7 @@ import { users } from "./auth";
 import { room } from "./room";
 
 const periodEnum = ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"] as const;
-const priorityEnum = ["LOW", "NORMAL", "HIGH"] as const;
+export const priorityEnum = ["LOW", "NORMAL", "HIGH"] as const;
 
 export const roomActivity = sqliteTable(
   "room_activity",
@@ -15,9 +15,9 @@ export const roomActivity = sqliteTable(
     fk_task: integer().references(() => task.id),
     fk_event: integer().references(() => event.id),
     fk_settle_up: integer().references(() => settleUp.id),
-    name: text().notNull(),
+    name: text({ length: 255 }).notNull(),
     created_by: text().references(() => users.id),
-    description: text()
+    description: text({ length: 255 })
   },
   (table) => [
     check(
