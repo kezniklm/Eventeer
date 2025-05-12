@@ -135,7 +135,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
           <RoomDetailActionsWrapper
             roomInfo={{
               room,
-              users: usersInRoom
+              users: usersInRoom.filter((roomUser) => roomUser.id !== userId)
             }}
             userId={userId}
           />
