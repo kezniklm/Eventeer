@@ -1,8 +1,6 @@
-import { notFound } from "next/navigation";
-
+import { getCurrentUser } from "@/auth";
 import { getRoomByLink } from "@/repository/room";
 import { getRoomUsersNames } from "@/repository/rooms";
-import { getCurrentUser } from "@/auth";
 
 import { Providers } from "./(providers)";
 
@@ -12,7 +10,7 @@ const Layout = async ({ children, params }: { children: React.ReactNode; params:
   const user = await getCurrentUser();
 
   if (!room) {
-    notFound();
+    return children;
   }
   const users = await getRoomUsersNames(room?.id);
 
