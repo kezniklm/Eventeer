@@ -1,10 +1,10 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { event, roomActivity } from "@/db/schema/activity";
-import { type CreateEventSchema } from "@/db/zod/event";
+import { roomActivity, task } from "@/db/schema/activity";
+import { type TaskInsertSchema } from "@/db/zod/task";
 
-export const getEventsByRoom = async (roomId: number) =>
+export const getTasksByRoom = async (roomId: number) =>
   await db
     .select({
       activityId: roomActivity.id,
@@ -16,23 +16,16 @@ export const getEventsByRoom = async (roomId: number) =>
       timestamp: roomActivity.timestamp,
       repeatableType: roomActivity.repeatableType,
       repeatableValue: roomActivity.repeatableValue,
-      createdAt: roomActivity.createdAt,
-      place: event.place
+      createdAt: roomActivity.createdAt
     })
     .from(roomActivity)
-    .innerJoin(event, eq(event.id, roomActivity.fk_event))
+    .innerJoin(task, eq(task.id, roomActivity.fk_task))
     .where(eq(roomActivity.fk_room, roomId));
 
-export const createEvent = async (data: CreateEventSchema) => {
-  const [insertedEvent] = await db
-    .insert(event)
-    .values({
-      roomId: data.roomId,
-      place: data.place
-    })
-    .returning();
+export const createTask = async (data: TaskInsertSchema) => {
+  const [insertedTask] = await db.insert(task).values({ roomId: data.roomId }).returning();
 
   const [insertedActivity] = await db.insert(roomActivity).values(data).returning();
 
-  return { ...insertedEvent, activityId: insertedActivity.id };
+  return { insertedTask, activityId: insertedActivity.id };
 };

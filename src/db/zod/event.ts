@@ -3,5 +3,7 @@ import { type z } from "zod";
 
 import { event } from "../schema/activity";
 
-export const createEventSchema = createInsertSchema(event).omit({ id: true, createdAt: true });
+import { commonInsertSchema } from "./activity";
+
+export const createEventSchema = createInsertSchema(event).omit({ id: true }).merge(commonInsertSchema);
 export type CreateEventSchema = z.infer<typeof createEventSchema>;

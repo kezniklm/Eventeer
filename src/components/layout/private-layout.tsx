@@ -1,61 +1,52 @@
 import { User } from "lucide-react";
+import { redirect } from "next/navigation";
 
+import { auth } from "@/auth";
 import { SignOutButton } from "@/components/auth/sign-out-button";
-import { CreateRoomForm } from "@/components/forms/create-room-form";
 import { Footer } from "@/components/layout/footer";
 import { Navigation } from "@/components/navigation";
 import { NavigationLink } from "@/components/navigation-link";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from "@/components/ui/dialog";
+import { findUserById } from "@/repository/user";
+import { CreateRoomPopup } from "@/components/room/create-room-popup";
 
-export const PrivateLayout = ({
+export const PrivateLayout = async ({
   children
 }: Readonly<{
   children: React.ReactNode;
-}>) => (
-  <>
-    <Navigation>
-      <Button asChild variant="secondary">
-        <NavigationLink href="/profile">
-          <User />
-          <span>User</span>
-        </NavigationLink>
-      </Button>
-      <Button asChild>
-        <NavigationLink href="/rooms">
-          <span>Rooms</span>
-        </NavigationLink>
-      </Button>
-      <div className="flex flex-col space-y-6">
-        <div className="space-x-10">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button>Create room</Button>
-            </DialogTrigger>
-            <DialogContent className="bg-secondary max-h h-fit overflow-auto">
-              <DialogHeader>
-                <DialogTitle />
-                <DialogDescription />
-              </DialogHeader>
-              <div className="mx-auto w-full max-w-sm rounded-md bg-white p-4 shadow-2xl">
-                <CreateRoomForm />
-              </div>
-            </DialogContent>
-          </Dialog>
+}>) => {
+  const session = await auth();
+
+  if (!session?.user) {
+    return redirect("/login");
+  }
+
+  const user = await findUserById(session.user.id ?? "");
+  return (
+    <>
+      <Navigation>
+        <Button asChild variant="secondary">
+          <NavigationLink href="/profile">
+            <User />
+            <span>User</span>
+          </NavigationLink>
+        </Button>
+        <Button asChild>
+          <NavigationLink href="/rooms">
+            <span>Rooms</span>
+          </NavigationLink>
+        </Button>
+        <div className="flex flex-col space-y-6">
+          <div className="space-x-10">
+            <CreateRoomPopup user={user} />
+          </div>
         </div>
-      </div>
-      <SignOutButton />
-    </Navigation>
+        <SignOutButton />
+      </Navigation>
 
-    <main className="container mx-auto max-w-4/5 px-2 py-8">{children}</main>
+      <main className="container mx-auto max-w-4/5 px-2 py-8">{children}</main>
 
-    <Footer />
-  </>
-);
+      <Footer />
+    </>
+  );
+};

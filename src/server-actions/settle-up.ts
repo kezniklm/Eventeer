@@ -22,7 +22,7 @@ export const createSettleUpAction = async (settleUpData: SettleUpForm, roomId: n
   const insertData: SettleUpInsertSchema = {
     ...formData,
     roomId,
-    authorId
+    created_by: authorId
   };
 
   revalidatePath("/rooms");
