@@ -4,6 +4,7 @@ import { createSelectSchema } from "drizzle-zod";
 import { periodEnum, priorityEnum, roomActivity } from "../schema/activity";
 
 export const priorityEnumSchema = z.enum(priorityEnum);
+export type PriorityEnum = z.infer<typeof priorityEnumSchema>;
 
 export const activitySelectSchema = createSelectSchema(roomActivity);
 

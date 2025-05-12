@@ -8,9 +8,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useRoomContext } from "@/context/room-context";
+import { useUpdateSettleUpContext } from "@/context/settle-up-update-context";
 import { priorityEnumSchema } from "@/db/zod/activity";
 import { settleUpFormSchema, type SettleUpForm } from "@/db/zod/settle-up";
-import { useCreateSettleUpMutation } from "@/hooks/mutations/settle-up";
+import { useCreateSettleUpMutation, useUpdateSettleUpMutation } from "@/hooks/mutations/settle-up";
 import { firstLetterUppercase } from "@/lib/utils";
 
 import { Button } from "../ui/button";
@@ -22,23 +23,49 @@ type FormProps = {
 };
 
 export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
+  const updateData = useUpdateSettleUpContext();
+
   const form = useForm<SettleUpForm>({
-    resolver: zodResolver(settleUpFormSchema)
+    resolver: zodResolver(settleUpFormSchema),
+    defaultValues: updateData?.data
   });
   const roomInfo = useRoomContext();
-  const mutation = useCreateSettleUpMutation();
+  const createMutation = useCreateSettleUpMutation();
+  const updateMutation = useUpdateSettleUpMutation();
+  const isPending = createMutation.isPending || updateMutation.isPending;
 
-  const handleSubmit = (data: SettleUpForm) => {
-    mutation.mutate(
+  const handleCreate = (data: SettleUpForm) => {
+    createMutation.mutate(
       { roomId: roomInfo.room.id, data },
       {
         onSuccess: (data) => {
           toast.success(`Settle Up ${data.name} created!`);
-          setTimeout(onSubmit);
+          setTimeout(onSubmit, 500);
         },
         onError: (error) => toast.error(`Failed to create Settle Up: ${error.message}`)
       }
     );
+  };
+
+  const handleUpdate = (data: SettleUpForm, settleUpId: number) => {
+    updateMutation.mutate(
+      { data, settleUpId, roomId: roomInfo.room.id },
+      {
+        onSuccess: (data) => {
+          toast.success(`Settle Up ${data.name} updated!`);
+          setTimeout(onSubmit, 500);
+        },
+        onError: (error) => toast.error(`Failed to update Settle Up: ${error.message}`)
+      }
+    );
+  };
+
+  const handleSubmit = (data: SettleUpForm) => {
+    if (updateData) {
+      handleUpdate(data, updateData.settleUpId);
+    } else {
+      handleCreate(data);
+    }
   };
 
   return (
@@ -46,7 +73,7 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="flex flex-col space-y-6">
           {/* Name */}
-          <FormInput type="text" name="name" label="Name" placeholderAsLabel />
+          <FormInput type="text" name="name" label="Name" placeholderAsLabel required />
 
           {/* Description */}
           <FormInput type="text" name="description" label="Description" placeholderAsLabel />
@@ -88,14 +115,14 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
           <Controller
             control={form.control}
             name="priority"
-            defaultValue={priorityEnumSchema.enum.NORMAL}
-            render={({ field }) => (
+            defaultValue={updateData?.data.priority ?? priorityEnumSchema.Enum.NORMAL}
+            render={({ field: { value, onChange } }) => (
               <div className="grid w-full items-center gap-2">
                 <Label>Priority</Label>
                 <RadioGroup
-                  defaultValue={priorityEnumSchema.enum.NORMAL}
+                  defaultValue={value ?? priorityEnumSchema.Enum.NORMAL}
                   className="flex flex-wrap gap-4 px-2"
-                  onChange={field.onChange}
+                  onValueChange={onChange}
                 >
                   {Object.values(priorityEnumSchema.enum).map((value) => (
                     <div key={value} className="flex gap-2">
@@ -114,12 +141,12 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
           <Controller
             control={form.control}
             name="isPublic"
-            defaultValue={false}
-            render={({ field: { onChange } }) => (
+            defaultValue={updateData?.data.isPublic ?? false}
+            render={({ field: { onChange, value } }) => (
               <div className="grid w-full items-center gap-2">
                 <Label>Status</Label>
                 <RadioGroup
-                  defaultValue="false"
+                  defaultValue={value === true ? "true" : "false"}
                   className="flex flex-wrap gap-4 px-2"
                   onValueChange={(event) => {
                     onChange(event === "true");
@@ -142,8 +169,8 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
             )}
           />
 
-          <Button className="m-auto" type="submit" disabled={mutation.isPending}>
-            {mutation.isPending ? <LoadingWheel /> : "Submit"}
+          <Button className="m-auto" type="submit" disabled={isPending}>
+            {isPending ? <LoadingWheel /> : "Submit"}
           </Button>
         </div>
       </form>

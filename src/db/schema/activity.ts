@@ -22,8 +22,8 @@ export const roomActivity = sqliteTable(
     created_by: text().references(() => users.id),
     repeatableType: text("repeatable_type", { enum: periodEnum }),
     repeatableValue: integer("repeatable_value", { mode: "boolean" }).notNull().default(false),
-    timestamp: integer({ mode: "timestamp" }),
-    createdAt: integer({ mode: "timestamp" })
+    timestamp: integer({ mode: "timestamp" }).default(sql`(unixepoch())`),
+    createdAt: integer({ mode: "timestamp" }).default(sql`(unixepoch())`)
   },
   (table) => [
     check(
@@ -106,7 +106,7 @@ export const userHasActivity = sqliteTable("activity_has_user", {
   fk_user_id: text()
     .notNull()
     .references(() => users.id),
-  fk_activity_id: integer().references(() => roomActivity.id),
+  fk_activity_id: integer().references(() => roomActivity.id, { onDelete: "cascade" }),
   will_attend: integer({ mode: "boolean" }).notNull().default(false)
 });
 

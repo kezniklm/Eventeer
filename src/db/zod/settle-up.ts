@@ -1,10 +1,13 @@
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
 import { settleUp } from "../schema/activity";
 
 import { commonFormSchema, commonInsertSchema } from "./activity";
 import { userIdNamePair } from "./user";
+
+export const settleUpSelectSchema = createSelectSchema(settleUp);
+export type SettleUpSelectSchema = z.infer<typeof settleUpSelectSchema>;
 
 export const settleUpInsertSchema = createInsertSchema(settleUp)
   .omit({ id: true })

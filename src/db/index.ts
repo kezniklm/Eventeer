@@ -44,3 +44,5 @@ export const db = drizzle(client, {
     roomActivityRelations
   }
 });
+
+export type DB = typeof db;

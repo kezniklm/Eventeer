@@ -10,7 +10,6 @@ import { getActivitiesByRoom, getActivityUsersNames } from "@/repository/activit
 import { getAttendeesByActivity } from "@/repository/attendance";
 import { getRoomByLink, isUserInRoom } from "@/repository/room";
 import { getSubtasksByTask } from "@/repository/subtask";
-import { getRoomUsersNames } from "@/repository/rooms";
 
 export const metadata: Metadata = {
   title: "Room Details",
@@ -35,8 +34,6 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   const { tasks, events, settleUps } = await getActivitiesByRoom(room.id);
 
-  const usersInRoom = await getRoomUsersNames(room.id);
-
   const tasksWithDetails = await Promise.all(
     tasks.map(async (t) => {
       const rawSubtasks = await getSubtasksByTask(t.taskId!);
@@ -57,7 +54,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         users,
         assignedUserIds,
         date,
-        authorName: t.authorName ?? "Unknown",
+        author: t.author,
         isPublic: t.isPublic,
         repeatableType: t.repeatableType,
         repeatableValue: t.repeatableValue
@@ -89,7 +86,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         place: e.eventPlace,
         assignedUserIds,
         date,
-        author: e.authorName,
+        author: e.author,
         isPublic: e.isPublic,
         repeatableType: e.repeatableType,
         repeatableValue: e.repeatableValue
@@ -103,19 +100,19 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
   const settleUpsWithDetails = await Promise.all(
     settleUps.map(async (s) => {
-      const names = await getActivityUsersNames(s.id);
+      const users = await getActivityUsersNames(s.id);
 
-      const assignedUserIds = names.map((u) => u.id!);
+      const assignedUserIds = users.map((u) => u.id!);
 
       const date = s.timestamp ? new Date(s.timestamp).toLocaleDateString("sk-SK") : undefined;
 
       return {
         ...s,
+        users,
         assignedUserIds,
-        users: names.map((u) => u.name!),
-        total: s.settleMoney?.toString() ?? "0",
+        total: s.settleMoney ?? 0,
         date,
-        author: s.authorName,
+        author: s.author,
         isPublic: s.isPublic,
         repeatableType: s.repeatableType,
         repeatableValue: s.repeatableValue
@@ -132,13 +129,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       <header className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">{room.name}</h1>
-          <RoomDetailActionsWrapper
-            roomInfo={{
-              room,
-              users: usersInRoom.filter((roomUser) => roomUser.id !== userId)
-            }}
-            userId={userId}
-          />
+          <RoomDetailActionsWrapper roomId={room.id} userId={userId} />
         </div>
         {room.description && (
           <p className="text-muted-foreground text-sm sm:text-base md:text-lg">{room.description}</p>
@@ -158,7 +149,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 subtasks={t.subtasks}
                 users={t.users}
                 date={t.date}
-                author={t.authorName}
+                author={t.author!}
                 isPublic={t.isPublic}
                 repeatableType={t.repeatableType ?? undefined}
                 repeatableValue={t.repeatableValue}
@@ -179,7 +170,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 place={e.place ?? undefined}
                 description={e.description ?? undefined}
                 date={e.date}
-                author={e.author ?? undefined}
+                author={e.author!}
                 users={e.users}
                 isPublic={e.isPublic}
                 repeatableType={e.repeatableType ?? undefined}
@@ -198,14 +189,17 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
             {visibleSettleUps.map((s) => (
               <SettleUpCard
                 key={s.id}
+                settleUpId={s.settleUpId!}
                 name={s.name}
                 description={s.description ?? undefined}
                 date={s.date}
-                author={s.author ?? undefined}
-                total={s.total}
+                author={s.author!}
+                money={s.total}
                 isPublic={s.isPublic}
+                users={s.users}
                 repeatableType={s.repeatableType ?? undefined}
-                repeatableValue={s.repeatableValue}
+                repeatableValue={s.repeatableValue ?? undefined}
+                priority={s.priority}
               />
             ))}
           </div>
