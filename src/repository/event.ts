@@ -24,8 +24,8 @@ export const getEventsByRoom = async (roomId: number) =>
     .innerJoin(event, eq(event.id, roomActivity.fk_event))
     .where(eq(roomActivity.fk_room, roomId));
 
-export const createEvent = async (data: CreateEventSchema, users: UserIdNamePair[]) =>
-  db.transaction(async (tx) => {
+export const createEvent = async (data: CreateEventSchema, users?: UserIdNamePair[]) =>
+  await db.transaction(async (tx) => {
     const [insertedEvent] = await db
       .insert(event)
       .values({
@@ -49,9 +49,9 @@ export const createEvent = async (data: CreateEventSchema, users: UserIdNamePair
       })
       .returning();
 
-    if (users.length !== 0) {
+    if (users && users.length !== 0) {
       const eventUsers = users.map((user) => ({ fk_user_id: user.id, fk_activity_id: insertedActivity.id }));
-      tx.insert(userHasActivity).values([...eventUsers]);
+      await tx.insert(userHasActivity).values([...eventUsers]);
     }
 
     return { ...insertedEvent, ...insertedActivity };

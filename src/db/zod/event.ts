@@ -11,7 +11,7 @@ export type CreateEventSchema = z.infer<typeof createEventSchema>;
 
 export const createEventFormSchema = createEventSchema
   .pick({ place: true, dateTime: true })
-  .extend({ users: z.array(userIdNamePair) })
+  .extend({ users: z.array(userIdNamePair).optional() })
   .and(commonFormSchema);
 
 export type CreateEventFormSchema = z.infer<typeof createEventFormSchema>;
