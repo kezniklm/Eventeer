@@ -7,6 +7,7 @@ import { SettleUpUpdateProvider } from "@/context/settle-up-update-context";
 import PopupForm from "../pop-up-form";
 
 type SettleUpCardProps = {
+  settleUpId: number;
   name: string;
   description?: string;
   date?: string;
@@ -15,52 +16,57 @@ type SettleUpCardProps = {
   money?: number;
 };
 
-export const SettleUpCard = ({ name, description, date, author, transactions = [], money }: SettleUpCardProps) => {
+export const SettleUpCard = ({
+  settleUpId,
+  name,
+  description,
+  date,
+  author,
+  transactions = [],
+  money
+}: SettleUpCardProps) => {
   const forUpdateData: SettleUpForm = {
     description: description!,
     name,
     money: money!,
     users: transactions.map((transaction) => transaction.user),
-    isPublic: true, // TODO,
+    isPublic: false, // TODO,
     priority: "LOW"
   };
 
-  console.log("aaaaaa", SettleUpUpdateProvider);
-
   return (
-    <SettleUpUpdateProvider value={forUpdateData}>
-      <Card className="bg-secondary animate-fade-in-slow space-y-4 p-4">
-        <CardHeader className="flex items-start justify-between">
-          <div>
-            <CardTitle className="text-2xl">{name}</CardTitle>
-            {description && <p className="text-muted-foreground text-sm">{description}</p>}
-          </div>
-          <div className="text-muted-foreground text-right text-xs">
-            {date && <div>{date}</div>}
-            {author && <div className="mt-1">By: {author}</div>}
-          </div>
-        </CardHeader>
+    <Card className="bg-secondary animate-fade-in-slow space-y-4 p-4">
+      <CardHeader className="flex items-start justify-between">
+        <div>
+          <CardTitle className="text-2xl">{name}</CardTitle>
+          {description && <p className="text-muted-foreground text-sm">{description}</p>}
+        </div>
+        <div className="text-muted-foreground text-right text-xs">
+          {date && <div>{date}</div>}
+          {author && <div className="mt-1">By: {author}</div>}
+        </div>
+      </CardHeader>
 
-        <CardContent className="space-y-3">
-          <div className="flex flex-wrap gap-2">
-            {transactions.map((t, i) => (
-              <Button key={i} variant="outline" size="sm">
-                {t.user.name} - {t.amount} czk
-              </Button>
-            ))}
-          </div>
-
-          {money && (
-            <Button className="mt-2 flex items-center gap-1 font-bold" variant="outline" size="sm">
-              {money} czk
+      <CardContent className="space-y-3">
+        <div className="flex flex-wrap gap-2">
+          {transactions.map((t, i) => (
+            <Button key={i} variant="outline" size="sm">
+              {t.user.name} - {t.amount} czk
             </Button>
-          )}
-
+          ))}
+        </div>
+        {money && (
+          <Button className="mt-2 flex items-center gap-1 font-bold" variant="outline" size="sm">
+            {money} czk
+          </Button>
+        )}
+        ``
+        <SettleUpUpdateProvider data={forUpdateData} settleUpId={settleUpId}>
           <PopupForm type="settleup">
             <Button size="sm">Update TODO</Button>
           </PopupForm>
-        </CardContent>
-      </Card>
-    </SettleUpUpdateProvider>
+        </SettleUpUpdateProvider>
+      </CardContent>
+    </Card>
   );
 };

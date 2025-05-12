@@ -145,6 +145,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
             {settleUpsWithDetails.map((s) => (
               <SettleUpCard
                 key={s.id}
+                settleUpId={s.settleUpId!}
                 name={s.name}
                 description={s.description ?? undefined}
                 date={s.date}
