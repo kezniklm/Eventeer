@@ -10,7 +10,7 @@ type SettleUpCardProps = {
   transactions?: { user: string; amount: string }[];
   total?: string;
   repeatableType?: string;
-  repeatableValue?: number | null;
+  repeatableValue?: boolean | null;
 };
 
 export const SettleUpCard = ({
@@ -36,14 +36,14 @@ export const SettleUpCard = ({
         </span>
         <span
           className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs ${
-            repeatableValue !== undefined && repeatableValue !== null && repeatableValue > 0
+            repeatableValue !== undefined && repeatableValue !== null && repeatableValue
               ? "bg-purple-200 text-purple-800"
               : "bg-indigo-200 text-indigo-800"
           }`}
         >
-          {repeatableValue !== undefined && repeatableValue !== null && repeatableValue > 0 ? "Repeatable" : "One-time"}
+          {repeatableValue !== undefined && repeatableValue !== null && repeatableValue ? "Repeatable" : "One-time"}
         </span>
-        {repeatableValue !== undefined && repeatableValue !== null && repeatableValue > 0 && (
+        {repeatableValue !== undefined && repeatableValue !== null && repeatableValue && (
           <span
             className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs ${
               repeatableType === "day"
@@ -55,7 +55,7 @@ export const SettleUpCard = ({
                     : "bg-purple-200 text-purple-800"
             }`}
           >
-            {repeatableValue === 1
+            {repeatableValue
               ? (repeatableType ?? "").charAt(0).toUpperCase() + (repeatableType ?? "").slice(1).toLowerCase()
               : `${repeatableValue} ${(repeatableType ?? "").toLowerCase()}s`}
           </span>
