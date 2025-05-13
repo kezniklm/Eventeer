@@ -1,6 +1,5 @@
 import { RoomCreateButton } from "../room/create-room-popup";
-
-import { CardsLoadingSkeleton } from "./cards-loading-skeleton";
+import { CardsLoadingSkeleton } from "../loading/cards-loading-skeleton";
 
 export const RoomsLoadingSkeleton = () => (
   <>

@@ -1,7 +1,9 @@
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { auth } from "@/auth";
+import { RoomDetailLoadingSkeleton } from "@/components/room/room-detail-loading";
 import { EventCard } from "@/components/rooms/event-card";
 import { RoomDetailActionsWrapper } from "@/components/rooms/room-detail-actions-wrapper";
 import { SettleUpCard } from "@/components/rooms/settleup-card";
@@ -19,6 +21,12 @@ export const metadata: Metadata = {
 type RoomDetailPageProps = {
   params: Promise<{ link: string }>;
 };
+
+const ContentWrapper = ({ params }: RoomDetailPageProps) => (
+  <Suspense fallback={<RoomDetailLoadingSkeleton />}>
+    <RoomDetailPage params={params} />
+  </Suspense>
+);
 
 const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   const { link } = await params;
@@ -123,7 +131,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   );
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:px-6 md:space-y-10 md:px-8 lg:space-y-12 lg:px-12">
+    <>
       <header className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">{room.name}</h1>
@@ -205,8 +213,8 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
           </div>
         </section>
       )}
-    </div>
+    </>
   );
 };
 
-export default RoomDetailPage;
+export default ContentWrapper;

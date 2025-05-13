@@ -12,7 +12,13 @@ const Layout = async ({ children, params }: { children: React.ReactNode; params:
   }
   const users = await getRoomUsersNames(room?.id);
 
-  return <Providers roomInfo={{ room, users }}>{children}</Providers>;
+  return (
+    <Providers roomInfo={{ room, users }}>
+      <div className="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:px-6 md:space-y-10 md:px-8 lg:space-y-12 lg:px-12">
+        {children}
+      </div>
+    </Providers>
+  );
 };
 
 export default Layout;
