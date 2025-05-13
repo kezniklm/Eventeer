@@ -27,6 +27,7 @@ export const getActivitiesByRoom = async (roomId: number) => {
       createdAt: roomActivity.createdAt,
       taskId: roomActivity.fk_task,
       eventId: roomActivity.fk_event,
+      eventDateTime: event.dateTime,
       eventPlace: event.place,
       settleUpId: roomActivity.fk_settle_up,
       settleMoney: settleUp.money

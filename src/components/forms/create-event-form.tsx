@@ -15,10 +15,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn, firstLetterUppercase } from "@/lib/utils";
 import { useRoomContext } from "@/context/room-context";
-import { createEventFormSchema, type CreateEventFormSchema } from "@/db/zod/event";
 import { priorityEnumSchema } from "@/db/zod/activity";
 import { periodEnum } from "@/db/schema/activity";
-import { useCreateEventMutation } from "@/hooks/mutations/event";
+import { useCreateEventMutation, useUpdateEventMutation } from "@/hooks/mutations/event";
+import { eventFormSchema, type EventForm } from "@/db/zod/event";
+import { useUpdateEventContext } from "@/context/event-update-context";
 
 import { FormInput } from "../ui/form-input";
 
@@ -27,11 +28,14 @@ type FormProps = {
 };
 
 export const CreateEventForm = ({ onSubmit }: FormProps) => {
-  const roomInfo = useRoomContext();
+  const updateData = useUpdateEventContext();
 
-  const form = useForm<CreateEventFormSchema>({
-    resolver: zodResolver(createEventFormSchema)
+  const form = useForm<EventForm>({
+    resolver: zodResolver(eventFormSchema),
+    defaultValues: updateData?.data
   });
+
+  const roomInfo = useRoomContext();
 
   const repeatableValue = useWatch({
     control: form.control,
@@ -39,10 +43,11 @@ export const CreateEventForm = ({ onSubmit }: FormProps) => {
     defaultValue: false
   });
 
-  const mutation = useCreateEventMutation();
+  const createMutation = useCreateEventMutation();
+  const updateMutation = useUpdateEventMutation();
 
-  const handleSubmit = async (data: CreateEventFormSchema) => {
-    await mutation.mutateAsync(
+  const handleCreateSubmit = async (data: EventForm) => {
+    await createMutation.mutateAsync(
       { roomId: roomInfo.room.id, data },
       {
         onSuccess: (data) => {
@@ -52,6 +57,27 @@ export const CreateEventForm = ({ onSubmit }: FormProps) => {
         onError: (error) => toast.error(`Failed to create Event: ${error.message}`)
       }
     );
+  };
+
+  const handleUpdateSubmit = (data: EventForm, eventId: number) => {
+    updateMutation.mutate(
+      { data, eventId, roomId: roomInfo.room.id },
+      {
+        onSuccess: (data) => {
+          toast.success(`Event ${data.name} updated!`);
+          setTimeout(onSubmit, 500);
+        },
+        onError: (error) => toast.error(`Failed to update Event: ${error.message}`)
+      }
+    );
+  };
+
+  const handleSubmit = (data: EventForm) => {
+    if (updateData) {
+      handleUpdateSubmit(data, updateData.eventId);
+    } else {
+      handleCreateSubmit(data);
+    }
   };
 
   return (
@@ -68,25 +94,38 @@ export const CreateEventForm = ({ onSubmit }: FormProps) => {
           control={form.control}
           name="dateTime"
           defaultValue={new Date()}
-          render={({ field }) => (
-            <div className="grid w-full items-center gap-1.5">
-              <Label>Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn("justify-start text-left font-normal", !field.value && "text-muted-foreground")}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="pointer-events-auto w-auto p-0">
-                  <Calendar mode="single" selected={field.value ?? undefined} onSelect={field.onChange} initialFocus />
-                </PopoverContent>
-              </Popover>
-            </div>
-          )}
+          render={({ field }) => {
+            const value = field.value ?? new Date();
+            return (
+              <div className="grid w-full items-center gap-1.5">
+                <Label>Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn("justify-start text-left font-normal", !field.value && "text-muted-foreground")}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="pointer-events-auto w-auto space-y-2 p-2">
+                    <Calendar
+                      mode="single"
+                      selected={field.value ?? undefined}
+                      onSelect={(date) => {
+                        field.onChange(date ?? new Date());
+                      }}
+                      defaultMonth={value}
+                    />
+                    <Button variant="ghost" className="w-full text-red-500" onClick={() => field.onChange(undefined)}>
+                      Reset Date
+                    </Button>
+                  </PopoverContent>
+                </Popover>
+              </div>
+            );
+          }}
         />
         {/* Users */}
         {roomInfo.users.length !== 0 && (
@@ -120,7 +159,6 @@ export const CreateEventForm = ({ onSubmit }: FormProps) => {
             ))}
           </div>
         )}
-
         {/* Priority */}
         <Controller
           control={form.control}

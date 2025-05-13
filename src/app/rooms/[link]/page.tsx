@@ -78,14 +78,12 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
       }));
       const assignedUserIds = users.map((u) => u.id);
 
-      const date = e.timestamp ? new Date(e.timestamp).toLocaleDateString("sk-SK") : undefined;
-
       return {
         ...e,
         users,
+        dateTime: e.eventDateTime,
         place: e.eventPlace,
         assignedUserIds,
-        date,
         author: e.author,
         isPublic: e.isPublic,
         repeatableType: e.repeatableType,
@@ -169,13 +167,15 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 name={e.name}
                 place={e.place ?? undefined}
                 description={e.description ?? undefined}
-                date={e.date}
+                createdAt={e.createdAt ?? undefined}
+                dateTime={e.dateTime ?? undefined}
                 author={e.author!}
                 users={e.users}
                 isPublic={e.isPublic}
                 repeatableType={e.repeatableType ?? undefined}
                 repeatableValue={e.repeatableValue}
-                id={e.id}
+                eventId={e.id}
+                priority={e.priority}
               />
             ))}
           </div>
