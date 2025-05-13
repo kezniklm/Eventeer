@@ -182,6 +182,7 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
           <Controller
             control={form.control}
             name="repeatableValue"
+            defaultValue={false}
             render={({ field }) => (
               <div className="grid w-full items-center gap-2">
                 <Label>Repeatable/One time</Label>
