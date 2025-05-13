@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
+import { type User } from "next-auth";
 
-import type { UserSchema } from "@/db/zod/user";
+import { CreateRoomForm } from "@/components/room/create-room-form";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,11 +12,9 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
-import { CreateRoomForm } from "@/components/room/create-room-form";
-import { Button } from "@/components/ui/button";
 
 type CreateRoomFormProps = {
-  user: UserSchema;
+  user: User;
 };
 
 export const CreateRoomPopup = ({ user }: CreateRoomFormProps) => {

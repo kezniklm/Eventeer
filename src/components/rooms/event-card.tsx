@@ -20,7 +20,7 @@ type EventCardProps = {
   dateTime?: Date;
   author?: User;
   users?: { id: string; name: string; willAttend: boolean }[];
-  place?: string;
+  place: string;
   repeatableType?: PeriodEnum;
   repeatableValue?: boolean | null;
   priority: PriorityEnum;

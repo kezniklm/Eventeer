@@ -14,7 +14,7 @@ export const Navigation = ({ children }: NavigationProps) => {
     <nav className="navbar sticky top-0 z-50 bg-white">
       <div className="mx-auto px-2 py-2 sm:max-w-4/5 sm:px-4">
         <div className="relative flex h-16 items-center justify-between">
-          <NavigationLink href="/" className="text-xl font-medium">
+          <NavigationLink href="/" className="text-3xl font-bold">
             Eventeer
           </NavigationLink>
           <Collapsible className="md:hidden" open={open} onOpenChange={(open) => setOpen(open)}>
