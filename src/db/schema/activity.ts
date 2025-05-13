@@ -68,7 +68,7 @@ export const event = sqliteTable("event", {
   roomId: integer("room_id")
     .references(() => room.id)
     .notNull(),
-  place: text("place"),
+  place: text("place").notNull(),
   dateTime: integer({ mode: "timestamp" })
 });
 

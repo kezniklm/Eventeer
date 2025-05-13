@@ -12,10 +12,16 @@ export type SettleUpSelectSchema = z.infer<typeof settleUpSelectSchema>;
 export const settleUpInsertSchema = createInsertSchema(settleUp).omit({ id: true }).merge(commonInsertSchema);
 export type SettleUpInsertSchema = z.infer<typeof settleUpInsertSchema>;
 
-export const settleUpFormSchema = settleUpInsertSchema
+const { money, ...rest } = settleUpInsertSchema
   .pick({
     money: true
   })
   .extend({ users: z.array(userIdNamePair).optional() })
-  .merge(commonFormSchema);
+  .merge(commonFormSchema).shape;
+
+export const settleUpFormSchema = z.object({
+  ...rest,
+  money: money.nonnegative()
+});
+
 export type SettleUpForm = z.infer<typeof settleUpFormSchema>;

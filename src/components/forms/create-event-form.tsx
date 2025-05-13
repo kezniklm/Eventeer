@@ -22,6 +22,8 @@ import { useCreateEventMutation } from "@/hooks/mutations/event";
 
 import { FormInput } from "../ui/form-input";
 
+import { SubmitButton } from "./submit-button";
+
 type FormProps = {
   onSubmit: () => void;
 };
@@ -47,7 +49,7 @@ export const CreateEventForm = ({ onSubmit }: FormProps) => {
       {
         onSuccess: (data) => {
           toast.success(`Event ${data.name} created!`);
-          setTimeout(onSubmit);
+          setTimeout(onSubmit, 500);
         },
         onError: (error) => toast.error(`Failed to create Event: ${error.message}`)
       }
@@ -58,11 +60,11 @@ export const CreateEventForm = ({ onSubmit }: FormProps) => {
     <FormProvider {...form}>
       <form className="flex flex-col space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
         {/* Name */}
-        <FormInput required type="text" name="name" label="Name" placeholderAsLabel />
+        <FormInput type="text" name="name" label="Name" placeholderAsLabel />
         {/* Description */}
         <FormInput type="text" name="description" label="Description" placeholderAsLabel />
         {/* Place */}
-        <FormInput required type="text" label="Place" name="place" placeholderAsLabel />
+        <FormInput type="text" label="Place" name="place" placeholderAsLabel />
         {/* Date */}
         <Controller
           control={form.control}
@@ -234,7 +236,8 @@ export const CreateEventForm = ({ onSubmit }: FormProps) => {
             </div>
           )}
         />
-        <Button className="m-auto">Submit</Button>
+
+        <SubmitButton isPending={mutation.isPending} />
       </form>
     </FormProvider>
   );
