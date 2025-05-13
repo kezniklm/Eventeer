@@ -1,5 +1,3 @@
-import { unstable_cache } from "next/cache";
-
 import { type UserIdNamePair } from "@/db/zod/user";
 import { getUserPaidMoney } from "@/repository/settleup";
 
@@ -11,14 +9,9 @@ type Props = {
   money: number;
 };
 
-const getCachedPaidUsers = unstable_cache(
-  async (settleUpId: number) => getUserPaidMoney(settleUpId),
-  ["user-paid-money"]
-);
-
 export const PaidButtonsPanel = async ({ settleUpId, users, money }: Props) => {
   const amountPerUser = money / users.length;
-  const usersPaidMoney = (await getCachedPaidUsers(settleUpId)).map((paid) => paid.fk_user);
+  const usersPaidMoney = (await getUserPaidMoney(settleUpId)).map((paid) => paid.fk_user);
 
   const hasUserPaid = (userId: string) => usersPaidMoney.includes(userId);
   return (

@@ -99,5 +99,5 @@ export const userPaidAction = async (settleUpId: number, userId: string) => {
 
   await toggleUserPaidMoney(settleUpId, userId);
 
-  revalidateTag("user-paid-money");
+  revalidateTag("user-paid-panel");
 };

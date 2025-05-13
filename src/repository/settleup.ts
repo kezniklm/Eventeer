@@ -1,4 +1,6 @@
 import { and, eq } from "drizzle-orm";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { cacheLife } from "next/dist/server/use-cache/cache-life";
 
 import { db } from "@/db";
 import { roomActivity, settleUp, userHasActivity, userSettledUp } from "@/db/schema/activity";
@@ -120,5 +122,10 @@ export const toggleUserPaidMoney = async (settleUpId: number, userId: string) =>
   });
 };
 
-export const getUserPaidMoney = async (settleUpId: number) =>
-  db.select().from(userSettledUp).where(eq(userSettledUp.fk_settle_up, settleUpId));
+export const getUserPaidMoney = async (settleUpId: number) => {
+  "use cache";
+  cacheTag("user-paid-panel");
+  cacheLife("hours");
+
+  return db.select().from(userSettledUp).where(eq(userSettledUp.fk_settle_up, settleUpId));
+};
