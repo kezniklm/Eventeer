@@ -46,7 +46,7 @@ export const RoomCard = ({
     <CardHeader>
       <CardTitle className="flex text-3xl">
         <span>{title}</span>
-        <div className="ml-auto flex gap-2">
+        <div className="ml-auto flex flex-col gap-2 md:flex-row">
           {handleLeave && (
             <AlertDialog>
               <AlertDialogTrigger asChild>

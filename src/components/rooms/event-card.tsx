@@ -55,7 +55,7 @@ export const EventCard = async ({
   const { id } = await getCurrentUser();
 
   return (
-    <Card className="bg-secondary animate-fade-in-slow group space-y-4 p-4">
+    <Card className="bg-secondary animate-fade-in-slow group space-y-4">
       <CardHeader className="flex items-start justify-between">
         <div>
           <CardTitle className="text-2xl">{name}</CardTitle>

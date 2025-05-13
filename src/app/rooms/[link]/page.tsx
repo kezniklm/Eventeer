@@ -123,7 +123,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   );
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:px-6 md:space-y-10 md:px-8 lg:space-y-12 lg:px-12">
+    <div className="mx-auto space-y-8 px-2 sm:px-6 md:space-y-10 md:px-8 lg:space-y-12">
       <header className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">{room.name}</h1>
