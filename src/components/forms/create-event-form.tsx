@@ -74,6 +74,8 @@ export const CreateEventForm = ({ onSubmit }: FormProps) => {
     );
   };
 
+  const isPending = createMutation.isPending || updateMutation.isPending;
+
   const handleSubmit = (data: EventForm) => {
     if (updateData) {
       handleUpdateSubmit(data, updateData.eventId);
@@ -275,7 +277,7 @@ export const CreateEventForm = ({ onSubmit }: FormProps) => {
           )}
         />
 
-        <SubmitButton isPending={mutation.isPending} />
+        <SubmitButton isPending={isPending} />
       </form>
     </FormProvider>
   );
