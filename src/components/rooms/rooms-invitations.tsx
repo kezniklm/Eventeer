@@ -25,7 +25,7 @@ export const UserRoomInvitations = async () => {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pt-7">
       <h1 className="mb-6 pl-1 text-left">Invitations</h1>
       <div className="grid grid-cols-1 gap-6">
         {roomsWithBadges.map(({ room, badges }) => (

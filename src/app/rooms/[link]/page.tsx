@@ -1,9 +1,7 @@
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 import { getCurrentUser } from "@/auth";
-import { RoomDetailLoadingSkeleton } from "@/components/room/room-detail-loading";
 import { EventCard } from "@/components/rooms/event-card";
 import { RoomDetailActionsWrapper } from "@/components/rooms/room-detail-actions-wrapper";
 import { SettleUpCard } from "@/components/rooms/settleup-card";
@@ -21,12 +19,6 @@ export const metadata: Metadata = {
 type RoomDetailPageProps = {
   params: Promise<{ link: string }>;
 };
-
-const ContentWrapper = ({ params }: RoomDetailPageProps) => (
-  <Suspense fallback={<RoomDetailLoadingSkeleton />}>
-    <RoomDetailPage params={params} />
-  </Suspense>
-);
 
 const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   const { link } = await params;
@@ -217,4 +209,4 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   );
 };
 
-export default ContentWrapper;
+export default RoomDetailPage;
