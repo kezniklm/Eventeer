@@ -8,6 +8,7 @@ import { type SettleUpForm } from "@/db/zod/settle-up";
 import { type UserIdNamePair } from "@/db/zod/user";
 
 import { SettleUpCardControls } from "../controls/settle-up/settle-up-card-controls";
+import { PaidButtonsPanel } from "../settle-up/paid-buttons-panel";
 
 type SettleUpCardProps = {
   settleUpId: number;
@@ -16,7 +17,6 @@ type SettleUpCardProps = {
   description?: string;
   date?: string;
   author?: User;
-  transactions?: { user: UserIdNamePair; amount: string }[];
   money?: number;
   repeatableType?: PeriodEnum;
   repeatableValue?: boolean;
@@ -30,7 +30,6 @@ export const SettleUpCard = async ({
   description,
   date,
   author,
-  transactions = [],
   money,
   repeatableType,
   repeatableValue,
@@ -96,13 +95,7 @@ export const SettleUpCard = async ({
       </CardHeader>
 
       <CardContent className="space-y-3">
-        <div className="flex flex-wrap gap-2">
-          {transactions.map((t, i) => (
-            <Button key={i} variant="outline" size="sm">
-              {t.user.name} - {t.amount} czk
-            </Button>
-          ))}
-        </div>
+        <PaidButtonsPanel settleUpId={settleUpId} users={users} money={money ?? 0} />
         {money && (
           <Button className="mt-2 flex items-center gap-1 font-bold" variant="outline" size="sm">
             {money} czk

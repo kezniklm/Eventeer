@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import { auth, getCurrentUser } from "@/auth";
 import {
@@ -10,7 +10,15 @@ import {
   settleUpSelectSchema
 } from "@/db/zod/settle-up";
 import { isUserInRoom } from "@/repository/room";
-import { createSettleUp, deleteSettleUp, getSettleUpById, updateSettleUp } from "@/repository/settleup";
+import {
+  createSettleUp,
+  deleteSettleUp,
+  getAssignedUsers,
+  getSettleUpById,
+  toggleUserPaidMoney,
+  updateSettleUp
+} from "@/repository/settleup";
+import { getActivityBySettleUp } from "@/repository/activity";
 
 export const createSettleUpAction = async (settleUpData: SettleUpForm, roomId: number) => {
   const { users, ...formData } = settleUpFormSchema.parse(settleUpData);
@@ -69,4 +77,27 @@ export const deleteSettleUpAction = async (settleUpId: number) => {
 
   await deleteSettleUp(id);
   revalidatePath("/rooms");
+};
+
+export const userPaidAction = async (settleUpId: number, userId: string) => {
+  const assignedUsersToSettleUp = (await getAssignedUsers(settleUpId)).map((user) => user.fk_user_id);
+
+  if (!assignedUsersToSettleUp.includes(userId)) {
+    throw new Error("You cannot toggle paid action with user that doesn't belongs to the Settle up!");
+  }
+
+  const settleUp = await getActivityBySettleUp(settleUpId);
+  const user = await getCurrentUser();
+
+  if (!user.id) {
+    throw new Error("You must be logged in to perform this action!");
+  }
+
+  if (!assignedUsersToSettleUp.includes(user.id) && settleUp.created_by !== user.id) {
+    throw new Error("You don't have permissions to toggle paid action!");
+  }
+
+  await toggleUserPaidMoney(settleUpId, userId);
+
+  revalidateTag("user-paid-money");
 };

@@ -1,7 +1,7 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { roomActivity, settleUp, userHasActivity } from "@/db/schema/activity";
+import { roomActivity, settleUp, userHasActivity, userSettledUp } from "@/db/schema/activity";
 import { type SettleUpInsertSchema } from "@/db/zod/settle-up";
 import { type UserIdNamePair } from "@/db/zod/user";
 
@@ -98,3 +98,27 @@ export const getSettleUpById = async (settleUpId: number) =>
     .from(settleUp)
     .innerJoin(roomActivity, eq(roomActivity.id, settleUpId))
     .where(eq(settleUp.id, settleUpId));
+
+export const getAssignedUsers = async (settleUpId: number) =>
+  db
+    .select({ fk_user_id: userHasActivity.fk_user_id })
+    .from(roomActivity)
+    .innerJoin(userHasActivity, eq(userHasActivity.fk_activity_id, roomActivity.id))
+    .where(eq(roomActivity.fk_settle_up, settleUpId));
+
+export const toggleUserPaidMoney = async (settleUpId: number, userId: string) => {
+  const specificRowFilter = and(eq(userSettledUp.fk_settle_up, settleUpId), eq(userSettledUp.fk_user, userId));
+
+  await db.transaction(async (tx) => {
+    const userPaid = await tx.$count(userSettledUp, specificRowFilter);
+
+    if (userPaid === 0) {
+      await tx.insert(userSettledUp).values({ fk_user: userId, fk_settle_up: settleUpId });
+    } else {
+      await tx.delete(userSettledUp).where(specificRowFilter);
+    }
+  });
+};
+
+export const getUserPaidMoney = async (settleUpId: number) =>
+  db.select().from(userSettledUp).where(eq(userSettledUp.fk_settle_up, settleUpId));
