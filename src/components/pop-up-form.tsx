@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 
 type PopupFormProps = React.PropsWithChildren & {
   type: "task" | "event" | "settleup";
-  setType: Dispatch<SetStateAction<"task" | "event" | "settleup">>;
+  setType?: Dispatch<SetStateAction<"task" | "event" | "settleup">>;
 };
 
 const PopupForm = ({ children, type, setType }: PopupFormProps) => {
@@ -37,7 +37,11 @@ const PopupForm = ({ children, type, setType }: PopupFormProps) => {
           </DialogHeader>
           <div className="mx-auto w-full max-w-sm rounded-md bg-white p-4 shadow-2xl">
             <Label className="mb-2">Type</Label>
-            <Select onValueChange={(value: "task" | "event" | "settleup") => setType(value)} value={type}>
+            <Select
+              disabled={!setType}
+              onValueChange={(value: "task" | "event" | "settleup") => setType && setType(value)}
+              value={type}
+            >
               <SelectTrigger className="mb-6 w-full">
                 <SelectValue placeholder="Select type" />
               </SelectTrigger>
@@ -51,7 +55,7 @@ const PopupForm = ({ children, type, setType }: PopupFormProps) => {
             </Select>
 
             {type === "task" && <CreateTaskForm />}
-            {type === "event" && <CreateEventForm />}
+            {type === "event" && <CreateEventForm onSubmit={handleClose} />}
             {type === "settleup" && <CreateSettleUpForm onSubmit={handleClose} />}
           </div>
         </DialogContent>

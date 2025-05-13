@@ -54,8 +54,8 @@ export const RoomCard = ({
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-center">Do you want to leave?</AlertDialogTitle>
-                  <AlertDialogDescription />
+                  <AlertDialogTitle>Confirm Leave</AlertDialogTitle>
+                  <AlertDialogDescription>Are you sure you want to leave this room?</AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
