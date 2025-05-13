@@ -44,3 +44,13 @@ export const getActivitiesByRoom = async (roomId: number) => {
     settleUps: activities.filter((a) => a.settleUpId !== null)
   };
 };
+
+export const getActivityBySettleUp = async (settleUpId: number) => {
+  const rows = await db.select().from(roomActivity).where(eq(roomActivity.fk_settle_up, settleUpId));
+
+  if (rows.length !== 1) {
+    throw new Error("Failed to fetch settle up!");
+  }
+
+  return rows[0];
+};
