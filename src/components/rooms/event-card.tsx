@@ -12,6 +12,7 @@ import { EventCardControls } from "../controls/event/event-card-controls";
 import { AttendanceButton } from "./attendance-button";
 
 type EventCardProps = {
+  activityId: number;
   eventId: number;
   name: string;
   description?: string;
@@ -27,6 +28,7 @@ type EventCardProps = {
 };
 
 export const EventCard = async ({
+  activityId,
   eventId,
   name,
   description,
@@ -102,7 +104,7 @@ export const EventCard = async ({
       <CardContent className="space-y-3">
         <div className="flex flex-wrap gap-2">
           {users.map((u) => (
-            <AttendanceButton key={u.id} user={u} activityId={eventId} />
+            <AttendanceButton key={u.id} user={u} activityId={activityId} />
           ))}
         </div>
 

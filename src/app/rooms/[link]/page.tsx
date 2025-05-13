@@ -174,7 +174,8 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 isPublic={e.isPublic}
                 repeatableType={e.repeatableType ?? undefined}
                 repeatableValue={e.repeatableValue}
-                eventId={e.id}
+                activityId={e.id}
+                eventId={e.eventId!}
                 priority={e.priority}
               />
             ))}
