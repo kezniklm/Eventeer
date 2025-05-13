@@ -1,7 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { type SettleUpForm } from "@/db/zod/settle-up";
-import { createSettleUpAction, deleteSettleUpAction, updateSettleUpAction } from "@/server-actions/settle-up";
+import {
+  createSettleUpAction,
+  deleteSettleUpAction,
+  updateSettleUpAction,
+  userPaidAction
+} from "@/server-actions/settle-up";
 
 export const useCreateSettleUpMutation = () =>
   useMutation({
@@ -18,4 +23,10 @@ export const useUpdateSettleUpMutation = () =>
 export const useDeleteSettleUpMutation = () =>
   useMutation({
     mutationFn: async ({ settleUpId }: { settleUpId: number }) => deleteSettleUpAction(settleUpId)
+  });
+
+export const useUserPaidMoneyMutation = () =>
+  useMutation({
+    mutationFn: async ({ settleUpId, userId }: { settleUpId: number; userId: string }) =>
+      userPaidAction(settleUpId, userId)
   });
