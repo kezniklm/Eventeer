@@ -34,7 +34,7 @@ export const getRoomUsersNames = async (roomId: number) =>
     .innerJoin(userHasRoom, eq(userHasRoom.user_id, users.id))
     .where(and(eq(userHasRoom.room_id, roomId), eq(userHasRoom.invitation_state, true)));
 
-export const createUserHasRoom = async (roomId: number, userEmail: string) => {
+export const createUserHasRoomOnUserInvite = async (roomId: number, userEmail: string) => {
   await db.transaction(async () => {
     const userResult = await db.select({ id: users.id }).from(users).where(eq(users.email, userEmail));
 

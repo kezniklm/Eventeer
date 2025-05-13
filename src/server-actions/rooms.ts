@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { createUserHasRoom, deleteUserHasRoom, updateUserHasRoom } from "@/repository/rooms";
+import { createUserHasRoomOnUserInvite, deleteUserHasRoom, updateUserHasRoom } from "@/repository/rooms";
 import type { RoomInsertSchema } from "@/db/zod/room";
 import { insertRoom, insertUserHasRoom } from "@/repository/room";
 
@@ -22,7 +22,7 @@ export const declineRoomInvitationAction = async (roomId: number, userId: string
 };
 
 export const inviteUserToRoomAction = async (roomId: number, email: string) => {
-  await createUserHasRoom(roomId, email);
+  await createUserHasRoomOnUserInvite(roomId, email);
   revalidatePath("/rooms");
 };
 
