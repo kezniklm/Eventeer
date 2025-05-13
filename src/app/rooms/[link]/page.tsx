@@ -153,6 +153,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 isPublic={t.isPublic}
                 repeatableType={t.repeatableType ?? undefined}
                 repeatableValue={t.repeatableValue}
+                priority={t.priority}
               />
             ))}
           </div>
@@ -176,6 +177,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 repeatableType={e.repeatableType ?? undefined}
                 repeatableValue={e.repeatableValue}
                 id={e.id}
+                priority={e.priority}
               />
             ))}
           </div>
