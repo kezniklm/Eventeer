@@ -22,7 +22,7 @@ export const getSettleUpsByRoom = async (roomId: number) =>
     .innerJoin(settleUp, eq(settleUp.id, roomActivity.fk_settle_up))
     .where(eq(roomActivity.fk_room, roomId));
 
-export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNamePair[]) =>
+export const createSettleUp = async (data: SettleUpInsertSchema, users?: UserIdNamePair[]) =>
   db.transaction(async (tx) => {
     console.log(users);
     const [inserted] = await tx
@@ -37,16 +37,12 @@ export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
       .insert(roomActivity)
       .values({
         fk_settle_up: inserted.id,
-        name: data.name,
-        description: data.description,
-        created_by: data.created_by,
         fk_room: data.roomId,
-        priority: data.priority,
-        isPublic: data.isPublic
+        ...data
       })
       .returning();
 
-    if (users.length !== 0) {
+    if (users && users.length !== 0) {
       const usersWithSettleUp = users.map((user) => ({ fk_user_id: user.id, fk_activity_id: activity.id }));
       await tx.insert(userHasActivity).values([...usersWithSettleUp]);
     }
@@ -54,7 +50,7 @@ export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
     return { ...inserted, ...activity };
   });
 
-export const updateSettleUp = async (data: SettleUpInsertSchema, users: UserIdNamePair[], settleUpId: number) =>
+export const updateSettleUp = async (data: SettleUpInsertSchema, settleUpId: number, users?: UserIdNamePair[]) =>
   db.transaction(async (tx) => {
     const [updated] = await tx
       .update(settleUp)
@@ -67,20 +63,13 @@ export const updateSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
 
     const [activity] = await tx
       .update(roomActivity)
-      .set({
-        fk_settle_up: updated.id,
-        name: data.name,
-        description: data.description,
-        fk_room: data.roomId,
-        priority: data.priority,
-        isPublic: data.isPublic
-      })
+      .set(data)
       .where(eq(roomActivity.fk_settle_up, settleUpId))
       .returning();
 
     await tx.delete(userHasActivity).where(eq(userHasActivity.fk_activity_id, activity.id));
-    if (users.length !== 0) {
-      const usersWithSettleUp = users.map((user) => ({ fk_user_id: user.id, fk_activity_id: activity.id }));
+    if (users && users?.length !== 0) {
+      const usersWithSettleUp = users?.map((user) => ({ fk_user_id: user.id, fk_activity_id: activity.id }));
       await tx.insert(userHasActivity).values([...usersWithSettleUp]);
     }
 

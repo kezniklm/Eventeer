@@ -3,7 +3,7 @@ import { type User } from "next-auth";
 import { getCurrentUser } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { type PriorityEnum } from "@/db/zod/activity";
+import { type PeriodEnum, type PriorityEnum } from "@/db/zod/activity";
 import { type SettleUpForm } from "@/db/zod/settle-up";
 import { type UserIdNamePair } from "@/db/zod/user";
 
@@ -18,7 +18,7 @@ type SettleUpCardProps = {
   author?: User;
   transactions?: { user: UserIdNamePair; amount: string }[];
   money?: number;
-  repeatableType?: string;
+  repeatableType?: PeriodEnum;
   repeatableValue?: boolean;
   users: UserIdNamePair[];
   priority: PriorityEnum;
@@ -44,7 +44,9 @@ export const SettleUpCard = async ({
     money: money!,
     users,
     isPublic,
-    priority
+    priority,
+    repeatableType: repeatableType ?? null,
+    repeatableValue: repeatableValue ?? false
   };
 
   const { id } = await getCurrentUser();
@@ -72,11 +74,11 @@ export const SettleUpCard = async ({
           {repeatableValue !== undefined && repeatableValue !== null && repeatableValue && (
             <span
               className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs ${
-                repeatableType === "day"
+                repeatableType === "DAILY"
                   ? "bg-indigo-300 text-indigo-800"
-                  : repeatableType === "week"
+                  : repeatableType === "WEEKLY"
                     ? "bg-indigo-200 text-indigo-800"
-                    : repeatableType === "month"
+                    : repeatableType === "MONTHLY"
                       ? "bg-purple-300 text-purple-800"
                       : "bg-purple-200 text-purple-800"
               }`}

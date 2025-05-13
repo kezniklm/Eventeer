@@ -20,3 +20,4 @@ export const commonInsertSchema = activitySelectSchema.pick({
 export const commonFormSchema = commonInsertSchema.omit({ created_by: true });
 
 export const periodEnumSchema = z.enum(periodEnum);
+export type PeriodEnum = z.infer<typeof periodEnumSchema>;

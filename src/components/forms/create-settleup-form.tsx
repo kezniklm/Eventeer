@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, FormProvider, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,6 +13,7 @@ import { priorityEnumSchema } from "@/db/zod/activity";
 import { settleUpFormSchema, type SettleUpForm } from "@/db/zod/settle-up";
 import { useCreateSettleUpMutation, useUpdateSettleUpMutation } from "@/hooks/mutations/settle-up";
 import { firstLetterUppercase } from "@/lib/utils";
+import { periodEnum } from "@/db/schema/activity";
 
 import { Button } from "../ui/button";
 import { FormInput } from "../ui/form-input";
@@ -29,14 +30,20 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
     resolver: zodResolver(settleUpFormSchema),
     defaultValues: updateData?.data
   });
-  const roomInfo = useRoomContext();
+  const { users, room } = useRoomContext();
   const createMutation = useCreateSettleUpMutation();
   const updateMutation = useUpdateSettleUpMutation();
   const isPending = createMutation.isPending || updateMutation.isPending;
 
+  const repeatableValue = useWatch({
+    control: form.control,
+    name: "repeatableValue",
+    defaultValue: updateData?.data.repeatableValue ?? false
+  });
+
   const handleCreate = (data: SettleUpForm) => {
     createMutation.mutate(
-      { roomId: roomInfo.room.id, data },
+      { roomId: room.id, data },
       {
         onSuccess: (data) => {
           toast.success(`Settle Up ${data.name} created!`);
@@ -49,7 +56,7 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
 
   const handleUpdate = (data: SettleUpForm, settleUpId: number) => {
     updateMutation.mutate(
-      { data, settleUpId, roomId: roomInfo.room.id },
+      { data, settleUpId, roomId: room.id },
       {
         onSuccess: (data) => {
           toast.success(`Settle Up ${data.name} updated!`);
@@ -81,35 +88,37 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
           {/* Amount */}
           <FormInput type="number" name="money" label="Amount" placeholderAsLabel />
 
-          <div className="grid w-full items-center gap-2">
-            <Label>Users</Label>
-            {roomInfo.users.map((userItem) => (
-              <Controller
-                key={userItem.id}
-                control={form.control}
-                name="users"
-                defaultValue={[]}
-                render={({ field }) => (
-                  <div className="flex flex-wrap gap-4 px-2">
-                    <div className="flex gap-2">
-                      <Checkbox
-                        id={`checkbox-${userItem.id}`}
-                        checked={field.value?.find((value) => value.id === userItem.id) ? true : false}
-                        onCheckedChange={(checked) =>
-                          checked
-                            ? field.onChange([...field.value, userItem])
-                            : field.onChange(field.value?.filter((value) => value.id !== userItem.id))
-                        }
-                      />
-                      <Label className="text-xs text-gray-500" htmlFor={`checkbox-${userItem.id}`}>
-                        {userItem.name}
-                      </Label>
+          {users?.length !== 0 && (
+            <div className="grid w-full items-center gap-2">
+              <Label>Users</Label>
+              {users.map((userItem) => (
+                <Controller
+                  key={userItem.id}
+                  control={form.control}
+                  name="users"
+                  defaultValue={[]}
+                  render={({ field }) => (
+                    <div className="flex flex-wrap gap-4 px-2">
+                      <div className="flex gap-2">
+                        <Checkbox
+                          id={`checkbox-${userItem.id}`}
+                          checked={field.value?.find((value) => value.id === userItem.id) ? true : false}
+                          onCheckedChange={(checked) =>
+                            checked
+                              ? field.onChange([...(field?.value ?? []), userItem])
+                              : field.onChange(field.value?.filter((value) => value.id !== userItem.id))
+                          }
+                        />
+                        <Label className="text-xs text-gray-500" htmlFor={`checkbox-${userItem.id}`}>
+                          {userItem.name}
+                        </Label>
+                      </div>
                     </div>
-                  </div>
-                )}
-              />
-            ))}
-          </div>
+                  )}
+                />
+              ))}
+            </div>
+          )}
 
           {/* Priority */}
           <Controller
@@ -164,6 +173,71 @@ export const CreateSettleUpForm = ({ onSubmit }: FormProps) => {
                       Private
                     </Label>
                   </div>
+                </RadioGroup>
+              </div>
+            )}
+          />
+
+          {/* Repeatable / One-time */}
+          <Controller
+            control={form.control}
+            name="repeatableValue"
+            defaultValue={false}
+            render={({ field }) => (
+              <div className="grid w-full items-center gap-2">
+                <Label>Repeatable/One time</Label>
+                <RadioGroup
+                  value={field.value ? "repeatable" : "one-time"}
+                  onValueChange={(val) => field.onChange(val === "repeatable")}
+                  className="flex flex-wrap gap-4 px-2"
+                >
+                  <div className="flex gap-2">
+                    <RadioGroupItem value="one-time" id="one-time" />
+                    <Label htmlFor="one-time" className="text-xs text-gray-500">
+                      One-time
+                    </Label>
+                  </div>
+                  <div className="flex gap-2">
+                    <RadioGroupItem value="repeatable" id="repeatable" />
+                    <Label htmlFor="repeatable" className="text-xs text-gray-500">
+                      Repeatable
+                    </Label>
+                  </div>
+                </RadioGroup>
+              </div>
+            )}
+          />
+
+          {/* Period Type */}
+          <Controller
+            control={form.control}
+            name="repeatableType"
+            defaultValue={updateData?.data.repeatableType ?? (repeatableValue ? "WEEKLY" : null)}
+            render={({ field }) => (
+              <div className="grid w-full items-center gap-2">
+                <Label>Period</Label>
+                <RadioGroup
+                  value={field.value}
+                  onValueChange={(val) => {
+                    if (repeatableValue) {
+                      field.onChange(val);
+                    } else {
+                      field.onChange(null);
+                    }
+                  }}
+                  className="flex flex-wrap gap-4 px-2"
+                >
+                  {periodEnum.map((value) => (
+                    <div key={value} className="flex gap-2">
+                      <RadioGroupItem value={value} id={`period-${value}`} disabled={!repeatableValue} />
+                      <Label
+                        htmlFor={`period-${value}`}
+                        className={`text-xs ${!repeatableValue ? "text-gray-300" : "text-gray-500"}`}
+                      >
+                        {firstLetterUppercase(value)}
+                      </Label>
+                    </div>
+                  ))}
                 </RadioGroup>
               </div>
             )}
