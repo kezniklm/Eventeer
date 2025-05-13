@@ -1,6 +1,6 @@
 import { type Metadata } from "next";
-import { XCircle } from "lucide-react";
 
+import { NotFoundAlert } from "@/components/layout/not-found-alert";
 import { UserRoomInvitations } from "@/components/rooms/rooms-invitations";
 import { UserRooms } from "@/components/rooms/user-rooms";
 
@@ -19,13 +19,10 @@ const RoomsPage = async () => {
   return (
     <div className="space-y-6">
       {isEmpty ? (
-        <div className="flex h-[70vh] flex-col items-center justify-center text-gray-600">
-          <XCircle className="mb-6 h-24 w-24" style={{ color: "var(--primary)" }} />
-          <p className="text-2xl font-semibold" style={{ color: "var(--primary)" }}>
-            No rooms or invitations
-          </p>
-          <p className="mt-1 text-lg text-gray-500">You haven’t joined or been invited to any rooms yet.</p>
-        </div>
+        <NotFoundAlert
+          title="No rooms or invitations"
+          description="You haven’t joined or been invited to any rooms yet."
+        />
       ) : (
         <>
           {rooms}
