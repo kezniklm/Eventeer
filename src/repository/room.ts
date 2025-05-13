@@ -27,6 +27,9 @@ export const insertRoom = async (data: RoomInsertSchema) => {
 };
 
 export const insertUserHasRoom = async (roomId: number, userId: string) => {
-  const roomT = await db.insert(userHasRoom).values({ room_id: roomId, user_id: userId }).returning();
+  const roomT = await db
+    .insert(userHasRoom)
+    .values({ room_id: roomId, user_id: userId, invitation_state: true })
+    .returning();
   return roomT[0];
 };
