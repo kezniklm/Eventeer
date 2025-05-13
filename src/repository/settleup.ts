@@ -1,7 +1,9 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { cacheLife } from "next/dist/server/use-cache/cache-life";
 
 import { db } from "@/db";
-import { roomActivity, settleUp, userHasActivity } from "@/db/schema/activity";
+import { roomActivity, settleUp, userHasActivity, userSettledUp } from "@/db/schema/activity";
 import { type SettleUpInsertSchema } from "@/db/zod/settle-up";
 import { type UserIdNamePair } from "@/db/zod/user";
 
@@ -22,7 +24,7 @@ export const getSettleUpsByRoom = async (roomId: number) =>
     .innerJoin(settleUp, eq(settleUp.id, roomActivity.fk_settle_up))
     .where(eq(roomActivity.fk_room, roomId));
 
-export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNamePair[]) =>
+export const createSettleUp = async (data: SettleUpInsertSchema, users?: UserIdNamePair[]) =>
   db.transaction(async (tx) => {
     console.log(users);
     const [inserted] = await tx
@@ -37,16 +39,12 @@ export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
       .insert(roomActivity)
       .values({
         fk_settle_up: inserted.id,
-        name: data.name,
-        description: data.description,
-        created_by: data.created_by,
         fk_room: data.roomId,
-        priority: data.priority,
-        isPublic: data.isPublic
+        ...data
       })
       .returning();
 
-    if (users.length !== 0) {
+    if (users && users.length !== 0) {
       const usersWithSettleUp = users.map((user) => ({ fk_user_id: user.id, fk_activity_id: activity.id }));
       await tx.insert(userHasActivity).values([...usersWithSettleUp]);
     }
@@ -54,7 +52,7 @@ export const createSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
     return { ...inserted, ...activity };
   });
 
-export const updateSettleUp = async (data: SettleUpInsertSchema, users: UserIdNamePair[], settleUpId: number) =>
+export const updateSettleUp = async (data: SettleUpInsertSchema, settleUpId: number, users?: UserIdNamePair[]) =>
   db.transaction(async (tx) => {
     const [updated] = await tx
       .update(settleUp)
@@ -67,20 +65,13 @@ export const updateSettleUp = async (data: SettleUpInsertSchema, users: UserIdNa
 
     const [activity] = await tx
       .update(roomActivity)
-      .set({
-        fk_settle_up: updated.id,
-        name: data.name,
-        description: data.description,
-        fk_room: data.roomId,
-        priority: data.priority,
-        isPublic: data.isPublic
-      })
+      .set(data)
       .where(eq(roomActivity.fk_settle_up, settleUpId))
       .returning();
 
     await tx.delete(userHasActivity).where(eq(userHasActivity.fk_activity_id, activity.id));
-    if (users.length !== 0) {
-      const usersWithSettleUp = users.map((user) => ({ fk_user_id: user.id, fk_activity_id: activity.id }));
+    if (users && users?.length !== 0) {
+      const usersWithSettleUp = users?.map((user) => ({ fk_user_id: user.id, fk_activity_id: activity.id }));
       await tx.insert(userHasActivity).values([...usersWithSettleUp]);
     }
 
@@ -109,3 +100,32 @@ export const getSettleUpById = async (settleUpId: number) =>
     .from(settleUp)
     .innerJoin(roomActivity, eq(roomActivity.id, settleUpId))
     .where(eq(settleUp.id, settleUpId));
+
+export const getAssignedUsers = async (settleUpId: number) =>
+  db
+    .select({ fk_user_id: userHasActivity.fk_user_id })
+    .from(roomActivity)
+    .innerJoin(userHasActivity, eq(userHasActivity.fk_activity_id, roomActivity.id))
+    .where(eq(roomActivity.fk_settle_up, settleUpId));
+
+export const toggleUserPaidMoney = async (settleUpId: number, userId: string) => {
+  const specificRowFilter = and(eq(userSettledUp.fk_settle_up, settleUpId), eq(userSettledUp.fk_user, userId));
+
+  await db.transaction(async (tx) => {
+    const userPaid = await tx.$count(userSettledUp, specificRowFilter);
+
+    if (userPaid === 0) {
+      await tx.insert(userSettledUp).values({ fk_user: userId, fk_settle_up: settleUpId });
+    } else {
+      await tx.delete(userSettledUp).where(specificRowFilter);
+    }
+  });
+};
+
+export const getUserPaidMoney = async (settleUpId: number) => {
+  "use cache";
+  cacheTag("user-paid-panel");
+  cacheLife("hours");
+
+  return db.select().from(userSettledUp).where(eq(userSettledUp.fk_settle_up, settleUpId));
+};

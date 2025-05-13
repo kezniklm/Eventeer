@@ -1,19 +1,19 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as React from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { type User } from "next-auth";
 
 import { Button } from "@/components/ui/button";
-import { roomInsertSchema, type RoomInsertSchema } from "@/db/zod/room";
-import { LoadingWheel } from "@/components/ui/loader";
 import { FormInput } from "@/components/ui/form-input";
-import type { UserSchema } from "@/db/zod/user";
+import { LoadingWheel } from "@/components/ui/loader";
+import { roomInsertSchema, type RoomInsertSchema } from "@/db/zod/room";
 import { useInsertRoomMutation } from "@/hooks/mutations/room";
 
 type CreateRoomFormProps = {
-  user: UserSchema;
+  user: User;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 

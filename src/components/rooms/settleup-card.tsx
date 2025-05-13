@@ -3,11 +3,12 @@ import { type User } from "next-auth";
 import { getCurrentUser } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { type PriorityEnum } from "@/db/zod/activity";
+import { type PeriodEnum, type PriorityEnum } from "@/db/zod/activity";
 import { type SettleUpForm } from "@/db/zod/settle-up";
 import { type UserIdNamePair } from "@/db/zod/user";
 
 import { SettleUpCardControls } from "../controls/settle-up/settle-up-card-controls";
+import { PaidButtonsPanel } from "../settle-up/paid-buttons-panel";
 
 type SettleUpCardProps = {
   settleUpId: number;
@@ -16,9 +17,8 @@ type SettleUpCardProps = {
   description?: string;
   date?: string;
   author?: User;
-  transactions?: { user: UserIdNamePair; amount: string }[];
   money?: number;
-  repeatableType?: string;
+  repeatableType?: PeriodEnum;
   repeatableValue?: boolean;
   users: UserIdNamePair[];
   priority: PriorityEnum;
@@ -30,7 +30,6 @@ export const SettleUpCard = async ({
   description,
   date,
   author,
-  transactions = [],
   money,
   repeatableType,
   repeatableValue,
@@ -44,7 +43,9 @@ export const SettleUpCard = async ({
     money: money!,
     users,
     isPublic,
-    priority
+    priority,
+    repeatableType: repeatableType ?? null,
+    repeatableValue: repeatableValue ?? false
   };
 
   const { id } = await getCurrentUser();
@@ -72,11 +73,11 @@ export const SettleUpCard = async ({
           {repeatableValue !== undefined && repeatableValue !== null && repeatableValue && (
             <span
               className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs ${
-                repeatableType === "day"
+                repeatableType === "DAILY"
                   ? "bg-indigo-300 text-indigo-800"
-                  : repeatableType === "week"
+                  : repeatableType === "WEEKLY"
                     ? "bg-indigo-200 text-indigo-800"
-                    : repeatableType === "month"
+                    : repeatableType === "MONTHLY"
                       ? "bg-purple-300 text-purple-800"
                       : "bg-purple-200 text-purple-800"
               }`}
@@ -94,13 +95,7 @@ export const SettleUpCard = async ({
       </CardHeader>
 
       <CardContent className="space-y-3">
-        <div className="flex flex-wrap gap-2">
-          {transactions.map((t, i) => (
-            <Button key={i} variant="outline" size="sm">
-              {t.user.name} - {t.amount} czk
-            </Button>
-          ))}
-        </div>
+        <PaidButtonsPanel settleUpId={settleUpId} users={users} money={money ?? 0} />
         {money && (
           <Button className="mt-2 flex items-center gap-1 font-bold" variant="outline" size="sm">
             {money} czk

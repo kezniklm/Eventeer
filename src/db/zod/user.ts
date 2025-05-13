@@ -1,5 +1,5 @@
 import { createSelectSchema } from "drizzle-zod";
-import { type z } from "zod";
+import { z } from "zod";
 
 import { accounts, users } from "../schema/auth";
 
@@ -9,11 +9,16 @@ export type UserSchema = z.infer<typeof userSelectSchema>;
 export const accountsSelectSchema = createSelectSchema(accounts);
 export type AccountSchema = z.infer<typeof accountsSelectSchema>;
 
-export const userProfileSchema = userSelectSchema.pick({
+const { name, ...rest } = userSelectSchema.pick({
   email: true,
   name: true,
   nickname: true,
   description: true
+}).shape;
+
+export const userProfileSchema = z.object({
+  ...rest,
+  name: name.nonempty().max(255)
 });
 export type UserProfileSchema = z.infer<typeof userProfileSchema>;
 

@@ -7,8 +7,6 @@ import { Footer } from "@/components/layout/footer";
 import { Navigation } from "@/components/navigation";
 import { NavigationLink } from "@/components/navigation-link";
 import { Button } from "@/components/ui/button";
-import { findUserById } from "@/repository/user";
-import { CreateRoomPopup } from "@/components/room/create-room-popup";
 
 export const PrivateLayout = async ({
   children
@@ -21,7 +19,6 @@ export const PrivateLayout = async ({
     return redirect("/login");
   }
 
-  const user = await findUserById(session.user.id ?? "");
   return (
     <>
       <Navigation>
@@ -36,11 +33,6 @@ export const PrivateLayout = async ({
             <span>Rooms</span>
           </NavigationLink>
         </Button>
-        <div className="flex w-full flex-col space-y-6">
-          <div className="space-x-10">
-            <CreateRoomPopup user={user} />
-          </div>
-        </div>
         <SignOutButton />
       </Navigation>
 
