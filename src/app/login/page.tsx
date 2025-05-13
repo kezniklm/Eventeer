@@ -24,7 +24,7 @@ const LoginPage = async (props: { searchParams: Promise<{ callbackUrl?: string; 
       <PageHeading>Sign In to Your Account</PageHeading>
 
       <div className="flex h-[100vh] w-[70vw] flex-col items-center justify-center text-center md:h-[45vw] md:w-[90vw] md:flex-row-reverse xl:h-[25vw] xl:w-[50vw]">
-        <div className="relative h-full w-full md:w-1/2">
+        <div className="relative aspect-square h-full w-full md:w-1/2">
           <Image
             src={PreviewImage}
             alt="Eventeer logo"

@@ -5,7 +5,7 @@ import { acceptRoomInvitationAction, declineRoomInvitationAction } from "@/serve
 import { RoomCard } from "./room-card";
 
 type Props = {
-  room: { id: number; name: string };
+  room: { id: number; name: string; description: string };
   userId: string;
   badges: string[];
 };
@@ -23,6 +23,7 @@ export const RoomInvitationCardWrapper = ({ room, userId, badges }: Props) => {
     <RoomCard
       id={room.id}
       title={room.name}
+      description={room.description}
       badges={badges}
       handleAccept={handleAccept}
       handleDecline={handleDecline}

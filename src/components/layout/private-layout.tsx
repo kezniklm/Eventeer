@@ -36,7 +36,7 @@ export const PrivateLayout = async ({
             <span>Rooms</span>
           </NavigationLink>
         </Button>
-        <div className="flex flex-col space-y-6">
+        <div className="flex w-full flex-col space-y-6">
           <div className="space-x-10">
             <CreateRoomPopup user={user} />
           </div>
