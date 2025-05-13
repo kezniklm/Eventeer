@@ -54,7 +54,7 @@ export const updateSettleUpAction = async (settleUpData: SettleUpForm, settleUpI
 
   revalidatePath("/rooms");
 
-  return updateSettleUp(insertData, users, settleUpId);
+  return updateSettleUp(insertData, settleUpId, users);
 };
 
 export const deleteSettleUpAction = async (settleUpId: number) => {
