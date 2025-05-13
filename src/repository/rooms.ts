@@ -3,6 +3,12 @@ import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { users } from "@/db/schema/auth";
 import { room, userHasRoom } from "@/db/schema/room";
+import { type RoomInsertSchema } from "@/db/zod/room";
+
+export const insertRoom = async (data: RoomInsertSchema) => {
+  const insertedRoom = await db.insert(room).values(data).returning();
+  return insertedRoom[0];
+};
 
 export const getMemberRoomsForUser = async (userId: string) => {
   const result = await db
@@ -33,6 +39,15 @@ export const getRoomUsersNames = async (roomId: number) =>
     .from(users)
     .innerJoin(userHasRoom, eq(userHasRoom.user_id, users.id))
     .where(and(eq(userHasRoom.room_id, roomId), eq(userHasRoom.invitation_state, true)));
+
+export const createUserHasRoomOnRoomCreate = async (roomId: number, userId: string) => {
+  const insertedUserHasRoom = await db
+    .insert(userHasRoom)
+    .values({ room_id: roomId, user_id: userId, invitation_state: true })
+    .returning();
+
+  return insertedUserHasRoom[0];
+};
 
 export const createUserHasRoomOnUserInvite = async (roomId: number, userEmail: string) => {
   await db.transaction(async () => {
