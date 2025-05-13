@@ -1,11 +1,10 @@
-import { auth } from "@/auth";
+import { getCurrentUser } from "@/auth";
 import { getMemberRoomsForUser, getRoomUsersNames } from "@/repository/rooms";
 
 import { RoomCardWrapper } from "./user-rooms-card-wrapper";
 
 export const UserRooms = async () => {
-  const session = await auth();
-  const user = session?.user;
+  const user = await getCurrentUser();
 
   if (!user?.id) {
     return null;

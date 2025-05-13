@@ -2,7 +2,7 @@ import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import { auth } from "@/auth";
+import { getCurrentUser } from "@/auth";
 import { RoomDetailLoadingSkeleton } from "@/components/room/room-detail-loading";
 import { EventCard } from "@/components/rooms/event-card";
 import { RoomDetailActionsWrapper } from "@/components/rooms/room-detail-actions-wrapper";
@@ -33,9 +33,9 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   const room = await getRoomByLink(link);
   if (!room) notFound();
 
-  const session = await auth();
-  if (!session?.user?.id) notFound();
-  const userId = session.user.id;
+  const user = await getCurrentUser();
+  if (!user?.id) notFound();
+  const userId = user.id;
 
   const allowed = await isUserInRoom(room.id, userId);
   if (!allowed) notFound();

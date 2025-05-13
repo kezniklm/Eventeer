@@ -1,11 +1,11 @@
-import { auth } from "@/auth";
+import { getCurrentUser } from "@/auth";
 import { getInvitedRoomsForUser, getRoomUsersNames } from "@/repository/rooms";
 
 import { RoomInvitationCardWrapper } from "./rooms-invitation-card-wrapper";
 
 export const UserRoomInvitations = async () => {
-  const session = await auth();
-  const userId = session?.user?.id;
+  const user = await getCurrentUser();
+  const userId = user.id;
 
   if (!userId) {
     return null;

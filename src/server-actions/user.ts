@@ -2,7 +2,7 @@
 
 import { randomUUID } from "crypto";
 
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 import {
   PROFILE_PICTURE_MAX_SIZE,
@@ -17,7 +17,7 @@ export const updateProfileAction = async (userForm: UserProfileSchema) => {
   const data = userProfileSchema.omit({ email: true }).parse(userForm);
   const userID = await getUserId();
 
-  revalidatePath("/profile");
+  revalidateTag("profile");
   return updateProfile(data, userID);
 };
 
@@ -45,5 +45,5 @@ export const updateProfilePictureAction = async (file?: File) => {
 
   if (oldPicturePath) removeBlob(oldPicturePath);
 
-  revalidatePath("/profile");
+  revalidateTag("profile");
 };

@@ -30,7 +30,7 @@ export const PaidButton = ({ user, hasPaid, amountPerUser, settleUpId }: Props) 
       className="transition-all duration-1000 ease-in-out"
       disabled={mutation.isPending}
     >
-      {user.name} - {amountPerUser} czk
+      {user.name} - {amountPerUser.toFixed(2)} czk
       <span
         className={`flex transition-all duration-1000 ease-in-out ${hasPaid ? "ml-1 max-w-[24px] opacity-100" : "ml-0 max-w-0 opacity-0"} overflow-hidden`}
       >
