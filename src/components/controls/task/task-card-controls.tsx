@@ -2,6 +2,7 @@
 
 import { type User } from "next-auth";
 import { toast } from "sonner";
+import { useState } from "react";
 
 import PopupForm from "@/components/pop-up-form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
@@ -21,6 +22,7 @@ type Props = {
 
 export const TaskCardControls = ({ forUpdateData, taskId, userId, author }: Props) => {
   const deleteMutation = useDeleteTaskMutation();
+  const [popupOpened, setPopupOpened] = useState(false);
 
   const handleDelete = async () => {
     await deleteMutation.mutateAsync(
@@ -35,7 +37,7 @@ export const TaskCardControls = ({ forUpdateData, taskId, userId, author }: Prop
   return (
     <CardActionsWrapper>
       <TaskUpdateProvider data={forUpdateData} taskId={taskId}>
-        <PopupForm type="task">
+        <PopupForm type="task" isOpened={popupOpened} setIsOpened={setPopupOpened}>
           <UpdateButton />
         </PopupForm>
       </TaskUpdateProvider>
