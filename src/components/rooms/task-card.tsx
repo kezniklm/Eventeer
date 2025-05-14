@@ -7,7 +7,7 @@ import { getCurrentUser } from "@/auth";
 import { type TaskForm } from "@/db/zod/task";
 import { type PeriodEnum, type PriorityEnum } from "@/db/zod/activity";
 
-import { TaskCardControls } from "../controls/task/task-card-controLs";
+import { TaskCardControls } from "../controls/task/task-card-controls";
 
 import { SubtaskList } from "./subtask-list";
 
