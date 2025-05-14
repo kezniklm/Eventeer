@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 import { auth, getCurrentUser } from "@/auth";
 import {
@@ -9,6 +9,7 @@ import {
   type SettleUpInsertSchema,
   settleUpSelectSchema
 } from "@/db/zod/settle-up";
+import { getActivityBySettleUp } from "@/repository/activity";
 import { isUserInRoom } from "@/repository/room";
 import {
   createSettleUp,
@@ -18,7 +19,6 @@ import {
   toggleUserPaidMoney,
   updateSettleUp
 } from "@/repository/settleup";
-import { getActivityBySettleUp } from "@/repository/activity";
 
 export const createSettleUpAction = async (settleUpData: SettleUpForm, roomId: number) => {
   const { users, ...formData } = settleUpFormSchema.parse(settleUpData);
@@ -38,7 +38,7 @@ export const createSettleUpAction = async (settleUpData: SettleUpForm, roomId: n
     created_by: authorId
   };
 
-  revalidatePath("/rooms");
+  revalidateTag("activities");
   return createSettleUp(insertData, users);
 };
 
@@ -60,7 +60,7 @@ export const updateSettleUpAction = async (settleUpData: SettleUpForm, settleUpI
     created_by: authorId
   };
 
-  revalidatePath("/rooms");
+  revalidateTag("activities");
 
   return updateSettleUp(insertData, settleUpId, users);
 };
@@ -76,7 +76,7 @@ export const deleteSettleUpAction = async (settleUpId: number) => {
   }
 
   await deleteSettleUp(id);
-  revalidatePath("/rooms");
+  revalidateTag("activities");
 };
 
 export const userPaidAction = async (settleUpId: number, userId: string) => {
@@ -99,5 +99,5 @@ export const userPaidAction = async (settleUpId: number, userId: string) => {
 
   await toggleUserPaidMoney(settleUpId, userId);
 
-  revalidateTag("user-paid-panel");
+  revalidateTag("user-paid");
 };

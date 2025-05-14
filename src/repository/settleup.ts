@@ -124,7 +124,7 @@ export const toggleUserPaidMoney = async (settleUpId: number, userId: string) =>
 
 export const getUserPaidMoney = async (settleUpId: number) => {
   "use cache";
-  cacheTag("user-paid-panel");
+  cacheTag("room-details", "activities", "settle-up", "user-paid");
   cacheLife("hours");
 
   return db.select().from(userSettledUp).where(eq(userSettledUp.fk_settle_up, settleUpId));

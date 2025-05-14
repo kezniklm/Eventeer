@@ -1,7 +1,7 @@
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { auth } from "@/auth";
+import { getCurrentUser } from "@/auth";
 import { EventCard } from "@/components/rooms/event-card";
 import { RoomDetailActionsWrapper } from "@/components/rooms/room-detail-actions-wrapper";
 import { SettleUpCard } from "@/components/rooms/settleup-card";
@@ -25,9 +25,9 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   const room = await getRoomByLink(link);
   if (!room) notFound();
 
-  const session = await auth();
-  if (!session?.user?.id) notFound();
-  const userId = session.user.id;
+  const user = await getCurrentUser();
+  if (!user?.id) notFound();
+  const userId = user.id;
 
   const allowed = await isUserInRoom(room.id, userId);
   if (!allowed) notFound();
@@ -123,7 +123,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   );
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:px-6 md:space-y-10 md:px-8 lg:space-y-12 lg:px-12">
+    <>
       <header className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">{room.name}</h1>
@@ -174,7 +174,8 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 isPublic={e.isPublic}
                 repeatableType={e.repeatableType ?? undefined}
                 repeatableValue={e.repeatableValue}
-                eventId={e.id}
+                activityId={e.id}
+                eventId={e.eventId!}
                 priority={e.priority}
               />
             ))}
@@ -205,7 +206,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
           </div>
         </section>
       )}
-    </div>
+    </>
   );
 };
 

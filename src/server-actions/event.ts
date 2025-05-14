@@ -1,11 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 import { auth, getCurrentUser } from "@/auth";
-import { isUserInRoom } from "@/repository/room";
-import { createEvent, deleteEvent, getEventById, updateEvent } from "@/repository/event";
 import { type CreateEventSchema, type EventForm, eventFormSchema, eventSelectSchema } from "@/db/zod/event";
+import { createEvent, deleteEvent, getEventById, updateEvent } from "@/repository/event";
+import { isUserInRoom } from "@/repository/room";
 
 export const createEventAction = async (eventData: EventForm, roomId: number) => {
   const { users, ...formData } = await eventFormSchema.parseAsync(eventData);
@@ -28,7 +28,7 @@ export const createEventAction = async (eventData: EventForm, roomId: number) =>
     created_by: authorId
   };
 
-  revalidatePath("/rooms");
+  revalidateTag("activities");
 
   return await createEvent(insertData, users);
 };
@@ -54,7 +54,7 @@ export const updateEventAction = async (eventData: EventForm, eventId: number, r
     created_by: authorId
   };
 
-  revalidatePath("/rooms");
+  revalidateTag("activities");
 
   return updateEvent(insertData, eventId, users);
 };
@@ -71,5 +71,5 @@ export const deleteEventAction = async (settleUpId: number) => {
 
   await deleteEvent(id);
 
-  revalidatePath("/rooms");
+  revalidateTag("activities");
 };

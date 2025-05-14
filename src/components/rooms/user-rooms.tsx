@@ -1,13 +1,10 @@
-import { auth } from "@/auth";
+import { getCurrentUser } from "@/auth";
 import { getMemberRoomsForUser, getRoomUsersNames } from "@/repository/rooms";
-
-import { CreateRoomPopup } from "../room/create-room-popup";
 
 import { RoomCardWrapper } from "./user-rooms-card-wrapper";
 
 export const UserRooms = async () => {
-  const session = await auth();
-  const user = session?.user;
+  const user = await getCurrentUser();
 
   if (!user?.id) {
     return null;
@@ -40,12 +37,6 @@ export const UserRooms = async () => {
 
   return (
     <div className="m-auto space-y-6 lg:max-w-7xl">
-      <div className="flex flex-row justify-between px-2">
-        <h1 className="text-center text-6xl">Rooms</h1>
-        <div className="space-x-10">
-          <CreateRoomPopup user={user} />
-        </div>
-      </div>
       <div className="grid grid-cols-1 gap-6">
         {roomsWithBadges.map(({ room, badges }) => (
           <RoomCardWrapper key={room.id} room={room} userId={userId} badges={badges} />

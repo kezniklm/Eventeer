@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
 import { type User } from "next-auth";
+import { type ButtonHTMLAttributes, useState } from "react";
 
 import { CreateRoomForm } from "@/components/room/create-room-form";
 import { Button } from "@/components/ui/button";
@@ -17,14 +17,18 @@ type CreateRoomFormProps = {
   user: User;
 };
 
+export const RoomCreateButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => (
+  <Button className="w-full" {...props}>
+    Create room
+  </Button>
+);
+
 export const CreateRoomPopup = ({ user }: CreateRoomFormProps) => {
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
       <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)} className="w-full">
-          Create room
-        </Button>
+        <RoomCreateButton onClick={() => setOpen(true)} />
       </DialogTrigger>
       <DialogContent className="bg-secondary max-h h-fit overflow-auto">
         <DialogHeader>
