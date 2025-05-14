@@ -25,8 +25,16 @@ const { taskNames, ...rest } = taskInsertSchema
 
 export const taskFormSchema = z.object({
   ...rest,
-  taskNames: taskNames.refine((arr) => arr.length > 0 && arr.every((entry) => entry.name.trim().length > 0), {
-    message: "Each task name must be non-empty and at least one task name is required"
+  taskNames: taskNames.superRefine((arr, ctx) => {
+    arr.forEach((entry, index) => {
+      if (entry.name.trim().length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Subtask name must not be empty",
+          path: [index, "name"]
+        });
+      }
+    });
   })
 });
 

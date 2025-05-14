@@ -115,11 +115,15 @@ export const TaskCard = async ({
             </Button>
           ))}
         </div>
+
         <SubtaskList subtasks={subtasks} />
-        <div className="mt-4">
-          <Progress value={progress} className="h-2 rounded-full" />
-          <div className="text-right text-xs">{progress}%</div>
-        </div>
+
+        {subtasks.length > 0 && (
+          <div className="mt-4">
+            <Progress value={progress} className="h-2 rounded-full" />
+            <div className="text-right text-xs">{progress}%</div>
+          </div>
+        )}
         <TaskCardControls taskId={taskId} userId={id} author={author} forUpdateData={forUpdateData} />
       </CardContent>
     </Card>

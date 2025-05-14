@@ -36,16 +36,18 @@ export const createTask = async (data: TaskInsertSchema, users?: UserIdNamePair[
       })
       .returning();
 
-    await db
-      .insert(subtask)
-      .values(
-        data.taskNames.map((name) => ({
-          fk_task: insertedTask.id,
-          name: name.name,
-          is_done: false
-        }))
-      )
-      .returning();
+    if (data.taskNames.length > 0) {
+      await db
+        .insert(subtask)
+        .values(
+          data.taskNames.map((name) => ({
+            fk_task: insertedTask.id,
+            name: name.name,
+            is_done: false
+          }))
+        )
+        .returning();
+    }
 
     const [insertedActivity] = await tx
       .insert(roomActivity)

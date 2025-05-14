@@ -302,31 +302,35 @@ export const CreateTaskForm = ({ onSubmit }: FormProps) => {
           <Label>Tasks</Label>
           <div className="space-y-2">
             {fields.map((field, index) => (
-              <div key={field.id} className="flex items-center gap-2">
-                <FormInput
-                  type="text"
-                  name={`taskNames.${index}.name`}
-                  label={`Task ${index + 1}`}
-                  placeholderAsLabel
-                  hideLabel
-                  className="flex-1"
-                />
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="h-8 w-8 -translate-y-0.75 transform"
-                  onClick={() => onSubTaskDelete(field.dbId, index)}
-                >
-                  ✕
-                </Button>
+              <div key={field.id} className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <FormInput
+                    type="text"
+                    name={`taskNames.${index}.name`}
+                    label={`Task ${index + 1}`}
+                    placeholderAsLabel
+                    hideLabel
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="h-8 w-8 -translate-y-0.75 transform"
+                    onClick={() => onSubTaskDelete(field.dbId, index)}
+                  >
+                    ✕
+                  </Button>
+                </div>
+                {errors.taskNames?.[index]?.name && (
+                  <p className="text-sm text-red-500">{errors.taskNames[index].name.message}</p>
+                )}
               </div>
             ))}
             <Button type="button" variant="outline" size="sm" className="w-full" onClick={() => append({ name: "" })}>
               + Add Subtask
             </Button>
           </div>
-          {errors.taskNames && <p className="text-sm text-red-500">{errors.taskNames.message}</p>}
         </div>
 
         <SubmitButton isPending={isPending} />
