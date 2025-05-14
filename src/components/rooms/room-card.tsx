@@ -91,7 +91,7 @@ export const RoomCard = ({
     </CardHeader>
     <CardContent className="flex flex-wrap items-center gap-2">
       {badges.map((badge, index) => (
-        <Badge key={index} className="bg-[#BDD1D2] px-3 py-2 text-sm">
+        <Badge key={index} className="bg-primary px-3 py-2 text-sm">
           {badge}
         </Badge>
       ))}

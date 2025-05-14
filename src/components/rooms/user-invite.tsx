@@ -55,7 +55,7 @@ export const InviteUserForm = ({ onInvite }: InviteUserFormProps) => {
     >
       <div className="flex items-center gap-2">
         <Input
-          className="h-8 w-40 text-sm"
+          className="bg-tertiary border-tertiary h-9 w-40 text-sm placeholder-white"
           placeholder="Invite by email..."
           {...register("invite", {
             required: "Email is required",
@@ -65,7 +65,14 @@ export const InviteUserForm = ({ onInvite }: InviteUserFormProps) => {
             }
           })}
         />
-        <Button type="submit" className="h-8 px-2" size="sm" variant="secondary" disabled={mutation.isPending}>
+        <Button
+          type="submit"
+          title="Invite user"
+          className="bg-tertiary h-8 px-2"
+          size="sm"
+          variant="secondary"
+          disabled={mutation.isPending}
+        >
           {mutation.isPending ? "Inviting..." : <Plus className="h-4 w-4" />}
         </Button>
       </div>
