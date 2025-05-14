@@ -77,21 +77,34 @@ export const EventCard = async ({
             {repeatableValue !== undefined && repeatableValue !== null && repeatableValue ? "Repeatable" : "One-time"}
           </span>
           {repeatableValue !== undefined && repeatableValue !== null && repeatableValue && (
-            <span
-              className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs ${
-                repeatableType === "DAILY"
-                  ? "bg-indigo-300 text-indigo-800"
-                  : repeatableType === "WEEKLY"
-                    ? "bg-indigo-200 text-indigo-800"
-                    : repeatableType === "MONTHLY"
-                      ? "bg-purple-300 text-purple-800"
-                      : "bg-purple-200 text-purple-800"
-              }`}
-            >
-              {repeatableValue
-                ? (repeatableType ?? "").charAt(0).toUpperCase() + (repeatableType ?? "").slice(1).toLowerCase()
-                : `${repeatableValue} ${(repeatableType ?? "").toLowerCase()}s`}
-            </span>
+            <>
+              <span
+                className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs ${
+                  repeatableType === "DAILY"
+                    ? "bg-indigo-300 text-indigo-800"
+                    : repeatableType === "WEEKLY"
+                      ? "bg-indigo-200 text-indigo-800"
+                      : repeatableType === "MONTHLY"
+                        ? "bg-purple-300 text-purple-800"
+                        : "bg-purple-200 text-purple-800"
+                }`}
+              >
+                {repeatableValue
+                  ? (repeatableType ?? "").charAt(0).toUpperCase() + (repeatableType ?? "").slice(1).toLowerCase()
+                  : `${repeatableValue} ${(repeatableType ?? "").toLowerCase()}s`}
+              </span>
+              <span
+                className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs ${
+                  priority === "HIGH"
+                    ? "bg-red-100 text-red-800"
+                    : priority === "NORMAL"
+                      ? "bg-orange-100 text-orange-800"
+                      : "bg-green-100 text-green-800"
+                } `}
+              >
+                {priority.charAt(0).toUpperCase() + priority.slice(1).toLowerCase()}
+              </span>
+            </>
           )}
         </div>
         <div className="text-foreground text-right text-xs">

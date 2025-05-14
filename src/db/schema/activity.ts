@@ -40,7 +40,8 @@ export const task = sqliteTable("task", {
   id: integer().primaryKey(),
   roomId: integer("room_id")
     .references(() => room.id)
-    .notNull()
+    .notNull(),
+  dateTime: integer({ mode: "timestamp" })
 });
 
 export const subtask = sqliteTable("subtask", {
