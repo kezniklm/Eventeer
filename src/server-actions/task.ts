@@ -1,12 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 import { auth, getCurrentUser } from "@/auth";
-import { isUserInRoom } from "@/repository/room";
 import { type TaskForm, taskFormSchema, type TaskInsertSchema, taskSelectSchema } from "@/db/zod/task";
-import { createTask, deleteTask, getTaskById, updateTask } from "@/repository/task";
+import { isUserInRoom } from "@/repository/room";
 import { deleteSubTask, getSubTaskById } from "@/repository/subtask";
+import { createTask, deleteTask, getTaskById, updateTask } from "@/repository/task";
 
 export const createTaskAction = async (taskData: TaskForm, roomId: number) => {
   const { users, ...formData } = await taskFormSchema.parseAsync(taskData);
@@ -29,7 +29,7 @@ export const createTaskAction = async (taskData: TaskForm, roomId: number) => {
     created_by: authorId
   };
 
-  revalidatePath("/rooms"); //TAG
+  revalidateTag("activities");
 
   return await createTask(insertData, users);
 };
@@ -55,7 +55,7 @@ export const updateTaskAction = async (taskData: TaskForm, taskId: number, roomI
     created_by: authorId
   };
 
-  revalidatePath("/rooms"); //TAG
+  revalidateTag("task");
 
   return updateTask(insertData, taskId, users);
 };
@@ -72,7 +72,7 @@ export const deleteTaskAction = async (taskId: number) => {
 
   await deleteTask(id);
 
-  revalidatePath("/rooms"); //TAG
+  revalidateTag("task");
 };
 
 export const deleteSubTaskAction = async (subtaskId: number) => {
@@ -87,5 +87,5 @@ export const deleteSubTaskAction = async (subtaskId: number) => {
 
   await deleteSubTask(id);
 
-  revalidatePath("/rooms"); //TAG
+  revalidateTag("subtask");
 };
