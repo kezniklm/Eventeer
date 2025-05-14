@@ -86,7 +86,8 @@ export const ProfilePicture = ({ user }: ProfilePictureProps) => {
           <Image
             src={userImageSource}
             alt="Image"
-            fill
+            width={125}
+            height={125}
             className={cn(
               "rounded-3xl transition duration-300",
               pictureMutation.isPending ? "blur-xs" : "group-hover:blur-xs"

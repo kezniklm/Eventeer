@@ -29,6 +29,7 @@ const LoginPage = async (props: { searchParams: Promise<{ callbackUrl?: string; 
             src={PreviewImage}
             alt="Eventeer logo"
             fill
+            loading="eager"
             className="object-fit rounded-t-2xl md:rounded-tl-none md:rounded-br-2xl"
           />
         </div>

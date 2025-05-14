@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 import { robotoFont } from "@/app/(fonts)";
 
 const providerIconMapping: Record<string, ReactNode> = {
-  Google: <Image src={GoogleIcon} alt="Google icon" />,
-  Discord: <Image src={DiscordIcon} alt="Discord icon" />
+  Google: <Image src={GoogleIcon} alt="Google icon" width={20} height={20} />,
+  Discord: <Image src={DiscordIcon} alt="Discord icon" width={20} height={20} />
 };
 
 type ProviderButtonProps = PropsWithChildren<{ name: string }> & ButtonHTMLAttributes<HTMLButtonElement>;
