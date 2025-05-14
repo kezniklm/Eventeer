@@ -39,7 +39,7 @@ export const getActivitiesByRoom = async (roomId: number) => {
       taskId: roomActivity.fk_task,
       eventId: roomActivity.fk_event,
       eventDateTime: event.dateTime,
-      taskDateTime: event.dateTime,
+      taskDateTime: task.dateTime,
       eventPlace: event.place,
       settleUpId: roomActivity.fk_settle_up,
       settleMoney: settleUp.money

@@ -52,6 +52,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
         subtasks,
         users: rawUsers,
         assignedUserIds,
+        createdAt: t.createdAt,
         dateTime: t.taskDateTime,
         author: t.author,
         isPublic: t.isPublic,
