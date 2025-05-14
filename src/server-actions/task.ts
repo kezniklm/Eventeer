@@ -40,13 +40,13 @@ export const updateTaskAction = async (taskData: TaskForm, taskId: number, roomI
   const session = await auth();
 
   if (!session?.user?.id) {
-    throw new Error("You must be logged in to create settle up activity!");
+    throw new Error("You must be logged in to create task activity!");
   }
 
   const authorId = session.user.id;
 
   if (!isUserInRoom(roomId, authorId)) {
-    throw new Error("You are not allowed to create settle ups in this room!");
+    throw new Error("You are not allowed to create task in this room!");
   }
 
   const insertData: TaskInsertSchema = {
@@ -67,7 +67,7 @@ export const deleteTaskAction = async (taskId: number) => {
   const [task] = await getTaskById(id);
 
   if (task.room_activity.created_by !== user.id) {
-    throw new Error("Only author can remove the Settle up!");
+    throw new Error("Only author can remove the task!");
   }
 
   await deleteTask(id);
@@ -82,7 +82,7 @@ export const deleteSubTaskAction = async (subtaskId: number) => {
   const [subTask] = await getSubTaskById(id);
 
   if (subTask.room_activity.created_by !== user.id) {
-    throw new Error("Only author can remove the Settle up!");
+    throw new Error("Only author can remove the task!");
   }
 
   await deleteSubTask(id);

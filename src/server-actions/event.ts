@@ -66,7 +66,7 @@ export const deleteEventAction = async (eventId: number) => {
   const [event] = await getEventById(id);
 
   if (event.room_activity.created_by !== user.id) {
-    throw new Error("Only author can remove the Event up!");
+    throw new Error("Only author can remove the Event!");
   }
 
   await deleteEvent(id);
