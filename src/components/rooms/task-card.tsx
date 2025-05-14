@@ -51,7 +51,7 @@ export const TaskCard = ({
   };
 
   return (
-    <Card className="bg-secondary animate-fade-in-slow w-full space-y-4 p-4">
+    <Card className="bg-secondary animate-fade-in-slow w-full space-y-4">
       <CardHeader className="flex items-start justify-between">
         <div>
           <CardTitle className="text-2xl">{name}</CardTitle>
