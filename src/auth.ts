@@ -12,7 +12,7 @@ import { accounts, authenticators, sessions, users, verificationTokens } from ".
 const providers: Provider[] = [Google, Discord];
 
 const isUnprotectedPath = (path: string) => {
-  const paths = ["/", "/login"];
+  const paths = ["/", "/login", "/sitemap.xml", "/robots.txt"];
 
   return paths.includes(path);
 };
