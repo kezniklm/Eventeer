@@ -7,7 +7,7 @@ import { getCurrentUser } from "@/auth";
 import { type TaskForm } from "@/db/zod/task";
 import { type PeriodEnum, type PriorityEnum } from "@/db/zod/activity";
 
-import { TaskCardControls } from "../controls/task/task-card-controLs";
+import { TaskCardControls } from "../controls/task/task-card-controls";
 
 import { SubtaskList } from "./subtask-list";
 
@@ -113,7 +113,7 @@ export const TaskCard = async ({
             </>
           )}
         </div>
-        <div className="text-muted-foreground text-right text-xs">
+        <div className="text-accent-foreground text-right text-xs">
           {createdAt && <div>Created: {createdAt.toLocaleDateString("sk-SK")}</div>}
           {dateTime && <div className="mt-1">Due date: {dateTime.toLocaleDateString("sk-SK")}</div>}
           {author && <div className="mt-1">By: {author.name}</div>}

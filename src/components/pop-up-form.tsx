@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 
 import { CreateEventForm } from "@/components/forms/create-event-form";
-import { CreateTaskForm } from "@/components/forms/create-task-form";
 import { CreateSettleUpForm } from "@/components/forms/create-settleup-form";
+import { CreateTaskForm } from "@/components/forms/create-task-form";
 import {
   Dialog,
   DialogContent,
@@ -19,16 +19,16 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 type PopupFormProps = React.PropsWithChildren & {
   type: "task" | "event" | "settleup";
   setType?: Dispatch<SetStateAction<"task" | "event" | "settleup">>;
+  isOpened?: boolean;
+  setIsOpened: (state: boolean) => void;
 };
 
-const PopupForm = ({ children, type, setType }: PopupFormProps) => {
-  const [opened, setOpened] = useState(false);
-
-  const handleClose = () => setOpened(false);
+const PopupForm = ({ children, type, setType, isOpened = false, setIsOpened }: PopupFormProps) => {
+  const handleClose = () => setIsOpened(false);
 
   return (
     <div className="space-x-10">
-      <Dialog open={opened} onOpenChange={setOpened}>
+      <Dialog open={isOpened} onOpenChange={setIsOpened}>
         <DialogTrigger asChild>{children}</DialogTrigger>
         <DialogContent className="bg-secondary h-[90vh] max-h-full overflow-auto">
           <DialogHeader>

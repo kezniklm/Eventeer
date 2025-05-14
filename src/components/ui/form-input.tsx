@@ -19,12 +19,13 @@ export const FormInput = ({ label, name, placeholderAsLabel = false, hideLabel =
 
   return (
     <div className="grid w-full max-w-sm items-center gap-1.5">
-      {!hideLabel && <Label htmlFor={name}>{label}</Label>}
+      {!hideLabel && <Label htmlFor={`input-${name}`}>{label}</Label>}
       <Input
         {...props}
         {...register(name, { valueAsNumber: props.type === "number" })}
         placeholder={placeholderAsLabel ? label : props.placeholder}
         className="bg-white"
+        id={`input-${name}`}
       />
       <span className="text-sm text-red-500">{errors[name]?.message?.toString()}</span>
     </div>

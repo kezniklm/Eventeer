@@ -13,7 +13,8 @@ import { getSubtasksByTask } from "@/repository/subtask";
 
 export const metadata: Metadata = {
   title: "Room Details",
-  description: "View detailed information about your room."
+  description:
+    "View detailed information about your room. You can create, view or modify your activities - tasks, events and settle ups!"
 };
 
 type RoomDetailPageProps = {

@@ -9,8 +9,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
+  AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
@@ -29,55 +28,65 @@ type PropsEnabled = {
 };
 
 type Props = PropsDisabled | PropsEnabled;
+type PopupType = "task" | "event" | "settleup";
 
 export const RoomDetailActions = ({ handleLeave, disabled = false }: Props) => {
-  const [open, setOpen] = useState(false);
-  const [popupType, setPopupType] = useState<"task" | "event" | "settleup">("task");
+  const [leavePopupOpen, setLeavePopupOpen] = useState(false);
+  const [burgerMenuOpened, setBurgerMenuOpened] = useState(false);
+  const [formOpened, setFormOpened] = useState(false);
+  const [popupType, setPopupType] = useState<PopupType>("task");
 
   const onConfirmLeave = async () => {
-    setOpen(false);
+    setLeavePopupOpen(false);
     if (handleLeave) {
       await handleLeave();
     }
   };
 
+  const handleCreateClick = (popupType: PopupType) => {
+    setPopupType(popupType);
+    setFormOpened(true);
+
+    if (burgerMenuOpened) setBurgerMenuOpened(false);
+  };
+
+  const handleLeaveClick = () => {
+    setLeavePopupOpen(true);
+
+    if (burgerMenuOpened) setBurgerMenuOpened(false);
+  };
+
   return (
-    <ResponsiveActionButtons>
-      <PopupForm type={popupType} setType={setPopupType}>
-        <Button onClick={() => setPopupType("task")} size="sm" disabled={disabled}>
+    <>
+      <PopupForm type={popupType} setType={setPopupType} isOpened={formOpened} setIsOpened={setFormOpened} />
+      <ResponsiveActionButtons isOpened={burgerMenuOpened} setIsOpened={setBurgerMenuOpened}>
+        <Button onClick={() => handleCreateClick("task")} size="sm" disabled={disabled}>
           Create task
         </Button>
-      </PopupForm>
-      <PopupForm type={popupType} setType={setPopupType}>
-        <Button onClick={() => setPopupType("event")} size="sm" disabled={disabled}>
+        <Button onClick={() => handleCreateClick("event")} size="sm" disabled={disabled}>
           Create event
         </Button>
-      </PopupForm>
-      <PopupForm type={popupType} setType={setPopupType}>
-        <Button onClick={() => setPopupType("settleup")} size="sm" disabled={disabled}>
+        <Button onClick={() => handleCreateClick("settleup")} size="sm" disabled={disabled}>
           Create Settle Up
         </Button>
-      </PopupForm>
-
-      <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogTrigger asChild>
-          <Button variant="destructive" size="sm" disabled={disabled}>
-            Leave room
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Leave</AlertDialogTitle>
-            <AlertDialogDescription>Are you sure you want to leave this room?</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <Button variant="secondary" onClick={() => setOpen(false)}>
-              No, stay
-            </Button>
-            <AlertDialogAction onClick={onConfirmLeave}>Yes, leave</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </ResponsiveActionButtons>
+        <Button onClick={() => handleLeaveClick()} variant="destructive" size="sm" disabled={disabled}>
+          Leave room
+        </Button>
+        <AlertDialog open={leavePopupOpen} onOpenChange={setLeavePopupOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirm Leave</AlertDialogTitle>
+              <AlertDialogDescription>Are you sure you want to leave this room?</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <Button variant="secondary" onClick={() => setLeavePopupOpen(false)}>
+                No, stay
+              </Button>
+              <AlertDialogAction onClick={onConfirmLeave}>Yes, leave</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </ResponsiveActionButtons>
+    </>
   );
 };

@@ -101,7 +101,7 @@ export const SettleUpCard = async ({
             </>
           )}
         </div>
-        <div className="text-muted-foreground text-right text-xs">
+        <div className="text-foreground text-right text-xs">
           {date && <div>{date}</div>}
           {author && <div className="mt-1">By: {author.name}</div>}
         </div>
