@@ -3,6 +3,8 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { toggleSubtaskAction } from "@/server-actions/subtasks";
 
+import { Label } from "../ui/label";
+
 type Subtask = { id: number; name: string; is_done: boolean };
 
 type SubtaskListProps = {
@@ -19,11 +21,17 @@ export const SubtaskList = ({ subtasks }: SubtaskListProps) => {
       {subtasks.map((s) => (
         <li key={s.id} className="flex items-center">
           <Checkbox
+            id={`subtask-${s.id}`}
             checked={s.is_done}
             onCheckedChange={(val) => handleToggle(s.id, Boolean(val))}
-            className={!s.is_done ? "border-input rounded-sm border bg-white" : ""}
+            className={`cursor-pointer ${!s.is_done ? "border-input rounded-sm border bg-white" : ""}`}
           />
-          <span className={`ml-2 ${s.is_done ? "text-muted-foreground line-through" : ""}`}>{s.name}</span>
+          <Label
+            htmlFor={`subtask-${s.id}`}
+            className={`ml-2 cursor-pointer ${s.is_done ? "text-muted-foreground line-through" : ""}`}
+          >
+            {s.name}
+          </Label>
         </li>
       ))}
     </ul>
