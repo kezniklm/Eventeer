@@ -69,8 +69,12 @@ export const deleteSettleUpAction = async (settleUpId: number) => {
   const { id } = await settleUpSelectSchema.pick({ id: true }).parseAsync({ id: settleUpId });
   const user = await getCurrentUser();
 
+  console.log(id);
   const [settleUp] = await getSettleUpById(id);
 
+  console.log(user);
+  console.log(settleUp.room_activity.created_by);
+  console.log(settleUp);
   if (settleUp.room_activity.created_by !== user.id) {
     throw new Error("Only author can remove the Settle up!");
   }

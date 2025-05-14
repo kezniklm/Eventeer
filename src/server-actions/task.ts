@@ -55,7 +55,7 @@ export const updateTaskAction = async (taskData: TaskForm, taskId: number, roomI
     created_by: authorId
   };
 
-  revalidateTag("task");
+  revalidateTag("activities");
 
   return updateTask(insertData, taskId, users);
 };
@@ -72,7 +72,7 @@ export const deleteTaskAction = async (taskId: number) => {
 
   await deleteTask(id);
 
-  revalidateTag("task");
+  revalidateTag("activities");
 };
 
 export const deleteSubTaskAction = async (subtaskId: number) => {

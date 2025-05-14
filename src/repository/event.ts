@@ -6,7 +6,11 @@ import { type CreateEventSchema } from "@/db/zod/event";
 import { type UserIdNamePair } from "@/db/zod/user";
 
 export const getEventById = async (eventId: number) =>
-  await db.select().from(event).innerJoin(roomActivity, eq(roomActivity.id, eventId)).where(eq(event.id, eventId));
+  await db
+    .select()
+    .from(event)
+    .innerJoin(roomActivity, eq(roomActivity.fk_event, eventId))
+    .where(eq(event.id, eventId));
 
 export const getEventsByRoom = async (roomId: number) =>
   await db

@@ -3,7 +3,6 @@ import NextAuth from "next-auth";
 import { type Provider } from "next-auth/providers";
 import Discord from "next-auth/providers/discord";
 import Google from "next-auth/providers/google";
-import { cache } from "react";
 import { revalidateTag } from "next/cache";
 
 import { db } from "./db";
@@ -75,7 +74,7 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
   }
 });
 
-export const getCurrentUser = cache(async () => {
+export const getCurrentUser = async () => {
   const session = await auth();
 
   if (!session?.user) {
@@ -83,4 +82,4 @@ export const getCurrentUser = cache(async () => {
   }
 
   return session.user;
-});
+};
