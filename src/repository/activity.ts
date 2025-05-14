@@ -1,17 +1,28 @@
 import { eq } from "drizzle-orm";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { cacheLife } from "next/dist/server/use-cache/cache-life";
 
 import { db } from "@/db";
-import { roomActivity, task, event, settleUp, userHasActivity } from "@/db/schema/activity";
+import { event, roomActivity, settleUp, task, userHasActivity } from "@/db/schema/activity";
 import { users } from "@/db/schema/auth";
 
-export const getActivityUsersNames = async (activityId: number) =>
-  await db
+export const getActivityUsersNames = async (activityId: number) => {
+  "use cache";
+  cacheTag("room-details", "activities");
+  cacheLife("minutes");
+
+  return await db
     .select({ id: users.id, name: users.name })
     .from(users)
     .innerJoin(userHasActivity, eq(userHasActivity.fk_user_id, users.id))
     .where(eq(userHasActivity.fk_activity_id, activityId));
+};
 
 export const getActivitiesByRoom = async (roomId: number) => {
+  "use cache";
+  cacheTag("room-details", "activities");
+  cacheLife("minutes");
+
   const activities = await db
     .select({
       id: roomActivity.id,
@@ -27,6 +38,8 @@ export const getActivitiesByRoom = async (roomId: number) => {
       createdAt: roomActivity.createdAt,
       taskId: roomActivity.fk_task,
       eventId: roomActivity.fk_event,
+      eventDateTime: event.dateTime,
+      taskDateTime: event.dateTime,
       eventPlace: event.place,
       settleUpId: roomActivity.fk_settle_up,
       settleMoney: settleUp.money

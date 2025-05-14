@@ -1,11 +1,11 @@
-import { auth } from "@/auth";
+import { getCurrentUser } from "@/auth";
 import { getInvitedRoomsForUser, getRoomUsersNames } from "@/repository/rooms";
 
 import { RoomInvitationCardWrapper } from "./rooms-invitation-card-wrapper";
 
 export const UserRoomInvitations = async () => {
-  const session = await auth();
-  const userId = session?.user?.id;
+  const user = await getCurrentUser();
+  const userId = user.id;
 
   if (!userId) {
     return null;
@@ -25,8 +25,8 @@ export const UserRoomInvitations = async () => {
   );
 
   return (
-    <div className="space-y-6">
-      <h1 className="mb-6 text-center">Invitations</h1>
+    <div className="space-y-6 pt-7">
+      <h1 className="mb-6 pl-1 text-left">Invitations</h1>
       <div className="grid grid-cols-1 gap-6">
         {roomsWithBadges.map(({ room, badges }) => (
           <RoomInvitationCardWrapper key={room.id} room={room} userId={userId} badges={badges} />

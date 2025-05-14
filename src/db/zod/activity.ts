@@ -8,7 +8,7 @@ export type PriorityEnum = z.infer<typeof priorityEnumSchema>;
 
 export const activitySelectSchema = createSelectSchema(roomActivity);
 
-export const commonInsertSchema = activitySelectSchema.pick({
+const { name, ...rest } = activitySelectSchema.pick({
   created_by: true,
   description: true,
   name: true,
@@ -16,6 +16,11 @@ export const commonInsertSchema = activitySelectSchema.pick({
   priority: true,
   repeatableType: true,
   repeatableValue: true
+}).shape;
+
+export const commonInsertSchema = z.object({
+  ...rest,
+  name: name.nonempty().max(255)
 });
 export const commonFormSchema = commonInsertSchema.omit({ created_by: true });
 

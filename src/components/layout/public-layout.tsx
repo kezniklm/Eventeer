@@ -20,7 +20,7 @@ export const PublicLayout = ({
       </Button>
     </Navigation>
 
-    <main className="container mx-auto max-w-4/5 px-2 py-8">{children}</main>
+    <main className="container mx-auto px-8 py-8 lg:max-w-4/5">{children}</main>
 
     <Footer />
   </>

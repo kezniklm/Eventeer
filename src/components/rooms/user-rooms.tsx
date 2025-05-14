@@ -1,16 +1,16 @@
-import { auth } from "@/auth";
+import { getCurrentUser } from "@/auth";
 import { getMemberRoomsForUser, getRoomUsersNames } from "@/repository/rooms";
 
 import { RoomCardWrapper } from "./user-rooms-card-wrapper";
 
 export const UserRooms = async () => {
-  const session = await auth();
-  const userId = session?.user?.id;
+  const user = await getCurrentUser();
 
-  if (!userId) {
+  if (!user?.id) {
     return null;
   }
 
+  const userId = user.id;
   const userMemberRooms = await getMemberRoomsForUser(userId);
 
   if (userMemberRooms.length === 0) {
@@ -36,8 +36,7 @@ export const UserRooms = async () => {
   );
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-center text-6xl">Rooms</h1>
+    <div className="m-auto space-y-6 lg:max-w-7xl">
       <div className="grid grid-cols-1 gap-6">
         {roomsWithBadges.map(({ room, badges }) => (
           <RoomCardWrapper key={room.id} room={room} userId={userId} badges={badges} />

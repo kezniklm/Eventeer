@@ -5,6 +5,9 @@ import { event, roomActivity, userHasActivity } from "@/db/schema/activity";
 import { type CreateEventSchema } from "@/db/zod/event";
 import { type UserIdNamePair } from "@/db/zod/user";
 
+export const getEventById = async (eventId: number) =>
+  await db.select().from(event).innerJoin(roomActivity, eq(roomActivity.id, eventId)).where(eq(event.id, eventId));
+
 export const getEventsByRoom = async (roomId: number) =>
   await db
     .select({
@@ -30,7 +33,8 @@ export const createEvent = async (data: CreateEventSchema, users?: UserIdNamePai
       .insert(event)
       .values({
         roomId: data.roomId,
-        place: data.place
+        place: data.place,
+        dateTime: data.dateTime
       })
       .returning();
 
@@ -56,3 +60,44 @@ export const createEvent = async (data: CreateEventSchema, users?: UserIdNamePai
 
     return { ...insertedEvent, ...insertedActivity };
   });
+
+export const updateEvent = async (data: CreateEventSchema, eventId: number, users?: UserIdNamePair[]) =>
+  db.transaction(async (tx) => {
+    console.log(eventId);
+    const [updatedEvent] = await tx
+      .update(event)
+      .set({
+        roomId: data.roomId,
+        place: data.place,
+        dateTime: data.dateTime
+      })
+      .where(eq(event.id, eventId))
+      .returning();
+
+    const [activity] = await tx.update(roomActivity).set(data).where(eq(roomActivity.fk_event, eventId)).returning();
+
+    await tx.delete(userHasActivity).where(eq(userHasActivity.fk_activity_id, activity.id));
+
+    if (users && users?.length !== 0) {
+      const usersWithEvent = users?.map((user) => ({ fk_user_id: user.id, fk_activity_id: activity.id }));
+      await tx.insert(userHasActivity).values([...usersWithEvent]);
+    }
+
+    return { ...updatedEvent, ...activity };
+  });
+
+export const deleteEvent = async (eventId: number) => {
+  await db.transaction(async (tx) => {
+    const activityRows = await tx.delete(roomActivity).where(eq(roomActivity.fk_event, eventId));
+
+    if (activityRows.rowsAffected !== 1) {
+      throw new Error("Failed to delete event!");
+    }
+
+    const eventRows = await tx.delete(event).where(eq(event.id, eventId));
+
+    if (eventRows.rowsAffected !== 1) {
+      throw new Error("Failed to delete event!");
+    }
+  });
+};
