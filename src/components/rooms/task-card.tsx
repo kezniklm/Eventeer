@@ -106,6 +106,7 @@ export const TaskCard = ({
           {items.map((s) => (
             <li key={s.id} className="flex items-center">
               <Checkbox
+                title={s.is_done ? "Mark subtask as in progress" : "Mark task as done"}
                 checked={s.is_done}
                 onCheckedChange={(val) => handleToggle(s.id, Boolean(val))}
                 className={!s.is_done ? "border-input rounded-sm border bg-white" : ""}
