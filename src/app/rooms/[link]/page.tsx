@@ -151,7 +151,6 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
                 isPublic={t.isPublic}
                 repeatableType={t.repeatableType ?? undefined}
                 repeatableValue={t.repeatableValue}
-                priority={t.priority}
               />
             ))}
           </div>
