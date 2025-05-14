@@ -62,7 +62,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   );
 
   const visibleTasks = tasksWithDetails.filter(
-    (t) => (t.createdById === userId || t.isPublic) ?? t.assignedUserIds.includes(userId)
+    (t) => t.createdById === userId || t.isPublic || t.assignedUserIds.includes(userId)
   );
 
   const eventsWithDetails = await Promise.all(
@@ -92,7 +92,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   );
 
   const visibleEvents = eventsWithDetails.filter(
-    (e) => (e.createdById === userId || e.isPublic) ?? e.assignedUserIds.includes(userId)
+    (e) => e.createdById === userId || e.isPublic || e.assignedUserIds.includes(userId)
   );
 
   const settleUpsWithDetails = await Promise.all(
@@ -118,7 +118,7 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
   );
 
   const visibleSettleUps = settleUpsWithDetails.filter(
-    (s) => (s.createdById === userId || s.isPublic) ?? s.assignedUserIds.includes(userId)
+    (s) => s.createdById === userId || s.isPublic || s.assignedUserIds.includes(userId)
   );
 
   return (
