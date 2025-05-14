@@ -8,9 +8,10 @@ type FormInputProps = {
   label: string;
   name: string;
   placeholderAsLabel?: boolean;
+  hideLabel?: boolean;
 } & InputHTMLAttributes<HTMLInputElement>;
 
-export const FormInput = ({ label, name, placeholderAsLabel = false, ...props }: FormInputProps) => {
+export const FormInput = ({ label, name, placeholderAsLabel = false, hideLabel = false, ...props }: FormInputProps) => {
   const {
     register,
     formState: { errors }
@@ -18,7 +19,7 @@ export const FormInput = ({ label, name, placeholderAsLabel = false, ...props }:
 
   return (
     <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label htmlFor={name}>{label}</Label>
+      {!hideLabel && <Label htmlFor={name}>{label}</Label>}
       <Input
         {...props}
         {...register(name, { valueAsNumber: props.type === "number" })}

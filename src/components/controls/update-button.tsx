@@ -4,12 +4,5 @@ import { type HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 export const UpdateButton = ({ className, ...props }: HTMLAttributes<SVGSVGElement>) => (
-  <Pencil
-    className={cn(
-      `text-muted-foreground cursor-pointer opacity-0 transition duration-300 group-hover:opacity-100`,
-      className
-    )}
-    size="20px"
-    {...props}
-  />
+  <Pencil className={cn(`text-muted-foreground cursor-pointer`, className)} size="20px" {...props} />
 );

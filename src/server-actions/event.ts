@@ -39,13 +39,13 @@ export const updateEventAction = async (eventData: EventForm, eventId: number, r
   const session = await auth();
 
   if (!session?.user?.id) {
-    throw new Error("You must be logged in to create settle up activity!");
+    throw new Error("You must be logged in to update event activity!");
   }
 
   const authorId = session.user.id;
 
   if (!isUserInRoom(roomId, authorId)) {
-    throw new Error("You are not allowed to create settle ups in this room!");
+    throw new Error("You are not allowed to update events in this room!");
   }
 
   const insertData: CreateEventSchema = {
@@ -59,14 +59,14 @@ export const updateEventAction = async (eventData: EventForm, eventId: number, r
   return updateEvent(insertData, eventId, users);
 };
 
-export const deleteEventAction = async (settleUpId: number) => {
-  const { id } = await eventSelectSchema.pick({ id: true }).parseAsync({ id: settleUpId });
+export const deleteEventAction = async (eventId: number) => {
+  const { id } = await eventSelectSchema.pick({ id: true }).parseAsync({ id: eventId });
   const user = await getCurrentUser();
 
-  const [settleUp] = await getEventById(id);
+  const [event] = await getEventById(id);
 
-  if (settleUp.room_activity.created_by !== user.id) {
-    throw new Error("Only author can remove the Settle up!");
+  if (event.room_activity.created_by !== user.id) {
+    throw new Error("Only author can remove the Event up!");
   }
 
   await deleteEvent(id);
