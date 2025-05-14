@@ -88,7 +88,7 @@ export const TaskCard = ({
             </span>
           )}
         </div>
-        <div className="text-muted-foreground text-right text-xs">
+        <div className="text-accent-foreground text-right text-xs">
           {date && <span className="mt-1">{formatDate(date)}</span>}
           {author && <div className="mt-1">By: {author.name}</div>}
         </div>
