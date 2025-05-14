@@ -6,7 +6,11 @@ import { type CreateEventSchema } from "@/db/zod/event";
 import { type UserIdNamePair } from "@/db/zod/user";
 
 export const getEventById = async (eventId: number) =>
-  await db.select().from(event).innerJoin(roomActivity, eq(roomActivity.id, eventId)).where(eq(event.id, eventId));
+  await db
+    .select()
+    .from(event)
+    .innerJoin(roomActivity, eq(roomActivity.fk_event, eventId))
+    .where(eq(event.id, eventId));
 
 export const getEventsByRoom = async (roomId: number) =>
   await db
@@ -74,7 +78,18 @@ export const updateEvent = async (data: CreateEventSchema, eventId: number, user
       .where(eq(event.id, eventId))
       .returning();
 
-    const [activity] = await tx.update(roomActivity).set(data).where(eq(roomActivity.fk_event, eventId)).returning();
+    const [activity] = await tx
+      .update(roomActivity)
+      .set({
+        name: data.name,
+        description: data.description,
+        isPublic: data.isPublic,
+        priority: data.priority,
+        repeatableType: data.repeatableType,
+        repeatableValue: data.repeatableValue
+      })
+      .where(eq(roomActivity.fk_event, eventId))
+      .returning();
 
     await tx.delete(userHasActivity).where(eq(userHasActivity.fk_activity_id, activity.id));
 

@@ -3,8 +3,8 @@ import NextAuth from "next-auth";
 import { type Provider } from "next-auth/providers";
 import Discord from "next-auth/providers/discord";
 import Google from "next-auth/providers/google";
-import { cache } from "react";
 import { revalidateTag } from "next/cache";
+import { cache } from "react";
 
 import { db } from "./db";
 import { accounts, authenticators, sessions, users, verificationTokens } from "./db/schema/auth";

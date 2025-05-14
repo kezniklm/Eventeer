@@ -65,7 +65,14 @@ export const updateSettleUp = async (data: SettleUpInsertSchema, settleUpId: num
 
     const [activity] = await tx
       .update(roomActivity)
-      .set(data)
+      .set({
+        name: data.name,
+        description: data.description,
+        isPublic: data.isPublic,
+        priority: data.priority,
+        repeatableType: data.repeatableType,
+        repeatableValue: data.repeatableValue
+      })
       .where(eq(roomActivity.fk_settle_up, settleUpId))
       .returning();
 
@@ -98,7 +105,7 @@ export const getSettleUpById = async (settleUpId: number) =>
   db
     .select()
     .from(settleUp)
-    .innerJoin(roomActivity, eq(roomActivity.id, settleUpId))
+    .innerJoin(roomActivity, eq(roomActivity.fk_settle_up, settleUpId))
     .where(eq(settleUp.id, settleUpId));
 
 export const getAssignedUsers = async (settleUpId: number) =>

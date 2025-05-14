@@ -109,7 +109,18 @@ export const updateTask = async (data: TaskInsertSchema, taskId: number, users?:
       await Promise.all(updatePromises);
     }
 
-    const [activity] = await tx.update(roomActivity).set(data).where(eq(roomActivity.fk_task, taskId)).returning();
+    const [activity] = await tx
+      .update(roomActivity)
+      .set({
+        name: data.name,
+        description: data.description,
+        isPublic: data.isPublic,
+        priority: data.priority,
+        repeatableType: data.repeatableType,
+        repeatableValue: data.repeatableValue
+      })
+      .where(eq(roomActivity.fk_task, taskId))
+      .returning();
 
     await tx.delete(userHasActivity).where(eq(userHasActivity.fk_activity_id, activity.id));
 
