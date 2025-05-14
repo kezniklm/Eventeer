@@ -45,15 +45,13 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
 
       const rawUsers = await getActivityUsersNames(t.id);
       const assignedUserIds = rawUsers.map((u) => u.id!);
-      const users = rawUsers.map((u) => u.name!);
-      const date = t.timestamp ? new Date(t.timestamp).toISOString().slice(0, 10) : undefined;
 
       return {
         ...t,
         subtasks,
-        users,
+        users: rawUsers,
         assignedUserIds,
-        date,
+        dateTime: t.taskDateTime,
         author: t.author,
         isPublic: t.isPublic,
         repeatableType: t.repeatableType,
@@ -141,12 +139,14 @@ const RoomDetailPage = async ({ params }: RoomDetailPageProps) => {
             {visibleTasks.map((t) => (
               <TaskCard
                 key={t.id}
-                id={t.taskId!}
+                taskId={t.taskId!}
                 name={t.name}
                 description={t.description ?? undefined}
                 subtasks={t.subtasks}
                 users={t.users}
-                date={t.date}
+                dateTime={t.taskDateTime ?? undefined}
+                createdAt={t.createdAt ?? undefined}
+                priority={t.priority}
                 author={t.author!}
                 isPublic={t.isPublic}
                 repeatableType={t.repeatableType ?? undefined}
