@@ -1,9 +1,8 @@
 "use client";
 
-import { Check } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import { toggleAttendanceAction } from "@/server-actions/attendance";
+
+import { AnimatedCheckButton } from "../controls/animated-check-button";
 
 type AttendanceUser = { id: string; name: string; willAttend: boolean };
 
@@ -13,13 +12,11 @@ type AttendanceButtonProps = {
 };
 
 export const AttendanceButton = ({ user, activityId }: AttendanceButtonProps) => (
-  <Button
-    key={user.id}
-    variant="outline"
-    size="sm"
+  <AnimatedCheckButton
     onClick={() => toggleAttendanceAction(user.id, activityId, !user.willAttend)}
+    showCheck={user.willAttend}
   >
+    {" "}
     {user.name}
-    {user.willAttend && <Check className="ml-1 h-4 w-4 text-green-500" />}
-  </Button>
+  </AnimatedCheckButton>
 );

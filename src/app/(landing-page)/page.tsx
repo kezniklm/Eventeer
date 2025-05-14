@@ -21,7 +21,7 @@ const HomePage = () => (
       </p>
       <div className="animate-fade-in-slow flex gap-4 delay-400">
         <Button asChild>
-          <NavigationLink href="/register">Get Started</NavigationLink>
+          <NavigationLink href="/rooms">Get Started</NavigationLink>
         </Button>
         <Button asChild variant="secondary">
           <NavigationLink href="#features">Learn More</NavigationLink>
@@ -44,7 +44,7 @@ const HomePage = () => (
         Join Eventeer today and make group organization effortless.
       </p>
       <Button asChild>
-        <NavigationLink href="/login">Create Your Room</NavigationLink>
+        <NavigationLink href="/rooms">Create Your Room</NavigationLink>
       </Button>
     </section>
   </div>

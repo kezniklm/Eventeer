@@ -63,6 +63,7 @@ export const createEvent = async (data: CreateEventSchema, users?: UserIdNamePai
 
 export const updateEvent = async (data: CreateEventSchema, eventId: number, users?: UserIdNamePair[]) =>
   db.transaction(async (tx) => {
+    console.log(eventId);
     const [updatedEvent] = await tx
       .update(event)
       .set({
