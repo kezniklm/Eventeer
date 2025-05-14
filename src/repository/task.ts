@@ -6,7 +6,7 @@ import { type TaskInsertSchema } from "@/db/zod/task";
 import { type UserIdNamePair } from "@/db/zod/user";
 
 export const getTaskById = async (taskId: number) =>
-  await db.select().from(task).innerJoin(roomActivity, eq(roomActivity.id, taskId)).where(eq(task.id, taskId));
+  await db.select().from(task).innerJoin(roomActivity, eq(roomActivity.fk_task, taskId)).where(eq(task.id, taskId));
 
 export const getTasksByRoom = async (roomId: number) =>
   await db
@@ -127,11 +127,7 @@ export const deleteTask = async (taskId: number) => {
       throw new Error("Failed to delete task!");
     }
 
-    const subTaskRows = await tx.delete(subtask).where(eq(subtask.fk_task, taskId));
-
-    if (subTaskRows.rowsAffected === 0) {
-      throw new Error("Failed to delete task!");
-    }
+    await tx.delete(subtask).where(eq(subtask.fk_task, taskId));
 
     const taskRows = await tx.delete(task).where(eq(task.id, taskId));
 
