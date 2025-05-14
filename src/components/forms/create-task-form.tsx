@@ -187,11 +187,15 @@ export const CreateTaskForm = ({ onSubmit }: FormProps) => {
         <Controller
           control={form.control}
           name="priority"
-          defaultValue="NORMAL"
-          render={({ field }) => (
+          defaultValue={updateData?.data.priority ?? priorityEnumSchema.Enum.NORMAL}
+          render={({ field: { value, onChange } }) => (
             <div className="grid w-full items-center gap-2">
               <Label>Priority</Label>
-              <RadioGroup defaultValue="NORMAL" className="flex flex-wrap gap-4 px-2" onChange={field.onChange}>
+              <RadioGroup
+                defaultValue={value ?? priorityEnumSchema.Enum.NORMAL}
+                className="flex flex-wrap gap-4 px-2"
+                onValueChange={onChange}
+              >
                 {Object.values(priorityEnumSchema.enum).map((value) => (
                   <div key={value} className="flex gap-2">
                     <RadioGroupItem value={value} id={`priority-${value}`} />
