@@ -143,10 +143,6 @@ h4 {
   background-color: var(--tertiary);
 }
 
-.border-tertiary {
-  border-color: var(--tertiary);
-}
-
 .bg-separator {
   background-color: var(--separator);
 }
