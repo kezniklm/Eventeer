@@ -78,7 +78,18 @@ export const updateEvent = async (data: CreateEventSchema, eventId: number, user
       .where(eq(event.id, eventId))
       .returning();
 
-    const [activity] = await tx.update(roomActivity).set(data).where(eq(roomActivity.fk_event, eventId)).returning();
+    const [activity] = await tx
+      .update(roomActivity)
+      .set({
+        name: data.name,
+        description: data.description,
+        isPublic: data.isPublic,
+        priority: data.priority,
+        repeatableType: data.repeatableType,
+        repeatableValue: data.repeatableValue
+      })
+      .where(eq(roomActivity.fk_event, eventId))
+      .returning();
 
     await tx.delete(userHasActivity).where(eq(userHasActivity.fk_activity_id, activity.id));
 

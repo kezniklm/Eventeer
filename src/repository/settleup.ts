@@ -65,7 +65,14 @@ export const updateSettleUp = async (data: SettleUpInsertSchema, settleUpId: num
 
     const [activity] = await tx
       .update(roomActivity)
-      .set(data)
+      .set({
+        name: data.name,
+        description: data.description,
+        isPublic: data.isPublic,
+        priority: data.priority,
+        repeatableType: data.repeatableType,
+        repeatableValue: data.repeatableValue
+      })
       .where(eq(roomActivity.fk_settle_up, settleUpId))
       .returning();
 
