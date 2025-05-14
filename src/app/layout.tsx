@@ -7,6 +7,8 @@ import { PrivateLayout } from "@/components/layout/private-layout";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { Providers } from "@/components/providers";
 
+import { interFont } from "./(fonts)";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://eventeer-woad.vercel.app/"),
   title: {
@@ -40,7 +42,7 @@ const RootLayout = async ({
   const isLoggedIn = session?.user ? true : false; //Session verification,...
 
   return (
-    <html lang="en" className="h-full bg-gray-100">
+    <html lang="en" className={`h-full bg-gray-100 ${interFont.variable}`}>
       <body className="flex min-h-full flex-col">
         <Providers>
           {isLoggedIn ? <PrivateLayout>{children}</PrivateLayout> : <PublicLayout>{children}</PublicLayout>}
