@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const HomePage = () => (
   <div className="flex flex-grow flex-col items-center">
-    <section className="mt-4 flex max-w-4xl flex-col items-center px-8 text-center">
+    <section className="mt-4 flex max-w-4xl flex-col items-center px-2 text-center">
       <PageHeading>
         Organize Life Together with <span className="text-primary">Eventeer</span>
       </PageHeading>
@@ -21,7 +21,7 @@ const HomePage = () => (
       </p>
       <div className="animate-fade-in-slow flex gap-4 delay-400">
         <Button asChild>
-          <NavigationLink href="/register">Get Started</NavigationLink>
+          <NavigationLink href="/rooms">Get Started</NavigationLink>
         </Button>
         <Button asChild variant="secondary">
           <NavigationLink href="#features">Learn More</NavigationLink>
@@ -29,7 +29,7 @@ const HomePage = () => (
       </div>
     </section>
 
-    <section id="features" className="mt-16 w-full max-w-6xl px-6">
+    <section id="features" className="mt-16 w-full max-w-6xl px-2">
       <h2 className="animate-fade-in-slow mb-16 text-center text-4xl font-bold">✨ Features</h2>
       <div className="grid gap-10 md:grid-cols-2">
         {features.map((feature, index) => (
@@ -38,13 +38,13 @@ const HomePage = () => (
       </div>
     </section>
 
-    <section className="mt-16 px-6 text-center">
+    <section className="mt-16 px-2 text-center">
       <h2 className="animate-fade-in-slow mb-6 text-3xl font-semibold md:text-4xl">Ready to create your first room?</h2>
       <p className="text-muted-foreground animate-fade-in-slow mb-8 text-lg delay-200">
         Join Eventeer today and make group organization effortless.
       </p>
       <Button asChild>
-        <NavigationLink href="/login">Create Your Room</NavigationLink>
+        <NavigationLink href="/rooms">Create Your Room</NavigationLink>
       </Button>
     </section>
   </div>

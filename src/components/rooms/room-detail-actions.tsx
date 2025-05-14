@@ -18,40 +18,50 @@ import PopupForm from "../pop-up-form";
 
 import { ResponsiveActionButtons } from "./responsive-action-buttons";
 
-type Props = {
+type PropsDisabled = {
+  disabled: true;
+  handleLeave?: never;
+};
+
+type PropsEnabled = {
+  disabled?: false;
   handleLeave: () => Promise<void>;
 };
 
-export const RoomDetailActions = ({ handleLeave }: Props) => {
+type Props = PropsDisabled | PropsEnabled;
+
+export const RoomDetailActions = ({ handleLeave, disabled = false }: Props) => {
   const [open, setOpen] = useState(false);
   const [popupType, setPopupType] = useState<"task" | "event" | "settleup">("task");
 
   const onConfirmLeave = async () => {
     setOpen(false);
-    await handleLeave();
+    if (handleLeave) {
+      await handleLeave();
+    }
   };
 
   return (
     <ResponsiveActionButtons>
       <PopupForm type={popupType} setType={setPopupType}>
-        <Button onClick={() => setPopupType("task")} size="sm">
+        <Button onClick={() => setPopupType("task")} size="sm" disabled={disabled}>
           Create task
         </Button>
       </PopupForm>
       <PopupForm type={popupType} setType={setPopupType}>
-        <Button onClick={() => setPopupType("event")} size="sm">
+        <Button onClick={() => setPopupType("event")} size="sm" disabled={disabled}>
           Create event
         </Button>
       </PopupForm>
       <PopupForm type={popupType} setType={setPopupType}>
-        <Button onClick={() => setPopupType("settleup")} size="sm">
+        <Button onClick={() => setPopupType("settleup")} size="sm" disabled={disabled}>
           Create Settle Up
         </Button>
       </PopupForm>
 
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogTrigger asChild>
-          <Button variant="destructive" size="sm">
+          <Button variant="destructive" size="sm" disabled={disabled}>
             Leave room
           </Button>
         </AlertDialogTrigger>
